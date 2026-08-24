@@ -1,17 +1,19 @@
 """
 Stage 7, Sprint 7.2 -- Streamlit app smoke/workflow tests (dashboard/app.py).
-Updated Sprint 7.6: the primary result view is `results_view.render_player_results()`'s
-per-player expanders (Sprint 7.3+), not the internal debug table -- which Sprint 7.6 correctly
-hides from the normal client-facing session (app_config.DEBUG_MODE, default False). These tests
-now read the resolved population back from the expander labels
-("Name — Age | Position | Nationality | Current Club") instead of the old debug dataframe, which
-is no longer present in a normal session.
+Post-Deployment Improvement Sprint (2026-08-24): agency is no longer mandatory (Part 2) -- the
+discovery screen shows every filter (Agency, Player Name, Position, Nationality, League, Club,
+Age) at once, with no st.stop() gate on agency. Widget order/index in the redesigned screen:
+  selectbox[0]      = Agency
+  text_input[0]     = Player Name
+  multiselect[0..3] = Position, Nationality, League, Club
+  slider[0]         = Age
+  radio[0]          = selection mode
+  multiselect[4]    = specific-players picker (only present in "Select specific players" mode)
+  button[0]         = Find Recommendations
 
 Uses Streamlit's official headless testing API (streamlit.testing.v1.AppTest) to drive the real
 app end-to-end -- this is the interactive-state layer selection_logic.py's unit tests cannot
 cover (widget wiring, session_state sanitization on agency/filter change, st.stop() paths).
-Mirrors the Sprint 7.2 request's Part 21 validation workflows A-G plus the stale-selection edge
-case from Part 8/11.
 
 Skipped entirely if the Sprint 7.1 production data layer isn't present.
 """
@@ -53,10 +55,6 @@ def _player_expanders(at):
 
 
 def _parse_labels(at):
-    """Reconstructs the same per-player fields the old debug dataframe exposed, straight from
-    each player expander's own label -- preserves every workflow test's original intent (verify
-    the resolved population's Age/Position/Nationality/Agency) without depending on the
-    now-hidden-by-default debug table."""
     rows = []
     for e in _player_expanders(at):
         m = _LABEL_RE.match(e.label)
@@ -68,18 +66,69 @@ def _parse_labels(at):
     return rows
 
 
-def test_initial_state_prompts_for_agency_no_exception():
+def test_initial_state_no_agency_no_exception_no_forced_stop():
+    """Part 2: agency is no longer a precondition -- the discovery screen (filters, player-name
+    search) is usable immediately, with no info/stop gate blocking it."""
     at = _fresh()
     assert not at.exception
-    assert at.selectbox[0].value == "Select an agency..."
-    assert at.info
+    assert at.selectbox[0].value == "All agencies"
+    # every discovery control is present and usable with zero clicks
+    assert len(at.text_input) >= 1
+    assert len(at.multiselect) >= 4
+    assert len(at.slider) >= 1
+    assert len(at.button) >= 1
+
+
+def test_search_by_name_alone_no_agency():
+    """Part 2/3: a client who knows only a player's name can search directly, with no agency
+    chosen at all."""
+    at = _fresh()
+    at.text_input[0].set_value("Forshaw").run(timeout=30)
+    assert not at.exception
+    at.button[0].click().run(timeout=30)
+    assert not at.exception
+    rows = _parse_labels(at)
+    assert len(rows) >= 1
+    assert all("forshaw" in r["name"].lower() for r in rows)
+
+
+def test_filter_by_position_age_league_no_agency():
+    """Part 3's own example: Position = Centre Back, Age = 20-24, League = a real production
+    league -- entirely without an agency."""
+    at = _fresh()
+    at.multiselect[0].select("Centre Back").run(timeout=30)
+    assert not at.exception
+    league_options = at.multiselect[2].options
+    assert league_options, "no league options available with no agency chosen"
+    at.multiselect[2].select(league_options[0]).run(timeout=30)
+    at.slider[0].set_range(20, 24).run(timeout=30)
+    at.button[0].click().run(timeout=30)
+    assert not at.exception
+    rows = _parse_labels(at)
+    if rows:  # this exact combination may have zero matches -- that's fine, must not crash
+        assert all(r["position"] == "Centre Back" for r in rows)
+        assert all(20 <= r["age"] <= 24 for r in rows)
+
+
+def test_league_narrows_club_options_progressively():
+    """Part 5: selecting a League narrows the Club filter's OPTIONS to clubs in that league --
+    one-directional, deterministic."""
+    at = _fresh()
+    league_options = at.multiselect[2].options
+    chosen_league = league_options[0]
+    all_club_options = at.multiselect[3].options
+    at.multiselect[2].select(chosen_league).run(timeout=30)
+    assert not at.exception
+    narrowed_club_options = at.multiselect[3].options
+    assert len(narrowed_club_options) <= len(all_club_options)
+    assert len(narrowed_club_options) >= 1
 
 
 def test_workflow_a_one_agency_one_specific_player():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
     at.radio[0].set_value("Select specific players").run(timeout=30)
-    player_ms = at.multiselect[2]
+    player_ms = at.multiselect[4]
     one_pid = player_ms.options[0]
     player_ms.select(one_pid).run(timeout=30)
     at.button[0].click().run(timeout=30)
@@ -91,7 +140,7 @@ def test_workflow_b_one_agency_multiple_players():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
     at.radio[0].set_value("Select specific players").run(timeout=30)
-    player_ms = at.multiselect[2]
+    player_ms = at.multiselect[4]
     chosen = player_ms.options[:3]
     player_ms.set_value(chosen).run(timeout=30)
     at.button[0].click().run(timeout=30)
@@ -104,7 +153,7 @@ def test_workflow_c_one_agency_all_players():
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
     at.button[0].click().run(timeout=30)
     assert not at.exception
-    pop_caption = [c.value for c in at.caption if "in this group" in c.value][0]
+    pop_caption = [c.value for c in at.caption if "match the current search" in c.value][0]
     n_in_population = int(pop_caption.split(" ")[0])
     assert len(_player_expanders(at)) == n_in_population
 
@@ -127,24 +176,20 @@ def test_workflow_e_agency_age_position_nationality_filter():
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
     at.slider[0].set_range(18, 30).run(timeout=30)
     at.multiselect[0].select("Centre Back").run(timeout=30)
-    # pick a nationality guaranteed to have >=1 match for this combo
     at.multiselect[1].select("England").run(timeout=30)
     at.button[0].click().run(timeout=30)
     assert not at.exception
     rows = _parse_labels(at)
     assert len(rows) > 0
-    # Sprint 7.7 -- the label now carries a nationality flag prefix (e.g. "🏴... England"), so
-    # compare against the same nationality_with_flag_text() the app itself uses to render the
-    # (plain-text-only) expander label, rather than the bare country name.
     assert all(r["nationality"] == nationality_with_flag_text("England") for r in rows)
     assert all(r["position"] == "Centre Back" for r in rows)
     assert all(18 <= r["age"] <= 30 for r in rows)
 
 
 def test_workflow_nationality_edge_case_no_flag_renders_plain_text():
-    """Sprint 7.7 regression: a player whose nationality is one of the two deliberate text-only
-    cases (Northern Ireland or Kosovo) must render with the plain country name and no stray flag
-    glyph/tofu box -- real production players, not synthetic data."""
+    """Regression: a player whose nationality is one of the two deliberate text-only cases
+    (Northern Ireland or Kosovo) must render with the plain country name and no stray flag glyph/
+    tofu box -- real production players, not synthetic data."""
     at = _fresh()
     at.selectbox[0].select("14 Sports Management").run(timeout=30)  # has a Northern Ireland player
     at.button[0].click().run(timeout=30)
@@ -152,7 +197,6 @@ def test_workflow_nationality_edge_case_no_flag_renders_plain_text():
     rows = _parse_labels(at)
     ni_rows = [r for r in rows if r["nationality"] == "Northern Ireland"]
     assert len(ni_rows) > 0
-    # exactly the plain text, nothing prepended -- confirms no flag glyph was emitted
     assert all(r["nationality"] == nationality_with_flag_text("Northern Ireland") for r in ni_rows)
 
 
@@ -165,10 +209,6 @@ def test_workflow_f_unrepresented_population_with_filter():
     assert not at.exception
     rows = _parse_labels(at)
     assert len(rows) > 0
-    # unrepresented players' expander summary never claims an agency -- nothing further to assert
-    # on the (now-hidden) Agency column; population correctness is covered by
-    # test_real_data_agency_and_unrepresented_partition_full_population in
-    # test_dashboard_selection_logic.py.
 
 
 def test_workflow_g_zero_result_filter_combination_no_crash():
@@ -188,12 +228,12 @@ def test_stale_specific_selection_cleared_on_agency_switch_no_crash():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
     at.radio[0].set_value("Select specific players").run(timeout=30)
-    player_ms = at.multiselect[2]
+    player_ms = at.multiselect[4]
     player_ms.set_value(player_ms.options[:2]).run(timeout=30)
 
     at.selectbox[0].select("CAA Stellar").run(timeout=30)
     assert not at.exception
-    assert at.multiselect[2].value == []  # stale IDs dropped, not carried over
+    assert at.multiselect[4].value == []  # stale IDs dropped, not carried over
 
     at.button[0].click().run(timeout=30)
     assert not at.exception

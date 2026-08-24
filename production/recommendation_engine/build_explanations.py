@@ -17,11 +17,14 @@ Fit, System Fit, Observed Fit, Reliability, Tier, or ranking; reads them read-on
 recommendations.csv / player_club_position_style_fit.csv.
 
 Writes: results/explanations.csv -- one row per (player_id, destination_club_id, rec_type),
-matching recommendations.csv's REGULAR + AO rows exactly. Columns: the final client-facing
-`explanation` text, plus every intermediate signal (strongest_matches, broad_alignment,
-meaningful_mismatch, observed_similarity, divergence_ability) for full auditability -- never
-collapsed into the prose alone.
+matching recommendations.csv's REGULAR + AO rows exactly. Columns: `explanation` (the short
+headline sentence), `evidence_json`/`caution_json`/`supporting_json` (the structured, quantitative
+evidence behind it -- Post-Deployment Improvement Sprint, Parts 12-18; JSON-encoded since their
+shape varies row to row: 0-3 ability/player-value/club-value entries), plus every intermediate
+signal (strongest_matches, broad_alignment, meaningful_mismatch, observed_similarity,
+divergence_ability) for full auditability -- never collapsed into the prose alone.
 """
+import json
 import sys
 from pathlib import Path
 
@@ -102,6 +105,11 @@ def main():
     print("Computing per-Ability gaps and robust z-scores against the real population...")
     is_b = recs["winning_system_profile_id"].values == "B"
     sys_gap_cols, obs_gap_cols = {}, {}
+    # Post-Deployment Improvement Sprint (Part 14): the raw player-value/club-target pair behind
+    # each gap, kept alongside it -- these are the exact same values already computed to build
+    # sys_gap_cols below, just not discarded this time, so the client-facing explanation can quote
+    # them (e.g. "Player 68 vs Club Profile 65") instead of only the derived z-score/signal.
+    player_val_cols, sys_target_cols = {}, {}
     for dim in CORE_DIMS:
         player_val = recs[dim].to_numpy()
         sys_a = recs[f"sysA_{dim}"].to_numpy()
@@ -110,6 +118,8 @@ def main():
         obs_target = recs[f"obs_{dim}"].to_numpy()
         sys_gap_cols[dim] = player_val - sys_target
         obs_gap_cols[dim] = player_val - obs_target
+        player_val_cols[dim] = player_val
+        sys_target_cols[dim] = sys_target
 
     sys_gap_df = pd.DataFrame(sys_gap_cols)
     obs_gap_df = pd.DataFrame(obs_gap_cols)
@@ -134,7 +144,8 @@ def main():
                            "obs_gap_median": o_med, "obs_gap_robust_std": o_robust_std})
     pd.DataFrame(ref_stats).to_csv(RESULTS_DIR / "explanation_ability_reference_stats.csv", index=False)
 
-    print("Generating deterministic signals and prose for every recommendation row...")
+    print("Generating deterministic signals and ability-grounded, quantitative explanations "
+          "for every recommendation row...")
     is_ao = (recs["rec_type"] == "AO").to_numpy()
     style_fit_basis = recs["style_fit_basis"].to_numpy()
     reliability = recs["reliability"].to_numpy()
@@ -143,13 +154,22 @@ def main():
     sys_gap_z_records = sys_gap_z_df.to_dict("records")
     obs_gap_z_records = obs_gap_z_df.to_dict("records")
 
-    explanations, matches_out, broad_out, mismatch_out, obs_sim_out, diverg_out = [], [], [], [], [], []
+    # Rounded once, outside the per-row loop -- the actual T-score-like values (0-100 scale) behind
+    # every strongest-match/mismatch/divergence Ability, for the new quantitative evidence (Part 14).
+    # 1 decimal place: enough precision to show real differences, not false precision (these values
+    # already carry noise from the underlying per-match statistics -- see the module docstring).
+    player_val_rounded = {d: np.round(player_val_cols[d], 1) for d in CORE_DIMS}
+    sys_target_rounded = {d: np.round(sys_target_cols[d], 1) for d in CORE_DIMS}
+
+    headlines, evidence_json, caution_json, supporting_json = [], [], [], []
+    matches_out, broad_out, mismatch_out, obs_sim_out, diverg_out = [], [], [], [], []
     for i in range(len(recs)):
         sys_z = {d: (v if pd.notna(v) else None) for d, v in sys_gap_z_records[i].items()}
+        detail = {d: (float(player_val_rounded[d][i]), float(sys_target_rounded[d][i])) for d in CORE_DIMS}
         if is_ao[i]:
             obs_z = {d: (v if pd.notna(v) else None) for d, v in obs_gap_z_records[i].items()}
             sig = ee.compute_ao_signals(sys_z, obs_z)
-            explanations.append(ee.render_ao_explanation(sig))
+            payload = ee.build_ao_explanation_payload(sig, detail)
             matches_out.append(",".join(sig["strongest_matches"]))
             broad_out.append(None)
             mismatch_out.append(None)
@@ -160,17 +180,25 @@ def main():
             rel = reliability[i] if pd.notna(reliability[i]) else None
             obs_fit = observed_fit[i] if pd.notna(observed_fit[i]) else None
             sig = ee.compute_signals(sys_z, basis, rel, obs_fit)
-            explanations.append(ee.render_regular_explanation(sig))
+            obs_z = {d: (v if pd.notna(v) else None) for d, v in obs_gap_z_records[i].items()}
+            payload = ee.build_regular_explanation_payload(sig, detail, obs_gap_z=obs_z)
             matches_out.append(",".join(sig["strongest_matches"]))
             broad_out.append(sig["broad_alignment"])
             mismatch_out.append(sig["meaningful_mismatch"])
             obs_sim_out.append(sig["observed_similarity"])
             diverg_out.append(None)
 
+        headlines.append(payload["headline"])
+        evidence_json.append(json.dumps(payload["evidence"]) if payload["evidence"] else "")
+        caution_json.append(json.dumps(payload["caution"]) if payload["caution"] else "")
+        supporting_json.append(json.dumps(payload["supporting"]) if payload["supporting"] else "")
+
     out = pd.DataFrame({
         "player_id": recs["player_id"].values, "destination_club_id": recs["destination_club_id"].values,
         "rec_type": recs["rec_type"].values, "rank": recs["rank"].values,
-        "explanation": explanations, "strongest_matches": matches_out, "broad_alignment": broad_out,
+        "explanation": headlines,
+        "evidence_json": evidence_json, "caution_json": caution_json, "supporting_json": supporting_json,
+        "strongest_matches": matches_out, "broad_alignment": broad_out,
         "meaningful_mismatch": mismatch_out, "observed_similarity": obs_sim_out,
         "divergence_ability": diverg_out,
     })
@@ -185,6 +213,10 @@ def main():
     print(f"Regular recs with observed-similarity language: {reg.observed_similarity.notna().mean():.1%}")
     print(f"Regular recs with broad/concentrated alignment stated: {reg.broad_alignment.notna().mean():.1%}")
     print(f"Regular recs with a meaningful mismatch stated: {reg.meaningful_mismatch.notna().mean():.1%}")
+    print(f"Regular recs with quantitative evidence (evidence_json non-empty): "
+          f"{(reg.evidence_json != '').mean():.1%}")
+    print(f"Regular recs with quantitative caution (caution_json non-empty): "
+          f"{(reg.caution_json != '').mean():.1%}")
 
 
 if __name__ == "__main__":

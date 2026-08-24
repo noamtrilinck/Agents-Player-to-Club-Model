@@ -119,7 +119,7 @@ def coverage_line_html(entry: dict) -> str:
     safe_division = _html.escape(entry["division_label"])
     safe_leagues = _html.escape(", ".join(entry["league_names"]))
     return (f'{entry["flag_html"]} <b>{safe_country}</b> — {safe_division} '
-            f'<span style="color:#888;">({safe_leagues})</span>')
+            f'<span style="color:var(--ink-faint);">({safe_leagues})</span>')
 
 
 # =================================================================================================
@@ -140,19 +140,15 @@ def render_league_coverage(entries: list[dict]) -> None:
     if not entries:
         return
 
-    st.markdown(
-        '<div style="font-size:0.95rem;font-weight:600;color:#555;margin-top:0.25rem;'
-        'margin-bottom:0.4rem;">Leagues Covered</div>',
-        unsafe_allow_html=True)
+    st.markdown('<div class="pdf-leaguecov-label">Leagues Covered</div>', unsafe_allow_html=True)
+    st.markdown('<div class="pdf-leaguecov">', unsafe_allow_html=True)
 
     for i in range(0, len(entries), COVERAGE_GRID_COLUMNS):
         row = entries[i:i + COVERAGE_GRID_COLUMNS]
         cols = st.columns(COVERAGE_GRID_COLUMNS)
         for col, entry in zip(cols, row):
             with col:
-                st.markdown(
-                    f'<div style="font-size:0.8rem;line-height:1.5;margin-bottom:0.15rem;">'
-                    f'{coverage_line_html(entry)}</div>',
-                    unsafe_allow_html=True)
+                st.markdown(f'<div class="pdf-leaguecov-line">{coverage_line_html(entry)}</div>',
+                            unsafe_allow_html=True)
 
-    st.markdown('<div style="margin-bottom:0.75rem;"></div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)

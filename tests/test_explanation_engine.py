@@ -286,3 +286,94 @@ def test_ao_missing_data_does_not_crash():
     assert signals["divergence_ability"] is None
     text = ee.render_ao_explanation(signals)
     assert isinstance(text, str) and len(text) > 0
+
+
+# =============================================================================================
+# Layer 2b -- structured, quantitative payloads (Post-Deployment Improvement Sprint, Parts 12-18)
+# Consumes the SAME signals as the Layer-2 prose functions above -- the SIGNAL layer under test
+# above is completely unchanged by any of this.
+# =============================================================================================
+
+def _detail(**kwargs):
+    """{ability: (player_value, club_value)} -- only the abilities passed in have real values."""
+    return {dim: kwargs.get(dim) for dim in ee.CORE_DIMS if dim in kwargs}
+
+
+def test_payload_headline_names_the_real_strongest_match():
+    z = _z(aerial_duels=2.0)
+    signals = ee.compute_signals(z, "SYSTEM_ONLY", None, None)
+    payload = ee.build_regular_explanation_payload(signals, _detail(aerial_duels=(64.9, 52.0)))
+    assert "Aerial Duels" in payload["headline"]
+    assert payload["evidence"] == [
+        {"ability": "aerial_duels", "label": "Aerial Duels", "player_value": 64.9, "club_value": 52.0}]
+
+
+def test_payload_evidence_empty_when_no_strong_match_present():
+    z = _z()  # nothing crosses the primary threshold
+    signals = ee.compute_signals(z, "SYSTEM_ONLY", None, None)
+    payload = ee.build_regular_explanation_payload(signals, {})
+    assert payload["evidence"] == []
+    assert "reasonable fit" in payload["headline"]  # the honest fallback, never a fabricated standout
+
+
+def test_payload_never_fabricates_a_value_for_a_match_with_no_detail():
+    """If the caller doesn't supply a value pair for a matched ability (shouldn't normally happen,
+    but must degrade safely), the evidence list simply omits that entry -- never a fake number."""
+    z = _z(aerial_duels=2.0)
+    signals = ee.compute_signals(z, "SYSTEM_ONLY", None, None)
+    payload = ee.build_regular_explanation_payload(signals, {})  # no detail supplied at all
+    assert payload["evidence"] == []
+
+
+def test_payload_caution_only_set_when_meaningful_mismatch_present():
+    z = _z(chance_creation=-3.0)
+    signals = ee.compute_signals(z, "SYSTEM_ONLY", None, None)
+    payload = ee.build_regular_explanation_payload(signals, _detail(chance_creation=(28.8, 51.5)))
+    assert payload["caution"] == {"ability": "chance_creation", "label": "Chance Creation",
+                                    "player_value": 28.8, "club_value": 51.5}
+
+
+def test_payload_caution_none_when_no_mismatch():
+    z = _z()
+    signals = ee.compute_signals(z, "SYSTEM_ONLY", None, None)
+    payload = ee.build_regular_explanation_payload(signals, {})
+    assert payload["caution"] is None
+
+
+def test_payload_supporting_demotes_broad_alignment_and_observed_similarity():
+    z = _z(aerial_duels=2.0)
+    signals = ee.compute_signals(z, "COMBINED_95_5", "HIGH", 85.0)
+    payload = ee.build_regular_explanation_payload(signals, _detail(aerial_duels=(64.9, 52.0)))
+    assert signals["observed_similarity"] == "confident"
+    assert any("similarity" in s for s in payload["supporting"])
+    # the headline itself must lead with the Ability evidence, not the similarity claim (Part 16)
+    assert "Aerial Duels" in payload["headline"]
+    assert "similarity" not in payload["headline"]
+
+
+def test_payload_observed_similarity_drivers_named_when_available():
+    z = _z(aerial_duels=2.0)
+    signals = ee.compute_signals(z, "COMBINED_95_5", "HIGH", 85.0)
+    obs_z = _z(ball_retention_security=1.2, defensive_ball_winning=-1.0)
+    payload = ee.build_regular_explanation_payload(signals, _detail(aerial_duels=(64.9, 52.0)), obs_gap_z=obs_z)
+    supporting_blob = " ".join(payload["supporting"])
+    assert "Ball Retention" in supporting_blob
+
+
+def test_ao_payload_caution_is_the_divergence_ability():
+    sys_z = _z(ball_carrying_dribbling=1.5)
+    obs_z = _z(ball_carrying_dribbling=-1.0)
+    signals = ee.compute_ao_signals(sys_z, obs_z)
+    payload = ee.build_ao_explanation_payload(signals, _detail(ball_carrying_dribbling=(57.5, 49.0)))
+    assert payload["caution"]["ability"] == "ball_carrying_dribbling"
+
+
+def test_payloads_never_leak_methodology_terms():
+    z = _z(aerial_duels=2.0, chance_creation=-3.0)
+    signals = ee.compute_signals(z, "COMBINED_95_5", "HIGH", 85.0)
+    payload = ee.build_regular_explanation_payload(
+        signals, _detail(aerial_duels=(64.9, 52.0), chance_creation=(28.8, 51.5)),
+        obs_gap_z=_z(ball_retention_security=1.2))
+    blob = payload["headline"] + " ".join(payload["supporting"]) + str(payload["evidence"]) + str(payload["caution"])
+    for term in ("Reliability", "Tier", "z-score", "PoolAdj", "System Fit", "Observed Fit", "ao_z"):
+        assert term not in blob

@@ -1,19 +1,38 @@
 """
 Stage 7, Sprint 7.2 -- Agency / player selection and filter logic.
+Post-Deployment Improvement Sprint (Part 2-5): agency is no longer a mandatory first step.
 
 Deliberately kept independent of Streamlit (no `import streamlit` anywhere in this module) so it
 can be unit-tested directly against plain DataFrames -- see tests/test_dashboard_selection_logic.py.
 `dashboard/app.py` is a thin rendering layer over these functions; it contains no filtering logic
 of its own.
 
-Locked interaction contract (Sprint 7.2, Part 7-8):
-  1. Agency (or "players without an agency") determines the INITIAL player pool.
-  2. Age / Position / Nationality filters narrow that pool -- AND across categories, OR within a
-     multi-select category (e.g. Position = CF+LW means CF OR LW; combined with Nationality =
-     Croatia means (CF OR LW) AND Croatian).
-  3. The player selector offers only players remaining after those filters.
-  4. The user selects one, several, or all remaining players.
-  5. Search resolves the final, deterministic list of player IDs.
+Interaction contract (revised, Post-Deployment Improvement Sprint):
+  1. ALL discovery controls -- Agency, Player Name, Position, Age, Nationality, League, Club,
+     Unrepresented -- are available from the start, on one screen. Agency (or "players without an
+     agency") still narrows the population immediately when chosen and remains the visually
+     prominent, primary route (Part 4), but it is no longer a precondition: a client who wants
+     "young centre-backs in Portugal" can filter directly, with no agency selected at all.
+  2. AND across every filter DIMENSION (Agency/Unrepresented, Name, Position, Age, Nationality,
+     League, Club); OR within a multi-select dimension (e.g. Position = CB+CF means CB OR CF).
+     Name is a text/partial-match filter, not a multi-select, so it has no internal OR -- it AND-
+     combines with everything else the same way.
+  3. Progressive narrowing (Part 5), deterministic and ONE-DIRECTIONAL only (never circular):
+       - Agency/Unrepresented defines the base pool every other filter's OPTIONS are computed
+         from (this was already true before this sprint -- e.g. the Position dropdown already
+         only listed positions present in the chosen agency's pool -- and is simply preserved and
+         extended to the two new filters).
+       - League narrows the Club filter's OPTIONS to clubs that actually play in the selected
+         league(s) (e.g. League = "Portugal 1" -> Club options are only Portugal-1 clubs).
+       - Club does NOT narrow League's options back, and no other pair of filters narrows each
+         other's options -- deliberately, to avoid the "confusing circular filter behavior" this
+         sprint was explicitly warned against. Every filter's actual MATCHING logic is still a
+         plain AND against the full current selection regardless of this options-narrowing rule;
+         "progressive narrowing" here only ever affects which OPTIONS a dropdown offers, never
+         which players match.
+  4. The player selector offers only players remaining after every filter.
+  5. The user selects one, several, or all remaining players.
+  6. Search resolves the final, deterministic list of player IDs.
 
 No player, agency, or recommendation methodology is recomputed here -- every function reads
 directly from the already-locked Sprint 7.1 production data layer (players.csv /
@@ -25,7 +44,7 @@ import pandas as pd
 
 
 # =================================================================================================
-# Step 1 -- Agency / population selection
+# Step 1 -- Agency / population selection (Part 4: prominent, but optional -- Part 2)
 # =================================================================================================
 
 def list_agencies(players: pd.DataFrame) -> list[str]:
@@ -36,18 +55,19 @@ def list_agencies(players: pd.DataFrame) -> list[str]:
 
 def filter_by_agency(players: pd.DataFrame, agency: str | None = None,
                       unrepresented: bool = False) -> pd.DataFrame:
-    """Returns the initial player pool for the chosen population. Exactly one of `agency` /
-    `unrepresented` should be meaningful at a time; if neither is set, returns an empty pool (the
-    app requires an explicit population choice before any player becomes selectable -- Part 8)."""
+    """Returns the base player pool. `unrepresented` and `agency` are mutually exclusive routes,
+    checked in that order. If NEITHER is set, returns the FULL population unfiltered (Part 2:
+    agency is no longer a precondition for search -- previously this returned an empty pool and
+    the app required an explicit population choice before anything else was even shown)."""
     if unrepresented:
         return players[players["has_no_agency"]]
     if agency:
         return players[players["agency"] == agency]
-    return players.iloc[0:0]
+    return players
 
 
 # =================================================================================================
-# Step 2 -- Filters (AND across categories, OR within a multi-select category)
+# Step 2 -- Filters (AND across dimensions, OR within a multi-select dimension)
 # =================================================================================================
 
 def filter_by_age(players: pd.DataFrame, min_age: int | None = None,
@@ -76,16 +96,62 @@ def filter_by_nationality(players: pd.DataFrame, nationalities: list[str] | None
     return players[players["nationality_display"].isin(nationalities)]
 
 
+def filter_by_league(players: pd.DataFrame, leagues: list[str] | None = None) -> pd.DataFrame:
+    """NEW (Part 2). OR within the list. Uses the player's current/source league
+    (`current_league_display`) -- the league he plays in today, same field the result view already
+    displays, never a destination/recommendation league (a different concept entirely)."""
+    if not leagues:
+        return players
+    return players[players["current_league_display"].isin(leagues)]
+
+
+def filter_by_club(players: pd.DataFrame, clubs: list[str] | None = None) -> pd.DataFrame:
+    """NEW (Part 2). OR within the list. Uses the player's current/source club
+    (`current_club_display`) -- never a destination/recommendation club."""
+    if not clubs:
+        return players
+    return players[players["current_club_display"].isin(clubs)]
+
+
+def filter_by_name(players: pd.DataFrame, query: str | None = None) -> pd.DataFrame:
+    """NEW (Part 2): global player-name search, independent of agency. Case-insensitive
+    SUBSTRING match (practical partial-name search, e.g. "neve" matches "João Neves") -- not a
+    fuzzy/typo-tolerant search, and not anchored to the start of the name, so a surname alone
+    always works. Blank/None query means 'no name restriction'."""
+    if not query or not query.strip():
+        return players
+    q = query.strip().casefold()
+    return players[players["player_name"].str.casefold().str.contains(q, na=False, regex=False)]
+
+
 def apply_filters(players: pd.DataFrame, min_age: int | None = None, max_age: int | None = None,
-                   positions: list[str] | None = None,
-                   nationalities: list[str] | None = None) -> pd.DataFrame:
-    """AND across the three filter categories -- applying them in sequence on the already-narrowed
+                   positions: list[str] | None = None, nationalities: list[str] | None = None,
+                   leagues: list[str] | None = None, clubs: list[str] | None = None,
+                   name_query: str | None = None) -> pd.DataFrame:
+    """AND across every filter dimension -- applying them in sequence on the already-narrowed
     frame is equivalent to a combined AND (each step only removes rows, and order does not affect
     the final surviving set for independent boolean conditions)."""
     df = filter_by_age(players, min_age, max_age)
     df = filter_by_position(df, positions)
     df = filter_by_nationality(df, nationalities)
+    df = filter_by_league(df, leagues)
+    df = filter_by_club(df, clubs)
+    df = filter_by_name(df, name_query)
     return df
+
+
+def list_leagues(players: pd.DataFrame) -> list[str]:
+    """Sorted, deduplicated current/source leagues present in `players` (typically the post-
+    agency pool -- Part 3's progressive-narrowing rule: options reflect the current base pool)."""
+    return sorted(players["current_league_display"].dropna().unique().tolist())
+
+
+def list_clubs(players: pd.DataFrame, leagues: list[str] | None = None) -> list[str]:
+    """Sorted, deduplicated current/source clubs present in `players`. If `leagues` is given
+    (Part 5's League -> Club progressive narrowing), restricts to clubs that actually play in one
+    of those leagues -- one-directional only, see the module docstring."""
+    pool = filter_by_league(players, leagues) if leagues else players
+    return sorted(pool["current_club_display"].dropna().unique().tolist())
 
 
 def age_bounds(players: pd.DataFrame) -> tuple[int, int]:

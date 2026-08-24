@@ -132,8 +132,16 @@ def main():
     ukraine_mask = (fit["nationality_id"] == ltc.UKRAINE_NATIONALITY_ID) & (fit["dest_country"] == ltc.RUSSIA_COUNTRY_NAME)
     n_ukraine_excluded = int(ukraine_mask.sum())
     fit = fit[~ukraine_mask]
-    print(f"  Hard exclusions removed: {n_rivalry_reserve_excluded} (rivalry/reserve) + "
+    print(f"  Hard exclusions removed: {n_rivalry_reserve_excluded} (rivalry/reserve-pair) + "
           f"{n_ukraine_excluded} (Ukraine->Russia) = {n_before - len(fit)} rows")
+
+    # ---- Reserve/development-team BLANKET exclusion (Post-Deployment Improvement Sprint) --
+    #      broader than RESERVE_TEAM_PAIRS above -- see level_tier_config.RESERVE_TEAM_CLUB_IDS.
+    n_before_reserve = len(fit)
+    fit = fit[~fit["candidate_club_id"].isin(ltc.RESERVE_TEAM_CLUB_IDS)]
+    n_reserve_blanket_excluded = n_before_reserve - len(fit)
+    print(f"  Reserve/development-team blanket exclusion removed: {n_reserve_blanket_excluded} rows "
+          f"across {len(ltc.RESERVE_TEAM_CLUB_IDS)} clubs")
 
     # ---- classify NORMAL / EXCEPTION(direction) -- identical to Sprint 6.2 ----
     fit["is_normal"] = False

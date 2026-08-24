@@ -79,9 +79,13 @@ def test_filter_by_unrepresented(synth_players):
     assert out["has_no_agency"].all()
 
 
-def test_no_selection_returns_empty_pool(synth_players):
+def test_no_selection_returns_full_population(synth_players):
+    """Post-Deployment Improvement Sprint, Part 2: agency is no longer a precondition for search
+    -- with neither `agency` nor `unrepresented` set, filter_by_agency now returns the FULL
+    population (previously an empty pool that forced an agency choice before anything else)."""
     out = sel.filter_by_agency(synth_players)
-    assert out.empty
+    assert len(out) == len(synth_players)
+    assert out.equals(synth_players)
 
 
 # =============================================================================================

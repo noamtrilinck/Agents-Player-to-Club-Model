@@ -150,14 +150,15 @@ def test_ao_suppressed_when_destination_in_regular_4_to_9():
 # reset_recommendation_display_state (Part 14)
 # =============================================================================================
 
-def test_reset_clears_visible_count_and_toggle_keys():
-    state = {"visible_count_1": 9, "visible_count_2": 6, "why_1_reg_1": True,
-             "why_2_ao": True, "resolved_ids": [1, 2], "some_other_key": "unrelated"}
+def test_reset_clears_visible_count_keys():
+    """Post-Deployment Improvement Sprint: explanation reveal is now a native HTML <details>
+    element (see results_view._card_html()'s docstring), not an st.toggle -- there is no more
+    per-explanation session_state key to clear, only the per-player visible-count."""
+    state = {"visible_count_1": 9, "visible_count_2": 6,
+             "resolved_ids": [1, 2], "some_other_key": "unrelated"}
     rv.reset_recommendation_display_state(state)
     assert "visible_count_1" not in state
     assert "visible_count_2" not in state
-    assert "why_1_reg_1" not in state
-    assert "why_2_ao" not in state
     assert state["resolved_ids"] == [1, 2]  # unrelated keys untouched
     assert state["some_other_key"] == "unrelated"
 

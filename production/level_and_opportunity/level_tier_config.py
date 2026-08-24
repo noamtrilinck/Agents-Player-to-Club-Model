@@ -167,6 +167,63 @@ RESERVE_TEAM_PAIRS = [
     (2402, 277379, "Gent <-> Jong Gent"),
 ]
 
+# ======================================================================================
+# RESERVE / DEVELOPMENT TEAM -- BLANKET DESTINATION EXCLUSION (Post-Deployment Improvement
+# Sprint, approved 2026-08-24)
+# ======================================================================================
+# RESERVE_TEAM_PAIRS above only ever blocked the narrow "a club's own reserve side" case (Player
+# currently at PSV -> Jong PSV, and vice versa). It was never a general destination-eligibility
+# rule -- a player from any OTHER club (Feyenoord, Ajax, anyone) could still be recommended TO
+# Jong PSV under that mechanism, because the pair simply never matched. Product review of the live
+# app surfaced this gap directly: reserve/B/II/U23 teams were appearing as recommended transfer
+# destinations. There is no legitimate reason to recommend any player a move to a reserve/
+# development/second team, regardless of the player's own current club -- these are not real
+# transfer destinations. This is the general rule that closes that gap.
+#
+# Same 8 clubs identified by the RESERVE_TEAM_PAIRS audit above, PLUS Real Sociedad II (9656):
+# excluded from RESERVE_TEAM_PAIRS only because Real Sociedad's own first team isn't itself a
+# candidate in this project's 513-club universe (so there was no valid in-universe PAIR to write)
+# -- that reasoning is irrelevant to the broader rule below, since Real Sociedad II is still
+# Real Sociedad's genuine reserve side and must not be recommended to anyone. Re-verified directly
+# (2026-08-24): every one of these 9 has `founded_year IS NULL` in the shared warehouse `teams`
+# table (consistent with being an organizational sub-unit rather than an independently founded
+# club, though this alone is NOT a reliable signal -- ~40 other, genuinely independent candidate
+# clubs also have a null founded_year for unrelated data-completeness reasons; the determining
+# evidence is the name + `transfermarkt_name` pattern, e.g. "Real Sociedad II" -> transfermarkt
+# name "Real Sociedad B", "Club NXT U23" -> transfermarkt name "Club NXT").
+#
+# Deliberately an explicit, hardcoded club_id set -- never runtime name matching (a live
+# "contains Jong/II/U23/B" filter would have wrongly flagged "Willem II" and "B 93", both genuine
+# independent clubs; see the false-positive note above).
+#
+# Applied in production/level_and_opportunity/build_final_recommendations.py,
+# build_exception_recommendations.py, and production/recommendation_engine/
+# build_application_data_layer.py -- before ANY Normal/Exception classification or AO selection,
+# so a reserve team cannot win a Normal slot, an Exception slot, or AO. Does NOT touch Club
+# Strength, Level Tiers, or candidate_clubs.csv (Stage 1/6.1 are read-only, unmodified, still cover
+# all 513 clubs as a factual "how strong would this club be" record) -- only which clubs are
+# actually eligible to be selected as a recommendation.
+RESERVE_TEAM_CLUB_IDS = {
+    2971: "Jong PSV (PSV reserve team)",
+    2783: "Jong Ajax (Ajax reserve team)",
+    3115: "Jong AZ (AZ reserve team)",
+    2755: "Jong FC Utrecht (FC Utrecht reserve team)",
+    234702: "Club NXT U23 (Club Brugge reserve team)",
+    261624: "Jong KRC Genk U23 (Genk reserve team)",
+    261625: "RSCA Futures U23 (Anderlecht reserve team)",
+    277379: "Jong Gent (Gent reserve team)",
+    9656: "Real Sociedad II (Real Sociedad reserve team)",
+}
+
+
+def is_reserve_team_destination(candidate_club_id) -> bool:
+    """True if this candidate club is a reserve/development/second team -- ineligible as a
+    recommendation destination for ANY player. Broader than RESERVE_TEAM_PAIRS (which remains in
+    place and is still separately enforced for its own narrower case -- the two mechanisms overlap
+    for these 9 clubs, which is fine, not a conflict: RESERVE_TEAM_PAIRS never fires on its own
+    once this blanket rule already removed the row)."""
+    return candidate_club_id in RESERVE_TEAM_CLUB_IDS
+
 
 # ======================================================================================
 # EXCEPTION MECHANISM -- LOCKED, THIS PROJECT ONLY (approved 2026-08-22)

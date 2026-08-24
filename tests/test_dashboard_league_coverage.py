@@ -267,13 +267,15 @@ def _fresh():
 @pytest.mark.smoke
 @pytest.mark.skipif(not PLAYERS_CSV.exists(), reason="players.csv not built yet")
 def test_live_app_shows_leagues_covered_header_before_search_interface():
+    """Post-Deployment Improvement Sprint: st.header()/st.subheader() were replaced with styled
+    HTML section-label divs (see styles.py's .pdf-section-label) -- check ordering directly from
+    the markdown stream instead of the now-removed at.header widget list."""
     at = _fresh()
     assert not at.exception
-    # the only st.markdown call before this section is the one-time custom-CSS injection --
-    # filter it out, then "Leagues Covered" must be the first substantive markdown block.
-    substantive = [m.value for m in at.markdown if "stExpander" not in m.value]
-    assert "Leagues Covered" in substantive[0]
-    assert at.header[0].value == "1. Choose an agency"  # search interface still starts right after
+    all_md = [m.value for m in at.markdown]
+    leaguecov_idx = next(i for i, v in enumerate(all_md) if "Leagues Covered" in v)
+    find_players_idx = next(i for i, v in enumerate(all_md) if "Find players" in v)
+    assert leaguecov_idx < find_players_idx  # League Coverage still precedes the search interface
 
 
 @pytest.mark.smoke
@@ -305,4 +307,4 @@ def test_live_app_search_flow_unaffected_by_new_section():
     at.selectbox[0].select(largest_agency).run(timeout=30)
     at.button[0].click().run(timeout=30)
     assert not at.exception
-    assert any("Recommendations for" in s.value for s in at.subheader)
+    assert any("Recommendations for" in m.value for m in at.markdown)

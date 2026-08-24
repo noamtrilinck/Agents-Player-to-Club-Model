@@ -7,16 +7,21 @@ explanation for each match.
 
 ## What it does
 
-- **Choose a population** — a specific agency, or players without an agency.
-- **Filter** — age, position, nationality.
+- **Find players** — by agency (the primary, visually prominent route), by name, or by position/
+  age/nationality/league/club, in any combination; no agency selection is required to search.
 - **Select players** — one, several, or all matching players.
-- **Get recommendations** — an initial Top 3 per player, expandable to Top 6 and Top 9, each
-  showing a Match % and a written explanation of why the club fits.
-- **Additional Match** — a further, clearly-labelled recommendation shown only when a player
+- **Get recommendations** — a compact 3-column grid of ranked club cards per player: an initial
+  Top 3, expandable to Top 6 and Top 9, each showing club, country/league (with flag), and Match %.
+  Click "Why this club?" on any card to reveal the evidence behind it — the specific Player
+  Abilities driving the match, with the actual player-vs-club-profile values, plus any genuine
+  weaker match worth noting.
+- **Additional Match** — a further, visually distinct recommendation shown only when a player
   qualifies for one, in addition to their regular Top 9.
 - Nationality and destination country/league are each shown with a local flag icon; no player
   photos or club badges are used anywhere in the app.
 - A **Leagues Covered** section on the opening screen lists every country/league in scope.
+- Reserve/development/second teams (e.g. a club's own "II"/"B"/Under-23 side) are never
+  recommended as a transfer destination.
 
 ## Run locally
 
@@ -39,7 +44,10 @@ dashboard/                          Streamlit application (entry point: app.py)
   results_view.py                   Recommendation cards, explanations, Additional Match
   nationality_flags.py              Local SVG flag rendering (no external image service)
   league_coverage.py                "Leagues Covered" section
+  styles.py                         Visual design tokens (shared family with the sibling
+                                     National Team Selection app -- same palette/fonts)
   assets/flags/                     Local SVG flag assets
+  assets/fonts/                     Local font files (no external font CDN)
 
 production/recommendation_engine/results/
                                      Precomputed, production data the app reads at runtime

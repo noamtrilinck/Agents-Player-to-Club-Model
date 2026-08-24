@@ -39,4 +39,11 @@ DEBUG_MODE = False
 # only, never written back into player data (players.csv keeps a genuinely missing `agency`).
 UNREPRESENTED_SENTINEL = "__UNREPRESENTED__"
 UNREPRESENTED_LABEL = "Players without an agency"
-AGENCY_PLACEHOLDER = "Select an agency..."
+
+# Post-Deployment Improvement Sprint (Part 2): agency is no longer a precondition for search --
+# this option now means "no agency filter, start from every player" rather than a placeholder that
+# blocks the rest of the screen until replaced. Kept as index=0 (still the default) so a client who
+# only wants to browse by agency sees the exact same first click as before; the exact label changed
+# (a client can now search perfectly well while it's still selected) but its slot in the list did
+# not, so the widget's default/no-op state stays predictable.
+AGENCY_PLACEHOLDER = "All agencies"

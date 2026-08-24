@@ -128,17 +128,20 @@ def test_ao_never_renumbers_regular_ranks(synth_players, synth_recs):
 
 def test_regular_record_shape_has_no_methodology_fields(synth_players, synth_recs):
     """Whatever the internal origin_classification/reliability/tier of a rank actually is, the
-    prepared record must expose only club_name/league/country/match_pct/rank/explanation --
-    nothing else leaks through, regardless of whether the source rank was NORMAL- or
-    EXCEPTION-origin. `explanation` (Sprint 7.4) is client-facing prose, and `country` (Sprint
-    7.9, the destination club's country -- for the recommendation-card flag) is plain presentation
-    data -- neither is a methodology field. No club badge/logo field exists at all (Sprint 7.7 --
-    removed by product decision). See tests/test_explanation_engine.py and
+    prepared record must expose only presentation fields -- nothing methodology-internal leaks
+    through, regardless of whether the source rank was NORMAL- or EXCEPTION-origin. `headline`/
+    `evidence`/`caution`/`supporting` (Post-Deployment Improvement Sprint, Parts 12-18) are all
+    client-facing presentation data derived from the explanation engine's SIGNALS layer, same as
+    the old flat `explanation` string was -- none of them is a methodology field. `country`
+    (Sprint 7.9, the destination club's country -- for the recommendation-card flag) is plain
+    presentation data too. No club badge/logo field exists at all (Sprint 7.7 -- removed by
+    product decision). See tests/test_explanation_engine.py and
     test_dashboard_explanation_integration.py for the checks that explanation content never leaks
     methodology terms."""
     results = rv.prepare_player_results(synth_players, synth_recs, [1])
     for r in results[0]["regular"]:
-        assert set(r.keys()) == {"rank", "club_name", "league", "country", "match_pct", "explanation"}
+        assert set(r.keys()) == {"rank", "club_name", "league", "country", "match_pct",
+                                  "headline", "evidence", "caution", "supporting"}
 
 
 # =============================================================================================

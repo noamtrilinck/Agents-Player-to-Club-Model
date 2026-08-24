@@ -1,11 +1,13 @@
 """
 Stage 7, Sprint 7.2-7.6 -- Streamlit application: Player Destination Finder.
+Post-Deployment Improvement Sprint (2026-08-24): agency is no longer a mandatory first step --
+see selection_logic.py's module docstring for the full revised interaction contract.
 
 Entry point: `streamlit run dashboard/app.py` (run from anywhere -- paths are project-relative).
 
-Flow (locked interaction contract, see selection_logic.py docstring):
-    Agency / unrepresented population -> filters (age, position, nationality) ->
-    player selection (one / multiple / all remaining) -> Find Recommendations ->
+Flow:
+    Discovery (Agency -- prominent, optional -- + Player Name / Position / Age / Nationality /
+    League / Club, all available at once) -> player selection (one / multiple / all remaining) ->
     Top 3 -> progressive Top 6 / Top 9 -> Additional Match where eligible -> explanations.
 
 Does NOT expose any backend methodology field (Tier, Reliability, Normal/Exception, T=1.0,
@@ -33,17 +35,9 @@ from data_loader import (  # noqa: E402
 import selection_logic as sel  # noqa: E402
 import results_view  # noqa: E402
 from league_coverage import prepare_league_coverage_display, render_league_coverage  # noqa: E402
+from styles import build_css  # noqa: E402
 
 st.set_page_config(page_title=APP_TITLE, layout="wide")
-
-# Sprint 7.6 -- the only custom CSS in the app (Part 25): centralized, minimal, documented, and
-# limited to spacing polish that Streamlit's own defaults don't cover. Never targets undocumented
-# Streamlit-generated class names -- only the plain HTML this app emits itself in results_view.py.
-_CUSTOM_CSS = """
-<style>
-div[data-testid="stExpander"] { margin-bottom: 0.5rem; }
-</style>
-"""
 
 
 def _sanitize_multiselect_state(key: str, valid_options: list):
@@ -57,9 +51,10 @@ def _sanitize_multiselect_state(key: str, valid_options: list):
 
 
 def main():
-    st.markdown(_CUSTOM_CSS, unsafe_allow_html=True)
-    st.title(APP_TITLE)
-    st.caption(APP_SUBTITLE)
+    st.markdown(build_css(), unsafe_allow_html=True)
+    st.markdown(f'<div class="pdf-kicker">Player Destination Finder</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="pdf-h1">{APP_TITLE}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="pdf-sub">{APP_SUBTITLE}</div>', unsafe_allow_html=True)
 
     # Sprint 7.10 -- compact, informational "Leagues Covered" section, directly under the title/
     # subtitle and above the search interface (locked hierarchy). Loaded and rendered independently
@@ -81,67 +76,77 @@ def main():
         st.stop()
 
     # -----------------------------------------------------------------------------------------
-    # Step 1 -- Agency / population
+    # Discovery -- Agency (prominent, optional -- Part 2/4) + every other filter, all available
+    # from the start. No st.stop() gate on agency any more: a client can search directly by name,
+    # position, age, nationality, league, or club with no agency chosen at all.
     # -----------------------------------------------------------------------------------------
-    st.header("1. Choose an agency")
-    agencies = sel.list_agencies(players)
-    agency_options = [AGENCY_PLACEHOLDER, UNREPRESENTED_LABEL] + agencies
-    choice = st.selectbox("Agency", agency_options, index=0, label_visibility="collapsed")
+    st.markdown('<div class="pdf-section-label">Find players</div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="pdf-agency-label">Agency</div>', unsafe_allow_html=True)
+    agency_options = [AGENCY_PLACEHOLDER, UNREPRESENTED_LABEL] + sel.list_agencies(players)
+    choice = st.selectbox("Agency", agency_options, index=0, label_visibility="collapsed",
+                           key="agency_widget")
 
     if st.session_state.get("last_agency_choice") != choice:
         st.session_state["resolved_ids"] = None
         st.session_state["last_agency_choice"] = choice
 
-    if choice == AGENCY_PLACEHOLDER:
-        st.info("Select an agency, or **Players without an agency**, to begin.")
-        st.stop()
-
     if choice == UNREPRESENTED_LABEL:
-        pool = sel.filter_by_agency(players, unrepresented=True)
+        base_pool = sel.filter_by_agency(players, unrepresented=True)
+    elif choice != AGENCY_PLACEHOLDER:
+        base_pool = sel.filter_by_agency(players, agency=choice)
     else:
-        pool = sel.filter_by_agency(players, agency=choice)
+        base_pool = players  # "All agencies" -- no agency restriction at all (Part 2)
 
-    st.caption(f"{len(pool)} player{'s' if len(pool) != 1 else ''} in this group.")
-    if pool.empty:
+    if base_pool.empty:
         st.warning("This agency currently has no players available. Please choose a different agency.")
         st.stop()
 
-    # -----------------------------------------------------------------------------------------
-    # Step 2 -- Filters (age, position, nationality) -- AND across categories, OR within one
-    # -----------------------------------------------------------------------------------------
-    st.header("2. Narrow down the players (optional)")
-    lo, hi = sel.age_bounds(pool)
-    col1, col2, col3 = st.columns(3)
+    name_query = st.text_input(
+        "Player name", value="", placeholder="Search by player name (e.g. “Neves”)...",
+        key="name_query_widget",
+    )
 
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
-        if lo < hi:
-            age_range = st.slider("Age", min_value=lo, max_value=hi, value=(lo, hi))
-        else:
-            st.write(f"Age: **{lo}** (only one age present)")
-            age_range = (lo, hi)
-
-    with col2:
-        position_options = sorted(pool["position_display"].dropna().unique().tolist())
+        position_options = sorted(base_pool["position_display"].dropna().unique().tolist())
         _sanitize_multiselect_state("positions_widget", position_options)
         positions = st.multiselect("Position", position_options, key="positions_widget")
-
-    with col3:
-        nationality_options = sorted(pool["nationality_display"].dropna().unique().tolist())
+    with col2:
+        nationality_options = sorted(base_pool["nationality_display"].dropna().unique().tolist())
         _sanitize_multiselect_state("nationalities_widget", nationality_options)
         nationalities = st.multiselect("Nationality", nationality_options, key="nationalities_widget")
+    with col3:
+        league_options = sel.list_leagues(base_pool)
+        _sanitize_multiselect_state("leagues_widget", league_options)
+        leagues = st.multiselect("League", league_options, key="leagues_widget")
+    with col4:
+        # Progressive narrowing (Part 5): Club options are restricted to clubs that play in the
+        # currently-selected League(s) -- one-directional only, see selection_logic.py's docstring.
+        club_options = sel.list_clubs(base_pool, leagues=leagues if leagues else None)
+        _sanitize_multiselect_state("clubs_widget", club_options)
+        clubs = st.multiselect("Club", club_options, key="clubs_widget")
 
-    filtered = sel.apply_filters(pool, min_age=age_range[0], max_age=age_range[1],
-                                  positions=positions, nationalities=nationalities)
+    lo, hi = sel.age_bounds(base_pool)
+    if lo < hi:
+        age_range = st.slider("Age", min_value=lo, max_value=hi, value=(lo, hi))
+    else:
+        st.write(f"Age: **{lo}** (only one age present)")
+        age_range = (lo, hi)
 
-    st.caption(f"{len(filtered)} player{'s' if len(filtered) != 1 else ''} match the current filters.")
+    filtered = sel.apply_filters(base_pool, min_age=age_range[0], max_age=age_range[1],
+                                  positions=positions, nationalities=nationalities,
+                                  leagues=leagues, clubs=clubs, name_query=name_query)
+
+    st.caption(f"{len(filtered)} player{'s' if len(filtered) != 1 else ''} match the current search.")
     if filtered.empty:
-        st.warning("No players match the selected agency and filters. Try adjusting the filters above.")
+        st.warning("No players match the current search. Try adjusting the filters above.")
         st.stop()
 
     # -----------------------------------------------------------------------------------------
-    # Step 3 -- Player selection: one / multiple / all remaining
+    # Player selection: one / multiple / all remaining
     # -----------------------------------------------------------------------------------------
-    st.header("3. Select players")
+    st.markdown('<div class="pdf-section-label">Select players</div>', unsafe_allow_html=True)
     mode_label = st.radio(
         "Player selection",
         ["All matching players", "Select specific players"],
@@ -167,9 +172,8 @@ def main():
             st.caption("Select at least one player above to continue.")
 
     # -----------------------------------------------------------------------------------------
-    # Step 4 -- Search
+    # Search
     # -----------------------------------------------------------------------------------------
-    st.header("4. Find recommendations")
     if st.button("Find Recommendations", type="primary"):
         # A brand new search always starts every resolved player at the default Top 3 with
         # explanations collapsed -- never inherits stale expansion/toggle state from a previous
@@ -183,8 +187,8 @@ def main():
             st.warning("No players are currently selected. Choose at least one player, or use "
                        "'All matching players'.")
         else:
-            st.subheader(f"Recommendations for {len(resolved_ids)} "
-                         f"player{'s' if len(resolved_ids) != 1 else ''}")
+            st.markdown(f'<div class="pdf-section-label">Recommendations for {len(resolved_ids)} '
+                        f'player{"s" if len(resolved_ids) != 1 else ""}</div>', unsafe_allow_html=True)
 
             results = results_view.prepare_player_results(
                 players, recommendations, resolved_ids, max_rank=9,

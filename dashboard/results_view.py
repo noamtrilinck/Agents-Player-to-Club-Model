@@ -1,89 +1,89 @@
 """
 Stage 7, Sprint 7.3-7.9 -- Recommendation results preparation (framework-independent) +
 Streamlit rendering.
+Post-Deployment Improvement Sprint (2026-08-24), Parts 7-18: recommendation cards redesigned into
+a compact 3-column progressive grid, explanations rewritten to lead with real Ability-level
+evidence and quantitative values, click-to-reveal per card (native HTML <details>, not a
+Streamlit widget -- see _card_html()'s docstring for why).
 
-Product decision (Sprint 7.7): club badges/logos, previously added in Sprint 7.6 via the
-SportMonks CDN (`teams.image_path`), were REMOVED in full -- see the Stage 7 documentation for the
-decision and the full visual-assets audit (Wikimedia and TheSportsDB were both investigated as
-replacement sources and found insufficient) that preceded it. Recommendation cards remain
-deliberately image-free of any BADGE/logo: no club crest, placeholder, or fallback glyph. The only
-visual identity element in this app is the country/nationality FLAG (see `nationality_flags.py`),
-which is a different thing -- a small, muted, text-adjacent glyph confirming a country, not a
-club-identifying badge.
+Product decision (Sprint 7.7, unchanged): club badges/logos are never rendered -- no club crest,
+placeholder, or fallback glyph anywhere in this module. The only visual identity element is the
+country/nationality FLAG (see `nationality_flags.py`).
 
-Sprint 7.9: flags appear in TWO places now, both sourced from `nationality_flags.py` with zero
-per-country logic living here: (1) the player header's nationality (unchanged in spirit since
-Sprint 7.7 -- WHO the player is), and (2) each recommendation card's destination country, next to
-the league (new in 7.9 -- WHERE the destination is, since an unfamiliar league name like
-"Ekstraklasa" or "Superliga" does not obviously tell a client which country it's in). Every flag
-renders through the exact same local-SVG mechanism -- there is no Unicode-emoji code path left
-anywhere in this module (Sprint 7.9 retired it in full for one consistent visual system).
-`st.expander`'s label and other plain-text Streamlit contexts cannot render an `<img>` at all, so
-`nationality_with_flag_text()` there is now just the plain name (no flag) -- documented, not a
-gap: see `nationality_flags.py`'s module docstring.
+Flags appear in TWO places (Sprint 7.9, unchanged): (1) the player header's nationality, and
+(2) each recommendation card's destination country, next to the league.
 
 `prepare_player_results()` and its helpers contain no `import streamlit` -- exactly the same
-separation-of-concerns as selection_logic.py, so the shape/content of what gets displayed is
-directly unit-testable without driving the UI. `render_player_results()` is the only
-Streamlit-aware function in this module; it does no filtering, ranking, or explanation generation
-of its own -- everything it renders was already decided by `prepare_player_results()`, which
-itself only ever reads pre-computed production data.
+separation-of-concerns as selection_logic.py. `render_player_results()` and its helpers are the
+only Streamlit-aware code in this module; they do no filtering, ranking, or explanation generation
+of their own -- everything rendered was already decided by `prepare_player_results()` and by the
+build-time explanation engine (production/recommendation_engine/explanation_engine.py).
 
 Locked rule this module must never violate (Sprint 7.1's AO product rule, unchanged here):
     AO is shown as a special, separate recommendation ONLY when `ao_display_eligible` is True in
     the production data -- i.e. only when the AO destination is not already present anywhere in
-    the player's own COMPLETE regular Top 9. Sprint 7.5's progressive disclosure and the Sprint
-    7.6/7.7 visual redesigns have no effect on this whatsoever.
+    the player's own COMPLETE regular Top 9. This sprint's card redesign has no effect on this.
 
-Client-facing AO label: "Additional Match". Explanation headers: "Why it fits" (regular),
-"Why this is an Additional Match" (Additional Match).
+Client-facing AO label: "Additional Match" -- never numbered alongside the regular Top 9, never
+"#10" (Part 9). Explanation headers: "Why this club?" (both regular and Additional Match cards).
 """
 from __future__ import annotations
 
 import html as _html
+import json
 
 import pandas as pd
 
 from nationality_flags import get_flag_html, nationality_with_flag_html, nationality_with_flag_text
 
 AO_CLIENT_LABEL = "Additional Match"
-WHY_IT_FITS_LABEL = "Why it fits"
-WHY_ADDITIONAL_MATCH_LABEL = "Why this is an Additional Match"
 
 DEFAULT_VISIBLE_RANKS = 3
 EXPANSION_STEP = 3
 VISIBLE_COUNT_KEY_PREFIX = "visible_count_"
-EXPLANATION_TOGGLE_KEY_PREFIX = "why_"
-
-ADDITIONAL_MATCH_ACCENT_COLOR = "#4A7DBD"  # calm, neutral blue -- not a warning/alert color (Part 10)
 
 
 # =================================================================================================
 # Pure preparation logic
 # =================================================================================================
 
-def _ao_dict(row: dict, explanation: str | None) -> dict | None:
+def _safe_json(value):
+    """explanations.csv's evidence_json/caution_json/supporting_json columns are empty strings
+    for rows with no evidence of that kind -- which pandas' default CSV read turns into NaN
+    (float), not "". Handles both that and a genuine JSON string; never raises on either."""
+    if value is None or (isinstance(value, float) and pd.isna(value)):
+        return None
+    if isinstance(value, str):
+        if not value.strip():
+            return None
+        return json.loads(value)
+    return None
+
+
+def _ao_dict(row: dict, exp: dict | None) -> dict | None:
     if not bool(row.get("ao_display_eligible", False)):
         return None
-    return {"club_name": row["destination_club_name"], "league": row["destination_league"],
-            "country": row.get("destination_country"), "match_pct": int(row["match_pct"]),
-            "explanation": explanation}
+    return {
+        "club_name": row["destination_club_name"], "league": row["destination_league"],
+        "country": row.get("destination_country"), "match_pct": int(row["match_pct"]),
+        "headline": exp.get("explanation") if exp else None,
+        "evidence": _safe_json(exp.get("evidence_json")) if exp else None,
+        "caution": _safe_json(exp.get("caution_json")) if exp else None,
+        "supporting": _safe_json(exp.get("supporting_json")) if exp else None,
+    }
 
 
 def prepare_player_results(players: pd.DataFrame, recommendations: pd.DataFrame,
                             player_ids: list[int], max_rank: int = 9,
                             explanations: pd.DataFrame | None = None) -> list[dict]:
     """The single source of truth for what the results view shows. Returns one dict per player,
-    in the locked deterministic order (Part 13, Sprint 7.3): alphabetical by player_name, then
-    player_id as a stable tiebreak for the 19 duplicate-name pairs in the population.
+    in the locked deterministic order (Sprint 7.3, Part 13): alphabetical by player_name, then
+    player_id as a stable tiebreak for duplicate-name pairs in the population.
 
     Each dict: player_id, player_name, age, position, nationality, current_club, agency,
-    `regular` (list of up to `max_rank` dicts: rank/club_name/league/country/match_pct/
-    explanation, production order preserved exactly, never re-sorted by Match %), `ao` (dict or
-    None, per the locked display rule above, also carrying `country`/`explanation`). `country` is
-    the destination club's country (Sprint 7.9, for the recommendation-card flag) -- distinct from
-    `nationality`, which is the PLAYER's. No club badge/logo fields (Sprint 7.7 -- removed by
-    product decision).
+    `regular` (list of up to `max_rank` dicts: rank/club_name/league/country/match_pct/headline/
+    evidence/caution/supporting, production order preserved exactly, never re-sorted by Match %),
+    `ao` (dict or None, per the locked display rule above, same evidence shape).
 
     Performance: filters `recommendations`/`explanations` down to what's needed with vectorized
     boolean masks / dict lookups (never a per-player DataFrame operation), converts to plain dicts
@@ -96,15 +96,18 @@ def prepare_player_results(players: pd.DataFrame, recommendations: pd.DataFrame,
     reg = reg.sort_values(["player_id", "rank"])
     ao = sub_recs[sub_recs["rec_type"] == "AO"]
 
-    exp_by_key: dict[tuple, str] = {}
+    exp_by_key: dict[tuple, dict] = {}
     if explanations is not None:
         sub_exp = explanations[explanations["player_id"].isin(player_ids)]
-        for rec in sub_exp[["player_id", "destination_club_id", "rec_type", "explanation"]].to_dict("records"):
-            exp_by_key[(rec["player_id"], rec["destination_club_id"], rec["rec_type"])] = rec["explanation"]
+        # evidence_json/caution_json/supporting_json are new (Post-Deployment Improvement Sprint)
+        # -- optional, same convention as destination_country above, so a caller passing an older-
+        # shaped explanations frame (just player_id/destination_club_id/rec_type/explanation, e.g.
+        # a unit test's synthetic fixture) still works, degrading to headline-only.
+        exp_cols = ["player_id", "destination_club_id", "rec_type", "explanation"]
+        exp_cols += [c for c in ("evidence_json", "caution_json", "supporting_json") if c in sub_exp.columns]
+        for rec in sub_exp[exp_cols].to_dict("records"):
+            exp_by_key[(rec["player_id"], rec["destination_club_id"], rec["rec_type"])] = rec
 
-    # destination_country is a real production column (Sprint 7.9, for the recommendation-card
-    # flag) but is optional here so synthetic/legacy callers without it keep working -- absent
-    # entirely degrades to no country/no flag on the card, never an error.
     has_country_col = "destination_country" in recommendations.columns
     reg_cols = ["player_id", "rank", "destination_club_id", "destination_club_name", "destination_league", "match_pct"]
     ao_cols = ["player_id", "destination_club_id", "destination_club_name", "destination_league", "match_pct", "ao_display_eligible"]
@@ -114,11 +117,15 @@ def prepare_player_results(players: pd.DataFrame, recommendations: pd.DataFrame,
 
     reg_by_player: dict[int, list[dict]] = {}
     for rec in reg[reg_cols].to_dict("records"):
+        exp = exp_by_key.get((rec["player_id"], rec["destination_club_id"], "REGULAR"))
         reg_by_player.setdefault(rec["player_id"], []).append({
             "rank": int(rec["rank"]), "club_name": rec["destination_club_name"],
             "league": rec["destination_league"], "country": rec.get("destination_country"),
             "match_pct": int(rec["match_pct"]),
-            "explanation": exp_by_key.get((rec["player_id"], rec["destination_club_id"], "REGULAR")),
+            "headline": exp.get("explanation") if exp else None,
+            "evidence": _safe_json(exp.get("evidence_json")) if exp else None,
+            "caution": _safe_json(exp.get("caution_json")) if exp else None,
+            "supporting": _safe_json(exp.get("supporting_json")) if exp else None,
         })
 
     ao_by_player: dict[int, dict] = {}
@@ -129,13 +136,13 @@ def prepare_player_results(players: pd.DataFrame, recommendations: pd.DataFrame,
     for row in pool.itertuples(index=False):
         pid = row.player_id
         ao_rec = ao_by_player.get(pid)
-        ao_explanation = exp_by_key.get((pid, ao_rec["destination_club_id"], "AO")) if ao_rec is not None else None
+        ao_exp = exp_by_key.get((pid, ao_rec["destination_club_id"], "AO")) if ao_rec is not None else None
         results.append({
             "player_id": pid, "player_name": row.player_name, "age": row.age,
             "position": row.position_display, "nationality": row.nationality_display,
             "current_club": row.current_club_display, "agency": row.agency,
             "regular": reg_by_player.get(pid, []),
-            "ao": _ao_dict(ao_rec, ao_explanation) if ao_rec is not None else None,
+            "ao": _ao_dict(ao_rec, ao_exp) if ao_rec is not None else None,
         })
     return results
 
@@ -148,12 +155,10 @@ def next_expansion_step(total_available: int, visible: int) -> int:
 
 
 def reset_recommendation_display_state(session_state) -> None:
-    """Clears every per-player expansion-count and explanation-toggle key -- a brand new search
-    always starts every resolved player at the default Top 3 with explanations collapsed, never
-    inheriting stale state from a previous search's player_ids. Call once, right when a NEW
-    search is resolved -- never on every rerun."""
-    stale_keys = [k for k in session_state.keys()
-                  if k.startswith(VISIBLE_COUNT_KEY_PREFIX) or k.startswith(EXPLANATION_TOGGLE_KEY_PREFIX)]
+    """Clears every per-player expansion-count key -- a brand new search always starts every
+    resolved player at the default Top 3, never inheriting stale state from a previous search's
+    player_ids. Call once, right when a NEW search is resolved -- never on every rerun."""
+    stale_keys = [k for k in session_state.keys() if k.startswith(VISIBLE_COUNT_KEY_PREFIX)]
     for k in stale_keys:
         del session_state[k]
 
@@ -174,10 +179,8 @@ def render_player_results(results: list[dict]) -> None:
         # st.expander's label is plain text -- cannot render the flag image inline (see
         # nationality_flags.py) -- so the label text itself is unchanged (same format existing
         # tests parse). The flag is instead rendered in a slim column beside the expander, so it
-        # is actually visible in the default, COLLAPSED multi-player search result row -- not
-        # just after a player is individually expanded. Verified live: previously, for any search
-        # returning more than one player (expanded=False), nothing but plain text was visible
-        # until a row was clicked open.
+        # is actually visible in the default, COLLAPSED multi-player search result row (Part 10:
+        # player-level collapsing preserved for large agency searches).
         nat_text = nationality_with_flag_text(player["nationality"])
         summary = f"{player['player_name']} — {player['age']} | {player['position']} | " \
                    f"{nat_text} | {player['current_club']}"
@@ -189,8 +192,6 @@ def render_player_results(results: list[dict]) -> None:
             expander_ctx = st.expander(summary, expanded=len(results) == 1)
         with expander_ctx:
             st.markdown(f"### {player['player_name']}")
-            # The in-body caption IS HTML-capable, so it shows the real flag for all 150 known
-            # nationality values (144 Unicode + 6 local SVG), not just the plain-text-safe subset.
             nat_html = nationality_with_flag_html(player["nationality"])
             st.markdown(
                 f'<div style="font-size:0.875rem;color:#888;">{player["age"]} years old · '
@@ -205,11 +206,11 @@ def render_player_results(results: list[dict]) -> None:
             visible_key = f"{VISIBLE_COUNT_KEY_PREFIX}{pid}"
             visible = min(st.session_state.get(visible_key, DEFAULT_VISIBLE_RANKS), total)
 
-            for rec in player["regular"][:visible]:
-                _render_recommendation_card(
-                    rec["club_name"], rec["league"], rec["match_pct"], rec.get("explanation"),
-                    WHY_IT_FITS_LABEL, key=f"{EXPLANATION_TOGGLE_KEY_PREFIX}{pid}_reg_{rec['rank']}",
-                    rank=rec["rank"], country=rec.get("country"))
+            # Part 7 -- compact 3-column progressive grid (Top 3 -> 6 -> 9), one HTML block per
+            # player so the browser lays out the whole grid at once (CSS grid auto-wraps every 3
+            # cards into a new row -- no separate markup needed per row of 3).
+            cards_html = "".join(_card_html(rec, ao=False) for rec in player["regular"][:visible])
+            st.markdown(f'<div class="pdf-card-grid">{cards_html}</div>', unsafe_allow_html=True)
 
             step = next_expansion_step(total, visible)
             if step > 0:
@@ -218,66 +219,80 @@ def render_player_results(results: list[dict]) -> None:
                     st.rerun()
 
             if player["ao"] is not None:
-                st.markdown(
-                    f'<div style="border-left:3px solid {ADDITIONAL_MATCH_ACCENT_COLOR};'
-                    f'padding-left:0.75rem;margin-top:0.75rem;">'
-                    f'<span style="color:{ADDITIONAL_MATCH_ACCENT_COLOR};font-weight:600;'
-                    f'font-size:0.85rem;">✦ {AO_CLIENT_LABEL}</span></div>',
-                    unsafe_allow_html=True)
-                with st.container():
-                    _render_recommendation_card(
-                        player["ao"]["club_name"], player["ao"]["league"], player["ao"]["match_pct"],
-                        player["ao"].get("explanation"), WHY_ADDITIONAL_MATCH_LABEL,
-                        key=f"{EXPLANATION_TOGGLE_KEY_PREFIX}{pid}_ao", country=player["ao"].get("country"))
+                # Part 9 -- visually distinct, never numbered as part of the Top 9 grid.
+                st.markdown(f'<div class="pdf-ao-label">✦ {AO_CLIENT_LABEL}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="pdf-card-grid">{_card_html(player["ao"], ao=True)}</div>',
+                            unsafe_allow_html=True)
 
 
-def _render_recommendation_card(club_name: str, league: str, match_pct: int,
-                                 explanation: str | None = None, why_label: str = WHY_IT_FITS_LABEL,
-                                 key: str | None = None, rank: int | None = None,
-                                 country: str | None = None) -> None:
-    """One recommendation entry -- rank, club, country flag + league, Match %, plus an optional
-    explanation revealed by a lightweight toggle. Reused, unmodified, for ranks #1-#9 and for the
-    Additional Match card -- no rank-specific or Exception/Normal-specific logic lives here, by
-    design: an Exception-origin recommendation at #3, #6, or #9 renders through this exact same
-    function, indistinguishably from any other rank.
+def _evidence_rows_html(evidence: list[dict] | None) -> str:
+    if not evidence:
+        return ""
+    rows = "".join(
+        f'<div class="evrow"><span class="lab">{_html.escape(e["label"])}</span>'
+        f'<span class="val">Player {e["player_value"]:.0f} · Club {e["club_value"]:.0f}</span></div>'
+        for e in evidence
+    )
+    return rows
 
-    Sprint 7.7 -- deliberately BADGE-free (club logos removed by product decision): no crest
-    column, no placeholder, no fallback glyph. The layout is built around club name / league /
-    Match % from the start, not badge-minus-badge.
 
-    Sprint 7.9 -- the destination's country FLAG (a small, muted, text-adjacent glyph, not a club
-    badge) is shown immediately before the league, one line, e.g. "🇩🇰 Denmark · Superliga" --
-    chosen over a separate country line specifically to avoid overcrowding the card (Part 8): the
-    card stays exactly two content lines (name+rank / country+league) same as before this sprint,
-    the flag never becomes visually dominant (same 0.875rem muted styling as the text beside it).
-    `country` is optional (absent for any caller that doesn't supply it) -- degrades to just the
-    league with no flag, never an error or a broken image.
+def _caution_html(caution: dict | None) -> str:
+    if not caution:
+        return ""
+    if caution.get("player_value") is not None and caution.get("club_value") is not None:
+        return (f'<div class="caution">Weaker match: {_html.escape(caution["label"])} '
+                f'(Player {caution["player_value"]:.0f} · Club {caution["club_value"]:.0f})</div>')
+    return f'<div class="caution">Weaker match: {_html.escape(caution["label"])}</div>'
 
-    Match % is the visually dominant element (Part 8) -- large, bold, right-aligned, no color
-    thresholds (a 40% and a 99% render with identical styling, only the number differs). Rank is
-    a small muted prefix (Part 9) -- present, legible, never competing with club name or Match %.
 
-    A toggle (not a nested st.expander -- Streamlit does not support nesting expanders inside the
-    player-level expander this already renders within) keeps the default view terse; the
-    explanation is only rendered into view on demand, never generated on demand."""
-    import streamlit as st
+def _supporting_html(supporting: list[str] | None) -> str:
+    if not supporting:
+        return ""
+    return "".join(f'<div class="supporting">{_html.escape(s)}</div>' for s in supporting)
 
-    info_col, match_col = st.columns([7, 2])
-    with info_col:
-        rank_prefix = f'<span style="color:#888;font-weight:600;font-size:0.85rem;">#{rank}</span> ' \
-            if rank is not None else ""
-        st.markdown(f'{rank_prefix}<span style="font-weight:600;font-size:1.05rem;">'
-                     f'{_html.escape(club_name)}</span>', unsafe_allow_html=True)
-        country_html = nationality_with_flag_html(country) if country else ""
-        league_line = f"{country_html} · {_html.escape(league)}" if country_html else _html.escape(league)
-        st.markdown(f'<div style="font-size:0.875rem;color:#888;">{league_line}</div>',
-                     unsafe_allow_html=True)
-    with match_col:
-        st.markdown(
-            f'<div style="text-align:right;font-size:1.5rem;font-weight:700;line-height:1.1;">'
-            f'{match_pct}%</div><div style="text-align:right;font-size:0.7rem;color:#888;">Match</div>',
-            unsafe_allow_html=True)
 
-    if explanation:
-        if st.toggle(why_label, key=key, value=False):
-            st.caption(explanation)
+def _card_html(rec: dict, ao: bool) -> str:
+    """One compact recommendation card -- rank (regular only, Part 9: AO is never numbered),
+    club, country flag + league, Match %, and a native HTML <details>/<summary> disclosure for
+    "Why this club?" (Part 11).
+
+    Deliberately native HTML disclosure, not a Streamlit `st.toggle`/`st.expander`: this card sits
+    inside a 3-column CSS grid built as ONE markdown block per player (see render_player_results)
+    -- Streamlit has no supported way to place an individual interactive widget inside one cell of
+    hand-built HTML grid markup, and nesting an st.expander inside the player's own st.expander is
+    not supported at all. A native <details> element needs no server round-trip to open/close (no
+    st.rerun, no session_state key per card), which is also simply a better interaction for a
+    grid of up to 9 cards at once.
+
+    Sprint 7.7 -- deliberately BADGE-free (club logos removed by product decision): no crest, no
+    placeholder, no fallback glyph.
+    """
+    club_name = _html.escape(str(rec["club_name"]))
+    country_html = nationality_with_flag_html(rec.get("country")) if rec.get("country") else ""
+    league_html = f'{country_html} {_html.escape(str(rec["league"]))}' if country_html else _html.escape(str(rec["league"]))
+    rank_html = f'<div class="rank">#{rec["rank"]}</div>' if not ao and rec.get("rank") is not None else ""
+
+    headline = rec.get("headline") or ""
+    body = ""
+    if headline or rec.get("evidence") or rec.get("caution") or rec.get("supporting"):
+        body = (
+            f'<div class="pdf-explain{" ao" if ao else ""}">'
+            f'<div class="headline">{_html.escape(headline)}</div>'
+            f'{_evidence_rows_html(rec.get("evidence"))}'
+            f'{_caution_html(rec.get("caution"))}'
+            f'{_supporting_html(rec.get("supporting"))}'
+            f'</div>'
+        )
+    why_block = f'<details class="pdf-why"><summary>Why this club?</summary>{body}</details>' if body else ""
+
+    return (
+        f'<div class="pdf-card{" ao" if ao else ""}">'
+        f'{rank_html}'
+        f'<div class="club">{club_name}</div>'
+        f'<div class="league">{league_html}</div>'
+        f'<div class="match-row"><div style="text-align:right;">'
+        f'<div class="match-num">{rec["match_pct"]}%</div><div class="match-lab">Match</div>'
+        f'</div></div>'
+        f'{why_block}'
+        f'</div>'
+    )

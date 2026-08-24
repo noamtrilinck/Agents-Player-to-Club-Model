@@ -46,7 +46,7 @@ def test_single_player_result_shows_expander_with_recommendations():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
     at.radio[0].set_value("Select specific players").run(timeout=30)
-    player_ms = at.multiselect[2]
+    player_ms = at.multiselect[4]
     player_ms.select(player_ms.options[0]).run(timeout=30)
     at.button[0].click().run(timeout=30)
     assert not at.exception
@@ -59,7 +59,7 @@ def test_ao_display_eligible_player_shows_additional_match_label():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
     at.radio[0].set_value("Select specific players").run(timeout=30)
-    player_ms = at.multiselect[2]
+    player_ms = at.multiselect[4]
     player_ms.select(name).run(timeout=30)
     at.button[0].click().run(timeout=30)
     assert not at.exception
@@ -139,7 +139,7 @@ def test_debug_table_hidden_from_normal_client_facing_session():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
     at.radio[0].set_value("Select specific players").run(timeout=30)
-    player_ms = at.multiselect[2]
+    player_ms = at.multiselect[4]
     player_ms.select(player_ms.options[0]).run(timeout=30)
     at.button[0].click().run(timeout=30)
     assert not at.exception

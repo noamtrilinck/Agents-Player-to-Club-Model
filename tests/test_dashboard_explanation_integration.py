@@ -50,22 +50,24 @@ def synth_explanations():
 
 
 def test_explanation_attached_to_correct_regular_rank(synth_players, synth_recs, synth_explanations):
+    """Post-Deployment Improvement Sprint: the flat `explanation` string became the `headline`
+    field of a richer dict (headline/evidence/caution/supporting) -- see results_view.py."""
     results = rv.prepare_player_results(synth_players, synth_recs, [1], explanations=synth_explanations)
     regular = results[0]["regular"]
-    assert regular[0]["explanation"] == "Explanation for rank 1."
-    assert regular[1]["explanation"] == "Explanation for rank 2."
-    assert regular[2]["explanation"] == "Explanation for rank 3."
+    assert regular[0]["headline"] == "Explanation for rank 1."
+    assert regular[1]["headline"] == "Explanation for rank 2."
+    assert regular[2]["headline"] == "Explanation for rank 3."
 
 
 def test_explanation_attached_to_ao(synth_players, synth_recs, synth_explanations):
     results = rv.prepare_player_results(synth_players, synth_recs, [1], explanations=synth_explanations)
-    assert results[0]["ao"]["explanation"] == "Explanation for the Additional Match."
+    assert results[0]["ao"]["headline"] == "Explanation for the Additional Match."
 
 
 def test_missing_explanations_param_defaults_to_none_no_crash(synth_players, synth_recs):
     results = rv.prepare_player_results(synth_players, synth_recs, [1])  # no explanations= arg
-    assert results[0]["regular"][0]["explanation"] is None
-    assert results[0]["ao"]["explanation"] is None
+    assert results[0]["regular"][0]["headline"] is None
+    assert results[0]["ao"]["headline"] is None
 
 
 def test_explanation_missing_for_specific_row_is_none_not_crash(synth_players, synth_recs):
@@ -74,9 +76,9 @@ def test_explanation_missing_for_specific_row_is_none_not_crash(synth_players, s
     ], columns=["player_id", "destination_club_id", "rec_type", "explanation"])
     results = rv.prepare_player_results(synth_players, synth_recs, [1], explanations=partial)
     regular = results[0]["regular"]
-    assert regular[0]["explanation"] == "Only rank 1 has an explanation."
-    assert regular[1]["explanation"] is None
-    assert regular[2]["explanation"] is None
+    assert regular[0]["headline"] == "Only rank 1 has an explanation."
+    assert regular[1]["headline"] is None
+    assert regular[2]["headline"] is None
 
 
 # =============================================================================================
@@ -118,9 +120,15 @@ def test_real_data_exception_origin_recommendations_treated_identically(real_rec
 def test_real_data_no_methodology_leakage(real_explanations):
     forbidden = ["Reliability", "Tier", "PoolAdj", "System Fit", "Observed Fit", "z-score",
                  "ao_z", "MAD", "T=1.0", "Combined Style Fit"]
-    blob = real_explanations["explanation"].fillna("")
-    for term in forbidden:
-        assert not blob.str.contains(term, regex=False).any(), f"'{term}' leaked into explanations.csv"
+    # Post-Deployment Improvement Sprint: client-facing text now also lives in evidence_json/
+    # caution_json/supporting_json (ability labels + numbers), not only the `explanation` headline
+    # -- check every text-bearing column, not just the original one.
+    text_cols = [c for c in ("explanation", "evidence_json", "caution_json", "supporting_json")
+                 if c in real_explanations.columns]
+    for col in text_cols:
+        blob = real_explanations[col].fillna("")
+        for term in forbidden:
+            assert not blob.str.contains(term, regex=False).any(), f"'{term}' leaked into explanations.csv[{col}]"
 
 
 def test_real_data_prepare_results_includes_explanations_for_sample_player(real_recs, real_explanations):
@@ -128,4 +136,4 @@ def test_real_data_prepare_results_includes_explanations_for_sample_player(real_
     sample_pid = real_recs["player_id"].iloc[0]
     results = rv.prepare_player_results(players, real_recs, [sample_pid], explanations=real_explanations)
     assert len(results) == 1
-    assert all(r["explanation"] for r in results[0]["regular"])
+    assert all(r["headline"] for r in results[0]["regular"])

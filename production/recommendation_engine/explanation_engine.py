@@ -211,6 +211,22 @@ def render_regular_explanation(signals: dict) -> str:
     return " ".join(lines)
 
 
+def _observed_similarity_drivers(obs_gap_z: dict[str, float] | None, max_n: int = 2) -> list[str]:
+    """Post-Deployment Improvement Sprint (Part 17): which Abilities actually drive an already-
+    gated observed-similarity claim, using the SAME obs_gap_z the build script already computes
+    for AO divergence -- no new statistic invented. Only abilities at/above BROAD_ALIGNMENT_MIN_Z
+    (i.e. not themselves a below-target gap) are eligible, so a "confident similarity" claim is
+    never illustrated by the one Ability that's actually furthest from what the club has used.
+    Purely descriptive (which of the already-true signal's dimensions to name) -- does not change
+    whether observed_similarity fires at all; that gate (compute_signals -> _observed_similarity)
+    is untouched."""
+    if not obs_gap_z:
+        return []
+    ranked = sorted(((z, dim) for dim, z in obs_gap_z.items() if z is not None and z >= BROAD_ALIGNMENT_MIN_Z),
+                     key=lambda t: -t[0])
+    return [dim for _, dim in ranked[:max_n]]
+
+
 def render_ao_explanation(signals: dict) -> str:
     """'Why this is an Additional Match' -- always states the model-vs-observed disagreement
     concept (Part 13/15), in conservative, non-committal language ("appears", "suggests",
@@ -231,3 +247,127 @@ def render_ao_explanation(signals: dict) -> str:
 
     lines.append("This makes it a less conventional but potentially interesting destination to explore.")
     return " ".join(lines)
+
+
+# =================================================================================================
+# Layer 2b -- structured, ability-grounded, quantitative presentation (Post-Deployment Improvement
+# Sprint, Parts 12-18). Consumes the EXACT SAME signals dict as render_regular_explanation() --
+# the SIGNALS layer above (thresholds, gates, which Ability counts as a match/mismatch) is
+# completely untouched. This is the "better explanation-generation/presentation layer" the sprint
+# asked for, not a methodology change: it surfaces the real per-Ability player-vs-club-target
+# values that were already being computed (and discarded) by build_explanations.py, and restructures
+# the prose so the strongest Ability evidence leads, broad-alignment/observed-similarity become
+# supporting evidence rather than the whole explanation, and a genuine mismatch is stated with its
+# own numbers -- never invented, never forced when the signal is absent.
+#
+# Values shown are the two ability_evaluation_features "_final" / club-profile "predicted_"
+# columns verbatim (same T-score-like 0-100 scale used throughout Stage 3/4/5, mean ~50, sd ~8-10
+# for players) -- NOT a new percentage/formula. See build_explanations.py for where these are
+# looked up and rounded before being passed in here as `detail`.
+# =================================================================================================
+
+def _ability_value_pair(detail: dict, dim: str) -> dict | None:
+    """detail: {ability: (player_value, club_target_value)}, already rounded to 1 decimal by the
+    caller. Returns None (never a fabricated 0/blank) if this particular ability's raw values
+    weren't available for this pair -- degrades to a label-only mention, never a fake number."""
+    pair = detail.get(dim) if detail else None
+    if pair is None or pair[0] is None or pair[1] is None:
+        return None
+    player_value, club_value = pair
+    return {"ability": dim, "label": ABILITY_LABELS[dim], "player_value": player_value, "club_value": club_value}
+
+
+def build_regular_explanation_payload(signals: dict, detail: dict | None = None,
+                                       obs_gap_z: dict[str, float] | None = None) -> dict:
+    """Structured 'Why it fits' payload for the compact-card UI (Part 11/13/14/15/16):
+      headline            -- str, leads with the strongest Ability evidence (Part 13), or the old
+                              generic sentence ONLY when no Ability clears the strong-match bar
+                              (never a manufactured standout -- same rule _strongest_matches uses).
+      evidence             -- list of up to 3 {ability, label, player_value, club_value} dicts, the
+                              real values behind `headline` (Part 14) -- empty list, never fabricated,
+                              when `detail` lacks a value for a picked ability.
+      caution               -- {ability, label, player_value, club_value} dict or None (Part 15) --
+                              only ever set when signals['meaningful_mismatch'] is set.
+      supporting            -- list of 0-2 short sentences: broad/concentrated alignment and
+                              observed-similarity, DEMOTED to supporting evidence rather than the
+                              main content (Part 16), observed-similarity now naming its driving
+                              Ability/Abilities when available (Part 17).
+      legacy_explanation    -- the original flat prose string (render_regular_explanation output),
+                              kept for any caller that still wants a single string.
+    """
+    detail = detail or {}
+    matches = signals["strongest_matches"]
+
+    evidence = [e for e in (_ability_value_pair(detail, d) for d in matches) if e is not None]
+    if matches:
+        headline = f"His {_join_labels(matches)} profile aligns particularly well with what this club typically values in this position."
+    else:
+        headline = "His overall profile is a reasonable fit for what the club typically values in this position."
+
+    caution = None
+    if signals["meaningful_mismatch"]:
+        dim = signals["meaningful_mismatch"]
+        caution = _ability_value_pair(detail, dim) or {"ability": dim, "label": ABILITY_LABELS[dim],
+                                                          "player_value": None, "club_value": None}
+
+    supporting = []
+    if signals["broad_alignment"] == "broad":
+        supporting.append("The fit is broad across his overall profile rather than being driven by one standout area.")
+    elif signals["broad_alignment"] == "concentrated":
+        supporting.append("The match is strongest in a smaller group of key areas rather than across the full profile.")
+
+    if signals["observed_similarity"] in ("confident", "conservative"):
+        drivers = _observed_similarity_drivers(obs_gap_z)
+        driver_labels = [ABILITY_LABELS[d] for d in drivers if d not in matches]  # don't repeat the headline's own abilities
+        if signals["observed_similarity"] == "confident":
+            if driver_labels:
+                supporting.append(f"He also shows strong similarity to players the club has used in this "
+                                   f"position, particularly in {_join_labels([d for d in drivers if d not in matches])}.")
+            else:
+                supporting.append("He also shows strong similarity to players the club has used in this position.")
+        else:
+            supporting.append("His profile also shows some similarity to players the club has used in this position.")
+
+    return {
+        "headline": headline,
+        "evidence": evidence,
+        "caution": caution,
+        "supporting": supporting,
+        "legacy_explanation": render_regular_explanation(signals),
+    }
+
+
+def build_ao_explanation_payload(signals: dict, detail: dict | None = None) -> dict:
+    """Structured 'Why this is an Additional Match' payload -- same shape convention as
+    build_regular_explanation_payload() (headline/evidence/caution/supporting/legacy_explanation),
+    reusing the exact same AO signals (strongest_matches, divergence_ability) computed by
+    compute_ao_signals(), untouched. `caution` here is repurposed for the divergence Ability
+    (Part 16/17's "differs most from...") since AO's whole premise is a system/observed
+    disagreement -- not a meaningful_mismatch in the regular sense."""
+    detail = detail or {}
+    matches = signals["strongest_matches"]
+    evidence = [e for e in (_ability_value_pair(detail, d) for d in matches) if e is not None]
+
+    if matches:
+        headline = (f"His {_join_labels(matches)} profile is an unusually strong match for what the "
+                     f"model expects this club to value in this position.")
+    else:
+        headline = ("This destination is highlighted separately because his profile appears to be an "
+                     "unusually strong match for what the model expects the club to value in this position.")
+
+    caution = None
+    if signals["divergence_ability"]:
+        dim = signals["divergence_ability"]
+        caution = _ability_value_pair(detail, dim) or {"ability": dim, "label": ABILITY_LABELS[dim],
+                                                          "player_value": None, "club_value": None}
+
+    supporting = ["This differs from the profile of players the club has recently used in this role, "
+                  "making it a less conventional but potentially interesting destination to explore."]
+
+    return {
+        "headline": headline,
+        "evidence": evidence,
+        "caution": caution,
+        "supporting": supporting,
+        "legacy_explanation": render_ao_explanation(signals),
+    }

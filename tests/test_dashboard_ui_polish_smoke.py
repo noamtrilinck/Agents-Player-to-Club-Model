@@ -50,10 +50,16 @@ def _all_visible_text(at):
 
 
 def test_client_facing_title_and_subtitle():
+    """Post-Deployment Improvement Sprint: the hero title/subtitle moved from st.title()/
+    st.caption() to styled HTML divs (styles.py's .pdf-h1/.pdf-sub, matching NTS's own hero
+    treatment) -- check the rendered markdown directly instead of the now-empty at.title list."""
     at = _fresh()
     assert not at.exception
-    assert at.title[0].value == "Player Destination Finder"
-    assert "compatibility" in at.caption[0].value.lower()
+    assert len(at.title) == 0  # no native st.title() call any more
+    h1_blocks = [m.value for m in at.markdown if 'class="pdf-h1"' in m.value]
+    assert h1_blocks and "Player Destination Finder" in h1_blocks[0]
+    sub_blocks = [m.value for m in at.markdown if 'class="pdf-sub"' in m.value]
+    assert sub_blocks and "compatibility" in sub_blocks[0].lower()
 
 
 def test_no_dev_terminology_on_initial_screen():

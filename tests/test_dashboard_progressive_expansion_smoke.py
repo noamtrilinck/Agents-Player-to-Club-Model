@@ -1,6 +1,12 @@
 """
 Stage 7, Sprint 7.5 -- Streamlit progressive-expansion smoke tests (real app, via AppTest).
+Post-Deployment Improvement Sprint: recommendation cards now render as one HTML block per grid
+(3-column compact cards, see results_view.py) rather than one markdown call per card -- card
+counting below matches on a per-card CSS marker WITHIN the grid's HTML text, not on the number of
+separate markdown elements. Widget order also shifted (multiselect[4] is now the specific-players
+picker -- see test_dashboard_app_smoke.py's module docstring for the full new index map).
 """
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -35,7 +41,7 @@ def _player_expander(at, name_prefix):
 def _select_and_search(at, agency, name_substring):
     at.selectbox[0].select(agency).run(timeout=30)
     at.radio[0].set_value("Select specific players").run(timeout=30)
-    ms = at.multiselect[2]
+    ms = at.multiselect[4]
     label = [o for o in ms.options if name_substring in o][0]
     ms.select(label).run(timeout=30)
     at.button[0].click().run(timeout=30)
@@ -43,11 +49,20 @@ def _select_and_search(at, agency, name_substring):
 
 
 def _n_cards(expander):
-    """Each recommendation card emits exactly one markdown block ending in the 'Match' sub-label
-    (name/rank + Match % are separate markdown calls, but only the Match %-value block is
-    unique-per-card) -- counting that substring is robust to the exact number of markdown elements
-    a card happens to emit, unlike a raw len(markdown)//N division would be."""
-    return sum(1 for m in expander.markdown if ">Match</div>" in m.value)
+    """Every card (regular or AO) carries exactly one match-num marker -- count occurrences of
+    that CSS class WITHIN the concatenated HTML of every markdown block in this expander (the
+    whole regular grid, and the AO grid if present, are each ONE markdown call, not one per card)."""
+    return sum(m.value.count('class="match-num"') for m in expander.markdown)
+
+
+_RANK_RE = re.compile(r'class="rank">#(\d+)</div>')
+
+
+def _ranks_shown(expander):
+    ranks = []
+    for m in expander.markdown:
+        ranks.extend(int(x) for x in _RANK_RE.findall(m.value))
+    return ranks
 
 
 # =============================================================================================
@@ -68,10 +83,7 @@ def test_case_a_standard_player_progression_3_6_9():
     exp3 = _player_expander(at, name)
     assert _n_cards(exp3) == 9 + 1
     assert len(exp3.button) == 0  # no further expansion control
-    import re
-    rank_pattern = re.compile(r">#(\d+)</span>")
-    ranks_shown = [int(m.group(1)) for md in exp3.markdown for m in [rank_pattern.search(md.value)] if m]
-    assert ranks_shown == list(range(1, 10))
+    assert _ranks_shown(exp3) == list(range(1, 10))
 
 
 # =============================================================================================
@@ -82,7 +94,7 @@ def test_case_g_two_players_independent_expansion_depths():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
     at.radio[0].set_value("Select specific players").run(timeout=30)
-    ms = at.multiselect[2]
+    ms = at.multiselect[4]
     labels = [o for o in ms.options if "Crooks" in o or "McKenna" in o]
     ms.set_value(labels).run(timeout=30)
     at.button[0].click().run(timeout=30)
@@ -102,21 +114,24 @@ def test_case_g_two_players_independent_expansion_depths():
 
 
 # =============================================================================================
-# State persistence (Part 13): explanation toggle does not reset visible count
+# Explanation reveal never triggers a rerun (Part 11/13): native HTML <details>, not an
+# st.toggle -- opening an explanation is structurally incapable of resetting expansion state,
+# because it never round-trips to the server at all.
 # =============================================================================================
 
-def test_explanation_toggle_does_not_reset_expansion():
+def test_explanation_reveal_is_never_a_streamlit_widget():
     at = _fresh()
     name = _select_and_search(at, LARGEST_AGENCY, "Crooks")
     exp = _player_expander(at, name)
     exp.button[0].click().run(timeout=30)  # -> 6
     exp2 = _player_expander(at, name)
     assert not at.exception
-
-    exp2.toggle[0].set_value(True).run(timeout=30)  # toggle rank 1's explanation
-    exp3 = _player_expander(at, name)
-    assert not at.exception
-    assert _n_cards(exp3) == 6 + 1  # still expanded to 6, toggle didn't reset it
+    # no toggle/checkbox widget anywhere for "Why this club?" -- it's a native <details> element
+    assert len(exp2.toggle) == 0
+    assert len(exp2.checkbox) == 0
+    grid_html = "".join(m.value for m in exp2.markdown)
+    assert '<details class="pdf-why">' in grid_html
+    assert _n_cards(exp2) == 6 + 1  # still expanded to 6
 
 
 # =============================================================================================

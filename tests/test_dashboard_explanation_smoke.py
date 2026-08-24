@@ -1,5 +1,8 @@
 """
 Stage 7, Sprint 7.4 -- Streamlit explanation-layer smoke tests (real app, via AppTest).
+Post-Deployment Improvement Sprint: explanations are revealed by a native HTML <details>/<summary>
+element per card now (see results_view.py's _card_html() docstring for why), not an st.toggle --
+these tests check the rendered HTML directly instead of driving a toggle widget.
 """
 from pathlib import Path
 
@@ -32,33 +35,39 @@ def _fresh():
 def _select_one_player(at, agency=LARGEST_AGENCY):
     at.selectbox[0].select(agency).run(timeout=30)
     at.radio[0].set_value("Select specific players").run(timeout=30)
-    ms = at.multiselect[2]
+    ms = at.multiselect[4]
     ms.select(ms.options[0]).run(timeout=30)
     at.button[0].click().run(timeout=30)
     return at
 
 
+def _card_grid_html(at):
+    return "".join(m.value for m in at.markdown if '<div class="pdf-card-grid">' in m.value)
+
+
 def test_explanation_hidden_by_default():
+    """A native <details> element with no `open` attribute starts collapsed -- the explanation
+    text is present in the DOM (browsers need it there to reveal on click) but not shown until
+    the client clicks "Why this club?" (Part 11)."""
     at = _select_one_player(_fresh())
     assert not at.exception
-    exp = at.expander[0]
-    assert all(not t.value for t in exp.toggle)  # every toggle starts off
+    grid = _card_grid_html(at)
+    assert '<details class="pdf-why">' in grid
+    assert "<details open" not in grid  # never pre-expanded
 
 
-def test_explanation_appears_after_toggle():
+def test_explanation_present_for_every_card_with_evidence():
     at = _select_one_player(_fresh())
-    exp = at.expander[0]
-    exp.toggle[0].set_value(True).run(timeout=30)
     assert not at.exception
-    exp2 = at.expander[0]
-    captions = [c.value for c in exp2.caption]
-    # the toggled-on explanation must now be present as a caption
-    assert any(len(c) > 40 for c in captions)  # explanations are multi-sentence, clearly longer than "League · NN% Match"
+    grid = _card_grid_html(at)
+    assert grid.count('class="pdf-card"') >= 1
+    assert 'Why this club?' in grid
+    assert 'class="headline"' in grid
 
 
 def test_explanation_matches_correct_recommendation():
-    """Toggling rank 1's explanation must not leak rank 2/3's text, and vice versa -- each
-    recommendation's explanation stays bound to its own toggle."""
+    """Rank 1's headline in the rendered grid must match rank 1's real explanations.csv row --
+    not leaked/duplicated from a different rank."""
     players = pd.read_csv(PLAYERS_CSV, low_memory=False)
     recs = pd.read_csv(RECS_CSV, low_memory=False)
     explanations = pd.read_csv(EXP_CSV, low_memory=False)
@@ -69,23 +78,22 @@ def test_explanation_matches_correct_recommendation():
     reg = recs[(recs.player_id == pid) & (recs.rec_type == "REGULAR") & (recs["rank"] <= 3)]
     reg = reg.merge(explanations[["player_id", "destination_club_id", "rec_type", "explanation"]],
                      on=["player_id", "destination_club_id", "rec_type"])
-    expected_rank1_text = reg[reg["rank"] == 1]["explanation"].iloc[0]
+    expected_rank1_headline = reg[reg["rank"] == 1]["explanation"].iloc[0]
 
     at = _fresh()
     at.selectbox[0].select(represented[represented.player_id == pid]["agency"].iloc[0]).run(timeout=30)
     at.radio[0].set_value("Select specific players").run(timeout=30)
-    ms = at.multiselect[2]
+    ms = at.multiselect[4]
     label = [o for o in ms.options if o == name or o.startswith(name + " —")][0]
     ms.select(label).run(timeout=30)
     at.button[0].click().run(timeout=30)
-    exp = [e for e in at.expander if e.label.startswith(name)][0]
-    exp.toggle[0].set_value(True).run(timeout=30)
-    exp2 = [e for e in at.expander if e.label.startswith(name)][0]
-    captions = [c.value for c in exp2.caption]
-    assert expected_rank1_text in captions
+    assert not at.exception
+    grid = _card_grid_html(at)
+    import html as _html
+    assert _html.escape(expected_rank1_headline) in grid
 
 
-def test_ao_toggle_shows_additional_match_explanation():
+def test_ao_card_shows_additional_match_explanation():
     ao_elig = pd.read_csv(RECS_CSV, low_memory=False)
     ao_elig = ao_elig[(ao_elig.rec_type == "AO") & (ao_elig.ao_display_eligible == True)]  # noqa: E712
     players = pd.read_csv(PLAYERS_CSV, low_memory=False)
@@ -95,14 +103,13 @@ def test_ao_toggle_shows_additional_match_explanation():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
     at.radio[0].set_value("Select specific players").run(timeout=30)
-    ms = at.multiselect[2]
+    ms = at.multiselect[4]
     label = [o for o in ms.options if o.startswith(row["player_name"])][0]
     ms.select(label).run(timeout=30)
     at.button[0].click().run(timeout=30)
-    exp = [e for e in at.expander if e.label.startswith(row["player_name"])][0]
-    ao_toggle = exp.toggle[-1]
-    assert ao_toggle.label == "Why this is an Additional Match"
-    ao_toggle.set_value(True).run(timeout=30)
-    exp2 = [e for e in at.expander if e.label.startswith(row["player_name"])][0]
-    captions = [c.value for c in exp2.caption]
-    assert any("highlighted separately" in c for c in captions)
+    assert not at.exception
+    ao_grid = "".join(m.value for m in at.markdown if 'pdf-card ao' in m.value)
+    assert ao_grid, "no Additional Match card rendered"
+    assert "Why this club?" in ao_grid
+    # never numbered like a regular rank
+    assert '<div class="rank">' not in ao_grid
