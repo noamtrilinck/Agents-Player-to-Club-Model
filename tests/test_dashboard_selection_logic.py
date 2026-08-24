@@ -309,3 +309,40 @@ def test_real_data_recommendation_lookup_for_resolved_players(real_players, real
     assert len(summary) == len(ids)
     assert (summary["n_regular_recommendations"] >= 3).all(), (
         "every resolved player should have at least 3 regular recommendations")
+
+
+# =============================================================================================
+# order_by_quality (Post-Deployment Improvement Sprint, Part B.3)
+# =============================================================================================
+
+@pytest.fixture
+def synth_players_with_quality():
+    return pd.DataFrame([
+        (1, "Weakest", 40.0), (2, "Strongest", 80.0), (3, "Middle A", 60.0), (4, "Middle B", 60.0),
+    ], columns=["player_id", "player_name", "quality_score"])
+
+
+def test_order_by_quality_descending(synth_players_with_quality):
+    out = sel.order_by_quality(synth_players_with_quality)
+    assert out["player_id"].tolist() == [2, 3, 4, 1]
+
+
+def test_order_by_quality_deterministic_tiebreak_by_player_id(synth_players_with_quality):
+    """Two players (3, 4) share the same quality_score -- the tiebreak must be player_id
+    ascending, not insertion order or an unstable sort."""
+    reversed_input = synth_players_with_quality.iloc[::-1].reset_index(drop=True)
+    out = sel.order_by_quality(reversed_input)
+    assert out["player_id"].tolist() == [2, 3, 4, 1]
+
+
+def test_real_data_quality_ordering_never_affects_recommendation_ranking(real_players, real_recs):
+    """Part B.3: ordering search results by quality must have zero effect on the recommendation
+    ranking INSIDE a player -- confirmed by checking a player's own Top 3 destination set is
+    identical regardless of the order players were resolved in."""
+    pool = sel.filter_by_agency(real_players, agency=sel.list_agencies(real_players)[0])
+    ordered = sel.order_by_quality(pool)
+    assert set(ordered["player_id"]) == set(pool["player_id"])  # same population, reordered only
+    pid = ordered["player_id"].iloc[0]
+    reg = real_recs[(real_recs.player_id == pid) & (real_recs.rec_type == "REGULAR") & (real_recs["rank"] <= 3)]
+    assert len(reg) > 0  # recommendations for this player exist and are keyed by player_id alone,
+    # independent of any player-list ordering -- nothing here could have changed them

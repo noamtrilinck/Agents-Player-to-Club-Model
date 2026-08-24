@@ -277,10 +277,42 @@ def _ability_value_pair(detail: dict, dim: str) -> dict | None:
     return {"ability": dim, "label": ABILITY_LABELS[dim], "player_value": player_value, "club_value": club_value}
 
 
+def _reorder_by_distinctiveness(matches: list[str], distinctiveness: dict[str, float] | None) -> list[str]:
+    """Post-Deployment Improvement Sprint V2, Part D.8 -- 'Why THIS club, not just what are his
+    strongest Abilities'. `matches` is the UNCHANGED, already-gated strongest_matches list from
+    `_strongest_matches()` (still capped at 3, still requires clearing the same locked z
+    thresholds) -- this function only ever REORDERS that list, never adds an Ability that didn't
+    already qualify, and never removes one that did.
+
+    `distinctiveness[dim]` = this club's sys_gap_z for `dim` MINUS the player's own mean sys_gap_z
+    for `dim` across his OTHER recommended destinations (computed once per player across their
+    whole Top 9 + AO in build_explanations.py, from data already computed there for the signal
+    layer -- no new statistic, no new data source). A high value means "this club needs `dim` more
+    than the player's other recommended clubs typically do, AND he clears the match bar for it" --
+    i.e. genuinely part of why THIS destination, not merely a restatement of his single strongest
+    trait everywhere.
+
+    Reordering only changes which qualifying Ability leads the headline/evidence order -- it does
+    not, and structurally cannot, force different clubs to show different Abilities when a player
+    only ever clears the bar on one single Ability across his whole Top 9 (the audited common case
+    for many players): with only one candidate, "reordering" a length-1 list is a no-op, which is
+    the correct behavior, not a bug -- see the sprint's repetition audit and the module docstring's
+    'do not force artificial diversity' instruction.
+
+    Falls back to the given order unchanged when `distinctiveness` is None (e.g. an older caller,
+    or a unit test that doesn't supply it) -- same value `_strongest_matches()` itself already
+    returns (highest global z first)."""
+    if not distinctiveness or len(matches) < 2:
+        return matches
+    return sorted(matches, key=lambda d: -distinctiveness.get(d, float("-inf")))
+
+
 def build_regular_explanation_payload(signals: dict, detail: dict | None = None,
-                                       obs_gap_z: dict[str, float] | None = None) -> dict:
+                                       obs_gap_z: dict[str, float] | None = None,
+                                       distinctiveness: dict[str, float] | None = None) -> dict:
     """Structured 'Why it fits' payload for the compact-card UI (Part 11/13/14/15/16):
-      headline            -- str, leads with the strongest Ability evidence (Part 13), or the old
+      headline            -- str, leads with the strongest Ability evidence (Part 13), reordered by
+                              CLUB-SPECIFIC distinctiveness when available (Part D.8) -- or the old
                               generic sentence ONLY when no Ability clears the strong-match bar
                               (never a manufactured standout -- same rule _strongest_matches uses).
       evidence             -- list of up to 3 {ability, label, player_value, club_value} dicts, the
@@ -296,7 +328,7 @@ def build_regular_explanation_payload(signals: dict, detail: dict | None = None,
                               kept for any caller that still wants a single string.
     """
     detail = detail or {}
-    matches = signals["strongest_matches"]
+    matches = _reorder_by_distinctiveness(signals["strongest_matches"], distinctiveness)
 
     evidence = [e for e in (_ability_value_pair(detail, d) for d in matches) if e is not None]
     if matches:
@@ -335,6 +367,52 @@ def build_regular_explanation_payload(signals: dict, detail: dict | None = None,
         "supporting": supporting,
         "legacy_explanation": render_regular_explanation(signals),
     }
+
+
+# =================================================================================================
+# Layer 2c -- "Why this rank?" client-safe context (Post-Deployment Improvement Sprint V2, Part E).
+# Explains the ranking mechanism itself when it genuinely produces a non-obvious order (a lower-
+# ranked destination with a materially higher Match %) -- NEVER exposes Reliability/Tier/PoolAdj/
+# Y/X/checkpoint/"Exception" as a word. Derived entirely from level_and_opportunity's own already-
+# computed origin_classification/exception_direction fields (recommendations.csv) -- no new
+# methodology, no new threshold; this is translation into client language, not a new decision.
+#
+# Trigger, audited empirically before locking (2026-08-24, full production population, 7,467
+# players): an EXCEPTION-origin row is present in a player's Top 9 for 166 players (2.22%); a
+# materially-higher-Match-ranked-below-rank-1/2 situation (gap >= 5 points) occurs for 165 of
+# those SAME players and ZERO players without an Exception row (165/166 overlap -- the one
+# player with an Exception row but <5pt gap still gets the context block, since the trigger is
+# origin_classification itself, not the gap -- the gap audit only existed to CONFIRM this is the
+# right signal, not to become a second, redundant threshold). So: no separate numeric threshold is
+# needed at all -- origin_classification == "EXCEPTION" is both the necessary and (empirically)
+# sufficient signal for "this order needs a plain-English explanation."
+# =================================================================================================
+
+def rank_context_for_exception_row(direction: str) -> dict:
+    """For the Exception-origin card itself. `direction`: "upward" or "downward" (from
+    recommendations.csv's exception_direction, unchanged/unrenamed)."""
+    if direction == "upward":
+        text = ("Career pathway: this represents a step up in competitive level. It stood out "
+                 "enough in our evaluation to earn a place here despite being a more ambitious "
+                 "move than most of his other recommendations.")
+    else:
+        text = ("Career pathway: this represents a step down in immediate competitive level, but "
+                 "the stylistic fit is unusually strong -- it may offer a better platform for role "
+                 "importance and development than a lateral or upward move would. This is not a "
+                 "guarantee of playing time, development, or a future transfer, only a stylistic "
+                 "and opportunity signal from the model.")
+    return {"trigger": "career_pathway", "direction": direction, "text": text}
+
+
+def rank_context_for_outranked_row() -> dict:
+    """For a rank 1/2 card (which can never itself be an Exception -- checkpoints start at #3)
+    when the SAME player has a qualifying Exception destination further down that may show a
+    higher Match %. Explains the apparent contradiction without exposing ranking internals."""
+    text = ("This is his strongest recommendation within his current competitive level. A "
+            "recommendation further down may show a higher Match % -- that represents a "
+            "different kind of opportunity (see its own career-pathway note), not a stronger "
+            "overall fit at his current level.")
+    return {"trigger": "outranked_by_career_pathway", "text": text}
 
 
 def build_ao_explanation_payload(signals: dict, detail: dict | None = None) -> dict:

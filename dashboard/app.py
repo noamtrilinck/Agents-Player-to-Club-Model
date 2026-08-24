@@ -82,61 +82,82 @@ def main():
     # -----------------------------------------------------------------------------------------
     st.markdown('<div class="pdf-section-label">Find players</div>', unsafe_allow_html=True)
 
-    st.markdown('<div class="pdf-agency-label">Agency</div>', unsafe_allow_html=True)
-    agency_options = [AGENCY_PLACEHOLDER, UNREPRESENTED_LABEL] + sel.list_agencies(players)
-    choice = st.selectbox("Agency", agency_options, index=0, label_visibility="collapsed",
-                           key="agency_widget")
+    # Post-Deployment Improvement Sprint, Part A.2: the whole discovery/filter area now lives
+    # inside one visible bordered surface (st.container(border=True)), matching NTS's own control-
+    # bar treatment exactly (see styles.py's div[data-testid="stVerticalBlockBorderWrapper"] rule)
+    # -- so a client immediately recognizes this as one grouped "search" component instead of it
+    # blending into the page background. The filter ARCHITECTURE inside is unchanged: same fields,
+    # same keys, same order, same behavior -- only the visual container and field-label styling
+    # (native widget labels -> pdf-controlbar-label divs, same convention NTS uses) changed.
+    with st.container(border=True):
+        st.markdown('<div class="pdf-controlbar-label">Agency</div>', unsafe_allow_html=True)
+        agency_options = [AGENCY_PLACEHOLDER, UNREPRESENTED_LABEL] + sel.list_agencies(players)
+        choice = st.selectbox("Agency", agency_options, index=0, label_visibility="collapsed",
+                               key="agency_widget")
 
-    if st.session_state.get("last_agency_choice") != choice:
-        st.session_state["resolved_ids"] = None
-        st.session_state["last_agency_choice"] = choice
+        if st.session_state.get("last_agency_choice") != choice:
+            st.session_state["resolved_ids"] = None
+            st.session_state["last_agency_choice"] = choice
 
-    if choice == UNREPRESENTED_LABEL:
-        base_pool = sel.filter_by_agency(players, unrepresented=True)
-    elif choice != AGENCY_PLACEHOLDER:
-        base_pool = sel.filter_by_agency(players, agency=choice)
-    else:
-        base_pool = players  # "All agencies" -- no agency restriction at all (Part 2)
+        if choice == UNREPRESENTED_LABEL:
+            base_pool = sel.filter_by_agency(players, unrepresented=True)
+        elif choice != AGENCY_PLACEHOLDER:
+            base_pool = sel.filter_by_agency(players, agency=choice)
+        else:
+            base_pool = players  # "All agencies" -- no agency restriction at all (Part 2)
 
-    if base_pool.empty:
-        st.warning("This agency currently has no players available. Please choose a different agency.")
-        st.stop()
+        if base_pool.empty:
+            st.warning("This agency currently has no players available. Please choose a different agency.")
+            st.stop()
 
-    name_query = st.text_input(
-        "Player name", value="", placeholder="Search by player name (e.g. “Neves”)...",
-        key="name_query_widget",
-    )
+        st.markdown('<div class="pdf-controlbar-label" style="margin-top:10px;">Player name</div>',
+                    unsafe_allow_html=True)
+        name_query = st.text_input(
+            "Player name", value="", placeholder="Search by player name (e.g. “Neves”)...",
+            key="name_query_widget", label_visibility="collapsed",
+        )
 
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        position_options = sorted(base_pool["position_display"].dropna().unique().tolist())
-        _sanitize_multiselect_state("positions_widget", position_options)
-        positions = st.multiselect("Position", position_options, key="positions_widget")
-    with col2:
-        nationality_options = sorted(base_pool["nationality_display"].dropna().unique().tolist())
-        _sanitize_multiselect_state("nationalities_widget", nationality_options)
-        nationalities = st.multiselect("Nationality", nationality_options, key="nationalities_widget")
-    with col3:
-        league_options = sel.list_leagues(base_pool)
-        _sanitize_multiselect_state("leagues_widget", league_options)
-        leagues = st.multiselect("League", league_options, key="leagues_widget")
-    with col4:
-        # Progressive narrowing (Part 5): Club options are restricted to clubs that play in the
-        # currently-selected League(s) -- one-directional only, see selection_logic.py's docstring.
-        club_options = sel.list_clubs(base_pool, leagues=leagues if leagues else None)
-        _sanitize_multiselect_state("clubs_widget", club_options)
-        clubs = st.multiselect("Club", club_options, key="clubs_widget")
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.markdown('<div class="pdf-controlbar-label">Position</div>', unsafe_allow_html=True)
+            position_options = sorted(base_pool["position_display"].dropna().unique().tolist())
+            _sanitize_multiselect_state("positions_widget", position_options)
+            positions = st.multiselect("Position", position_options, key="positions_widget",
+                                        label_visibility="collapsed")
+        with col2:
+            st.markdown('<div class="pdf-controlbar-label">Nationality</div>', unsafe_allow_html=True)
+            nationality_options = sorted(base_pool["nationality_display"].dropna().unique().tolist())
+            _sanitize_multiselect_state("nationalities_widget", nationality_options)
+            nationalities = st.multiselect("Nationality", nationality_options, key="nationalities_widget",
+                                            label_visibility="collapsed")
+        with col3:
+            st.markdown('<div class="pdf-controlbar-label">League</div>', unsafe_allow_html=True)
+            league_options = sel.list_leagues(base_pool)
+            _sanitize_multiselect_state("leagues_widget", league_options)
+            leagues = st.multiselect("League", league_options, key="leagues_widget",
+                                      label_visibility="collapsed")
+        with col4:
+            st.markdown('<div class="pdf-controlbar-label">Club</div>', unsafe_allow_html=True)
+            # Progressive narrowing (Part 5): Club options are restricted to clubs that play in the
+            # currently-selected League(s) -- one-directional only, see selection_logic.py's docstring.
+            club_options = sel.list_clubs(base_pool, leagues=leagues if leagues else None)
+            _sanitize_multiselect_state("clubs_widget", club_options)
+            clubs = st.multiselect("Club", club_options, key="clubs_widget", label_visibility="collapsed")
 
-    lo, hi = sel.age_bounds(base_pool)
-    if lo < hi:
-        age_range = st.slider("Age", min_value=lo, max_value=hi, value=(lo, hi))
-    else:
-        st.write(f"Age: **{lo}** (only one age present)")
-        age_range = (lo, hi)
+        st.markdown('<div class="pdf-controlbar-label" style="margin-top:10px;">Age</div>', unsafe_allow_html=True)
+        lo, hi = sel.age_bounds(base_pool)
+        if lo < hi:
+            age_range = st.slider("Age", min_value=lo, max_value=hi, value=(lo, hi),
+                                   label_visibility="collapsed")
+        else:
+            st.write(f"Age: **{lo}** (only one age present)")
+            age_range = (lo, hi)
 
     filtered = sel.apply_filters(base_pool, min_age=age_range[0], max_age=age_range[1],
                                   positions=positions, nationalities=nationalities,
                                   leagues=leagues, clubs=clubs, name_query=name_query)
+
+    filtered = sel.order_by_quality(filtered)
 
     st.caption(f"{len(filtered)} player{'s' if len(filtered) != 1 else ''} match the current search.")
     if filtered.empty:

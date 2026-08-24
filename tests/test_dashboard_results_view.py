@@ -130,18 +130,17 @@ def test_regular_record_shape_has_no_methodology_fields(synth_players, synth_rec
     """Whatever the internal origin_classification/reliability/tier of a rank actually is, the
     prepared record must expose only presentation fields -- nothing methodology-internal leaks
     through, regardless of whether the source rank was NORMAL- or EXCEPTION-origin. `headline`/
-    `evidence`/`caution`/`supporting` (Post-Deployment Improvement Sprint, Parts 12-18) are all
-    client-facing presentation data derived from the explanation engine's SIGNALS layer, same as
-    the old flat `explanation` string was -- none of them is a methodology field. `country`
-    (Sprint 7.9, the destination club's country -- for the recommendation-card flag) is plain
-    presentation data too. No club badge/logo field exists at all (Sprint 7.7 -- removed by
-    product decision). See tests/test_explanation_engine.py and
-    test_dashboard_explanation_integration.py for the checks that explanation content never leaks
-    methodology terms."""
+    `evidence`/`caution`/`supporting`/`rank_context` are all client-facing presentation data
+    derived from the explanation engine's SIGNALS layer, same as the old flat `explanation` string
+    was -- none of them is a methodology field (`rank_context`'s own text is itself audited never
+    to contain "Exception"/"Tier"/etc., see test_explanation_engine.py and
+    test_dashboard_explanation_integration.py). `country` (the destination club's country -- for
+    the recommendation-card flag) is plain presentation data too. No club badge/logo field exists
+    at all (removed by product decision, Sprint 7.7)."""
     results = rv.prepare_player_results(synth_players, synth_recs, [1])
     for r in results[0]["regular"]:
         assert set(r.keys()) == {"rank", "club_name", "league", "country", "match_pct",
-                                  "headline", "evidence", "caution", "supporting"}
+                                  "headline", "evidence", "caution", "supporting", "rank_context"}
 
 
 # =============================================================================================
@@ -156,11 +155,21 @@ def test_multiple_players_correct_recommendations_stay_associated(synth_players,
     assert by_id[3]["regular"][0]["club_name"] == "Club R1c"
 
 
-def test_player_order_is_alphabetical_by_name_then_id(synth_players, synth_recs):
-    results = rv.prepare_player_results(synth_players, synth_recs, [1, 2, 3])
+def test_player_order_preserves_the_given_player_ids_order(synth_players, synth_recs):
+    """Post-Deployment Improvement Sprint (Part B.3): prepare_player_results no longer re-derives
+    its own alphabetical order -- it preserves whatever order `player_ids` was given in (upstream,
+    app.py resolves that order from selection_logic.order_by_quality(), stronger players first).
+    Confirmed here with a non-alphabetical input order, so an incidental alphabetical match can't
+    hide a regression."""
+    # fixture: player_id 1="Bravo Player", 2="Alpha Player", 3="Charlie Player" (deliberately not
+    # alphabetical-by-id, so a passing test can't be hiding an accidental id-order coincidence)
+    results = rv.prepare_player_results(synth_players, synth_recs, [3, 1, 2])
     names = [r["player_name"] for r in results]
-    assert names == sorted(names)
-    assert names == ["Alpha Player", "Bravo Player", "Charlie Player"]
+    assert names == ["Charlie Player", "Bravo Player", "Alpha Player"]
+
+    results_reordered = rv.prepare_player_results(synth_players, synth_recs, [2, 3, 1])
+    names2 = [r["player_name"] for r in results_reordered]
+    assert names2 == ["Alpha Player", "Charlie Player", "Bravo Player"]
 
 
 # =============================================================================================

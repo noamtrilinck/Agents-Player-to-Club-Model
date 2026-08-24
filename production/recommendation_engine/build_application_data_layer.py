@@ -77,6 +77,46 @@ def load_player_current_club_and_age():
         columns={"team_id": "source_club_id"})
 
 
+def load_player_quality_score():
+    """Post-Deployment Improvement Sprint (Part B.3): a single, precomputed, deterministic overall
+    quality figure per player, for ordering multi-player SEARCH RESULTS only -- never fed into,
+    and with zero effect on, the recommendation ranking itself (that stays exactly the locked
+    Combined Style Fit / Level-Tier / Exception logic, untouched, computed entirely separately).
+
+    Audited before implementing (see docs/stage7_sprint7_12_post_deployment_v2_lock.md): this
+    project already re-exports the National Team Selection (NTS) player-evaluation methodology's
+    own four LOCKED, already-computed aggregate scores verbatim into
+    player_evaluation_features.csv -- control_attacking_score_final / progression_attacking_
+    score_final / direct_attacking_score_final / final_defensive_score, each a T-score (mean ~50,
+    sd ~10) built from the 11 core Abilities. No existing SINGLE "overall" column exists anywhere
+    in NTS or this project -- confirmed by inspecting both codebases directly -- so one must be
+    combined from these four, but no NEW ability-level aggregation formula is invented here (that
+    would re-derive what NTS's own locked methodology already computed).
+
+    Chosen combination: mean(max(control, progression, direct), defensive). NOT a plain 4-way mean
+    of all four scores -- rejected because Control/Progression/Direct are three ALTERNATE lenses on
+    the same attacking profile (NTS's own dashboard only ever shows one at a time, selected by
+    philosophy), not three independent facts to sum; averaging all four equally would count
+    attacking ability 3x relative to defending and structurally penalize genuinely defensive-
+    profile players. Taking the player's own single best-fitting attacking lens, then averaging
+    that against the one fixed defensive score, mirrors exactly how NTS's own UI already presents
+    a player (their best attacking philosophy fit + their defensive score, side by side) rather
+    than inventing a new weighting NTS itself doesn't use.
+
+    Same representative-row selection as load_player_current_club_and_age() (and Stage 5's own
+    load_players()) -- byte-identical inputs to what every other per-player figure in this
+    pipeline already uses, not a different row picked for this one column."""
+    cols = ["player_id", "season_id", "minutes_played", "control_attacking_score_final",
+            "progression_attacking_score_final", "direct_attacking_score_final", "final_defensive_score"]
+    df = pd.read_csv(STAGE3_FEATURES_CSV, low_memory=False, usecols=cols)
+    df = df.sort_values(["player_id", "season_id", "minutes_played"], ascending=[True, False, False])
+    rep = df.drop_duplicates(subset="player_id", keep="first").reset_index(drop=True)
+    best_attacking = rep[["control_attacking_score_final", "progression_attacking_score_final",
+                           "direct_attacking_score_final"]].max(axis=1)
+    rep["quality_score"] = ((best_attacking + rep["final_defensive_score"]) / 2).round(2)
+    return rep[["player_id", "quality_score"]]
+
+
 def main():
     tiers = pd.read_csv(CLUB_TIERS_CSV)
     if len(tiers) != 513:
@@ -364,20 +404,41 @@ def main():
     players["has_no_agency"] = players["agency"].isna()
 
     club_name_map = tiers.set_index("club_id")["club_name"]
+    club_country_map = tiers.set_index("club_id")["country"]
     aux = base_players[["player_id", "production_position", "source_club_id", "source_tier",
                          "nationality_id", "age"]].copy()
     aux["source_club_name"] = aux["source_club_id"].map(club_name_map)
+    # Post-Deployment Improvement Sprint (Part C.4): the player's current-league COUNTRY, for the
+    # player-header flag (never present before -- current_league_display, from the agency mapping
+    # source, has no country of its own). Derived from the same club_level_tiers.csv join already
+    # used for source_club_name above -- verified directly (2026-08-24) that every player's
+    # source_club_id resolves to a tiers.csv row and that tiers' own league_name always matches
+    # current_league_display exactly (0 mismatches across all 7,467 players), so this is genuinely
+    # the country of the league already displayed, not a second, possibly-inconsistent source.
+    aux["current_league_country"] = aux["source_club_id"].map(club_country_map)
     aux["source_tier"] = aux["source_tier"].astype("Int64")
     aux["source_club_id"] = aux["source_club_id"].astype("Int64")
     aux["nationality_id"] = aux["nationality_id"].astype("Int64")
     aux["age"] = aux["age"].astype("Int64")
     players = players.merge(aux, on="player_id", how="left")
 
+    quality = load_player_quality_score()
+    players = players.merge(quality, on="player_id", how="left")
+    if players["quality_score"].isna().any():
+        _fail(f"{players['quality_score'].isna().sum()} players have no resolvable quality_score "
+              f"-- Stage 3 join failed.")
+    if players["current_league_country"].isna().any():
+        _fail(f"{players['current_league_country'].isna().sum()} players have no resolvable "
+              f"current_league_country -- club_level_tiers.csv join failed.")
+
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     players.to_csv(PLAYERS_CSV, index=False)
     recs.to_csv(RECOMMENDATIONS_CSV, index=False)
 
     print(f"\nWrote {PLAYERS_CSV}: {len(players)} players")
+    print(f"  quality_score (search-result ordering only, never fed into recommendation ranking): "
+          f"min={players['quality_score'].min():.1f} mean={players['quality_score'].mean():.1f} "
+          f"max={players['quality_score'].max():.1f}")
     print(f"Wrote {RECOMMENDATIONS_CSV}: {len(recs)} rows "
           f"({(recs.rec_type=='REGULAR').sum()} REGULAR, {(recs.rec_type=='AO').sum()} AO)")
     rank_counts = regular_long.groupby("player_id").size().value_counts().sort_index()

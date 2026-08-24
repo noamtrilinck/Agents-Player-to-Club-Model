@@ -131,6 +131,44 @@ def test_real_data_no_methodology_leakage(real_explanations):
             assert not blob.str.contains(term, regex=False).any(), f"'{term}' leaked into explanations.csv[{col}]"
 
 
+def test_real_data_top9_headline_repetition_floor(real_recs, real_explanations):
+    """Post-Deployment Improvement Sprint V2, Part D.6/D.8: locks the measured repetition
+    improvement in as a regression floor. Before the distinctiveness reordering: mean distinct-
+    headline fraction across a player's Top 9 was 38.1%. After: 44.9%. A future change should not
+    silently regress this back down."""
+    reg = real_recs[(real_recs.rec_type == "REGULAR") & (real_recs["rank"] <= 9)]
+    m = reg.merge(real_explanations[["player_id", "destination_club_id", "rec_type", "explanation"]],
+                   on=["player_id", "destination_club_id", "rec_type"], how="left")
+
+    def distinct_ratio(g):
+        vals = g["explanation"].dropna().tolist()
+        return len(set(vals)) / len(vals) if vals else None
+
+    ratios = m.groupby("player_id").apply(distinct_ratio, include_groups=False).dropna()
+    assert ratios.mean() >= 0.40, f"Top9 headline distinctness dropped to {ratios.mean():.1%}, expected >= 40%"
+
+
+def test_real_data_rank_context_trigger_matches_exception_rows(real_recs, real_explanations):
+    """Post-Deployment Improvement Sprint V2, Part E: rank_context_json must be set on every
+    EXCEPTION-origin REGULAR row, and on rank 1/2 rows for players who have one -- nowhere else."""
+    reg = real_recs[real_recs.rec_type == "REGULAR"]
+    m = reg.merge(real_explanations[["player_id", "destination_club_id", "rec_type", "rank_context_json"]],
+                   on=["player_id", "destination_club_id", "rec_type"], how="left")
+    has_ctx = m["rank_context_json"].fillna("") != ""
+
+    exception_mask = m["origin_classification"] == "EXCEPTION"
+    assert (has_ctx[exception_mask]).all(), "every EXCEPTION-origin row must carry rank_context"
+
+    exception_players = set(m.loc[exception_mask, "player_id"])
+    top2_mask = m["rank"] <= 2
+    top2_for_exception_players = m[top2_mask & m["player_id"].isin(exception_players)]
+    assert has_ctx[top2_for_exception_players.index].all(), (
+        "rank 1/2 for a player with an Exception destination must carry rank_context")
+
+    other_mask = (~exception_mask) & (~(top2_mask & m["player_id"].isin(exception_players)))
+    assert not has_ctx[other_mask].any(), "rank_context must not appear outside the audited trigger"
+
+
 def test_real_data_prepare_results_includes_explanations_for_sample_player(real_recs, real_explanations):
     players = pd.read_csv(PLAYERS_CSV, low_memory=False)
     sample_pid = real_recs["player_id"].iloc[0]

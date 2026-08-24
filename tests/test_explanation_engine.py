@@ -351,6 +351,48 @@ def test_payload_supporting_demotes_broad_alignment_and_observed_similarity():
     assert "similarity" not in payload["headline"]
 
 
+def test_distinctiveness_reorders_the_lead_ability():
+    """Post-Deployment Improvement Sprint V2, Part D.8: two abilities both qualify, but this
+    club is far more distinctive on chance_creation than on aerial_duels relative to the
+    player's other recommended clubs -- chance_creation must lead the headline."""
+    z = _z(aerial_duels=2.0, chance_creation=1.6)  # aerial_duels has the higher RAW z
+    signals = ee.compute_signals(z, "SYSTEM_ONLY", None, None)
+    assert signals["strongest_matches"][0] == "aerial_duels"  # unreordered signal order (unchanged)
+
+    distinctiveness = {"aerial_duels": 0.1, "chance_creation": 1.9}  # chance_creation is club-distinctive
+    payload = ee.build_regular_explanation_payload(
+        signals, _detail(aerial_duels=(64.9, 52.0), chance_creation=(58.0, 50.0)),
+        distinctiveness=distinctiveness)
+    assert "Chance Creation" in payload["headline"].split(".")[0]
+    assert payload["evidence"][0]["ability"] == "chance_creation"
+
+
+def test_distinctiveness_never_adds_or_removes_a_qualifying_ability():
+    z = _z(aerial_duels=2.0)  # only one ability qualifies
+    signals = ee.compute_signals(z, "SYSTEM_ONLY", None, None)
+    distinctiveness = {"aerial_duels": -5.0, "ball_retention_security": 99.0}  # unrelated/irrelevant entry
+    payload = ee.build_regular_explanation_payload(
+        signals, _detail(aerial_duels=(64.9, 52.0)), distinctiveness=distinctiveness)
+    assert [e["ability"] for e in payload["evidence"]] == ["aerial_duels"]  # never introduces ball_retention_security
+
+
+def test_distinctiveness_is_a_noop_with_fewer_than_two_matches():
+    z = _z(aerial_duels=2.0)
+    signals = ee.compute_signals(z, "SYSTEM_ONLY", None, None)
+    payload_a = ee.build_regular_explanation_payload(signals, _detail(aerial_duels=(64.9, 52.0)))
+    payload_b = ee.build_regular_explanation_payload(
+        signals, _detail(aerial_duels=(64.9, 52.0)), distinctiveness={"aerial_duels": -100.0})
+    assert payload_a["headline"] == payload_b["headline"]  # a single candidate can't be "reordered"
+
+
+def test_distinctiveness_falls_back_to_signal_order_when_not_provided():
+    z = _z(aerial_duels=2.0, chance_creation=1.6)
+    signals = ee.compute_signals(z, "SYSTEM_ONLY", None, None)
+    payload = ee.build_regular_explanation_payload(
+        signals, _detail(aerial_duels=(64.9, 52.0), chance_creation=(58.0, 50.0)))  # no distinctiveness=
+    assert payload["evidence"][0]["ability"] == signals["strongest_matches"][0]
+
+
 def test_payload_observed_similarity_drivers_named_when_available():
     z = _z(aerial_duels=2.0)
     signals = ee.compute_signals(z, "COMBINED_95_5", "HIGH", 85.0)
@@ -366,6 +408,39 @@ def test_ao_payload_caution_is_the_divergence_ability():
     signals = ee.compute_ao_signals(sys_z, obs_z)
     payload = ee.build_ao_explanation_payload(signals, _detail(ball_carrying_dribbling=(57.5, 49.0)))
     assert payload["caution"]["ability"] == "ball_carrying_dribbling"
+
+
+def test_rank_context_exception_row_upward_and_downward():
+    up = ee.rank_context_for_exception_row("upward")
+    down = ee.rank_context_for_exception_row("downward")
+    assert "step up" in up["text"]
+    assert "step down" in down["text"]
+    assert up["trigger"] == down["trigger"] == "career_pathway"
+
+
+def test_rank_context_downward_uses_cautious_language_no_guarantees():
+    """The text explicitly DISCLAIMS a guarantee ('not a guarantee of...') -- that is the correct,
+    cautious phrasing (Part 15), so the word itself is expected. What must never appear is an
+    AFFIRMATIVE claim of certainty."""
+    down = ee.rank_context_for_exception_row("downward")
+    assert "not a guarantee" in down["text"].lower()
+    for forbidden in ("will get", "will play", "promised", "guaranteed to"):
+        assert forbidden not in down["text"].lower()
+
+
+def test_rank_context_outranked_row_text():
+    ctx = ee.rank_context_for_outranked_row()
+    assert ctx["trigger"] == "outranked_by_career_pathway"
+    assert "higher Match" in ctx["text"]
+
+
+def test_rank_context_never_leaks_internal_terms():
+    forbidden = ("Exception", "Reliability", "Tier", "PoolAdj", "checkpoint", "Y=85", "X=5",
+                 "NORMAL", "System Fit", "Observed Fit")
+    for ctx in (ee.rank_context_for_exception_row("upward"), ee.rank_context_for_exception_row("downward"),
+                ee.rank_context_for_outranked_row()):
+        for term in forbidden:
+            assert term not in ctx["text"], f"'{term}' leaked into rank-context text: {ctx['text']!r}"
 
 
 def test_payloads_never_leak_methodology_terms():

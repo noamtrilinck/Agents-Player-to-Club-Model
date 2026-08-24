@@ -81,6 +81,16 @@ def build_css():
 
   /* ---- Streamlit chrome: hide default menu/footer, adopt the ground colour + body font ---- */
   #MainMenu, footer, header {{ visibility: hidden; }}
+  /* Root-cause fix for the reversed Age slider (client-reported, 2026-08-24).
+     Streamlit never sets an explicit text direction anywhere in its own markup -- on a browser/OS
+     configured for a right-to-left locale, the UA's automatic direction detection can flip a
+     native two-handle <input type="range"> visually and interactionally (low value's handle drawn
+     on the right, dragging reversed) even though every other left-to-right element on the page
+     looks fine, because direction is decided per-element, not inherited from any single "the page
+     is English" signal. This is an English-language desktop application -- force LTR explicitly,
+     app-wide, rather than special-casing the slider or swapping min/max in Python (which would
+     leave the VISUAL bug in place and only fix the number). */
+  html, body, .stApp {{ direction: ltr !important; }}
   .stApp {{ background: var(--bg); font-family: var(--font-body); color: var(--ink); }}
   .block-container {{ padding-top: 1.5rem; padding-bottom: 3rem; max-width: 1180px; }}
   h1, h2, h3, h4 {{ font-family: var(--font-display) !important; color: var(--ink); }}
@@ -98,6 +108,20 @@ def build_css():
     padding-bottom:6px; border-bottom:1px solid var(--rule); }}
   .pdf-agency-label {{ font-family: var(--font-mono); font-size:10.5px; text-transform:uppercase;
     letter-spacing:.08em; color:var(--ink-faint); margin-bottom:4px; }}
+
+  /* ---- Search/filter control bar (Part A.2): one visible bordered surface, same treatment as
+     NTS's own control bar (div[data-testid="stVerticalBlockBorderWrapper"] is what Streamlit
+     wraps an st.container(border=True) in) -- so the whole discovery area reads as one grouped
+     component instead of blending into --bg. Individual controls get an explicit white surface
+     (Part A.2's "white/light control surfaces") layered on top of that panel, for clear contrast
+     against BOTH the page background and the panel's own tint. ---- */
+  div[data-testid="stVerticalBlockBorderWrapper"] {{ background: var(--surface-2);
+    border: 1px solid var(--border) !important; border-radius: 2px !important; padding: 4px; }}
+  .pdf-controlbar-label {{ font-family: var(--font-mono); font-size:10px; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--ink-faint); margin-bottom:3px; margin-top:2px; }}
+  div[data-testid="stVerticalBlockBorderWrapper"] div[data-baseweb="select"] > div,
+  div[data-testid="stVerticalBlockBorderWrapper"] .stTextInput input {{
+    background: var(--surface) !important; }}
 
   /* ---- Leagues Covered -- identical component to NTS's own (same class shape, pdf- prefix) ---- */
   .pdf-leaguecov-label {{ font-family: var(--font-mono); font-size:12.5px; text-transform:uppercase;
@@ -117,6 +141,11 @@ def build_css():
      as-close-as-Streamlit-allows compromise NTS's own styles.py documents. */
   div[data-baseweb="select"] > div {{ border-radius: 2px !important; border-color: var(--border) !important; font-family: var(--font-body); }}
   .stTextInput input {{ border-radius: 2px !important; border-color: var(--border) !important; font-family: var(--font-body); }}
+  /* Belt-and-braces alongside the app-wide `direction: ltr` above: the slider's own BaseWeb
+     internals compute handle position/order from the CSS `direction` of their nearest ancestor,
+     so this is redundant once the app-wide rule is in place -- kept explicit anyway since this is
+     the one component the whole fix (Part A.1) is actually about. */
+  div[data-testid="stSlider"] {{ direction: ltr !important; }}
   .stRadio > div {{ gap: 6px; }}
   .stRadio label {{ background: var(--surface); border: 1px solid var(--border); padding: 6px 12px; border-radius: 2px; font-size: 13px !important; }}
 
@@ -164,6 +193,15 @@ def build_css():
   .pdf-explain .evrow {{ display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:12px; padding:2px 0; }}
   .pdf-explain .evrow .lab {{ color: var(--ink-muted); }}
   .pdf-explain .evrow .val {{ color: var(--ink); }}
+  .pdf-explain .evnote {{ margin-top:4px; font-size:10.5px; color: var(--ink-faint); font-style:italic; }}
+  /* Part E -- "Why this rank?": a small, always-visible badge (only on the audited ~2% of cards
+     where the displayed rank genuinely needs context -- see explanation_engine.py) so a client
+     notices something before even opening the explanation, plus the full note inside it. */
+  .pdf-rankctx-badge {{ display:inline-block; font-family: var(--font-mono); font-size:9.5px;
+    text-transform:uppercase; letter-spacing:.05em; color: var(--direct); border:1px solid var(--direct);
+    background: var(--direct-tint); padding:2px 6px; margin-bottom:2px; align-self:flex-start; }}
+  .pdf-explain .rankctx {{ margin-top:8px; padding-top:6px; border-top:1px dashed var(--border);
+    color: var(--direct); font-weight:500; }}
   .pdf-explain .caution {{ margin-top:6px; color: var(--direct); }}
   .pdf-explain .supporting {{ margin-top:6px; color: var(--ink-faint); font-size:12.5px; }}
 

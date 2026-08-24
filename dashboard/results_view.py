@@ -77,8 +77,11 @@ def prepare_player_results(players: pd.DataFrame, recommendations: pd.DataFrame,
                             player_ids: list[int], max_rank: int = 9,
                             explanations: pd.DataFrame | None = None) -> list[dict]:
     """The single source of truth for what the results view shows. Returns one dict per player,
-    in the locked deterministic order (Sprint 7.3, Part 13): alphabetical by player_name, then
-    player_id as a stable tiebreak for duplicate-name pairs in the population.
+    in the SAME order `player_ids` was given in (Post-Deployment Improvement Sprint, Part B.3:
+    stronger players first, per selection_logic.order_by_quality() -- this function no longer
+    re-derives its own alphabetical order, since that would silently discard the quality ordering
+    app.py already applied before resolving `player_ids`). The order decision lives exactly once,
+    upstream of this function -- this function only ever preserves it.
 
     Each dict: player_id, player_name, age, position, nationality, current_club, agency,
     `regular` (list of up to `max_rank` dicts: rank/club_name/league/country/match_pct/headline/
@@ -89,7 +92,10 @@ def prepare_player_results(players: pd.DataFrame, recommendations: pd.DataFrame,
     boolean masks / dict lookups (never a per-player DataFrame operation), converts to plain dicts
     ONCE via `to_dict("records")`, and groups in pure Python -- O(1) lookup per player afterward.
     """
-    pool = players[players["player_id"].isin(player_ids)].sort_values(["player_name", "player_id"])
+    id_order = {pid: i for i, pid in enumerate(player_ids)}
+    pool = players[players["player_id"].isin(player_ids)].copy()
+    pool["_order"] = pool["player_id"].map(id_order)
+    pool = pool.sort_values("_order").drop(columns="_order")
 
     sub_recs = recommendations[recommendations["player_id"].isin(player_ids)]
     reg = sub_recs[(sub_recs["rec_type"] == "REGULAR") & (sub_recs["rank"] <= max_rank)]
@@ -104,7 +110,8 @@ def prepare_player_results(players: pd.DataFrame, recommendations: pd.DataFrame,
         # shaped explanations frame (just player_id/destination_club_id/rec_type/explanation, e.g.
         # a unit test's synthetic fixture) still works, degrading to headline-only.
         exp_cols = ["player_id", "destination_club_id", "rec_type", "explanation"]
-        exp_cols += [c for c in ("evidence_json", "caution_json", "supporting_json") if c in sub_exp.columns]
+        exp_cols += [c for c in ("evidence_json", "caution_json", "supporting_json", "rank_context_json")
+                     if c in sub_exp.columns]
         for rec in sub_exp[exp_cols].to_dict("records"):
             exp_by_key[(rec["player_id"], rec["destination_club_id"], rec["rec_type"])] = rec
 
@@ -126,6 +133,7 @@ def prepare_player_results(players: pd.DataFrame, recommendations: pd.DataFrame,
             "evidence": _safe_json(exp.get("evidence_json")) if exp else None,
             "caution": _safe_json(exp.get("caution_json")) if exp else None,
             "supporting": _safe_json(exp.get("supporting_json")) if exp else None,
+            "rank_context": _safe_json(exp.get("rank_context_json")) if exp else None,
         })
 
     ao_by_player: dict[int, dict] = {}
@@ -141,6 +149,11 @@ def prepare_player_results(players: pd.DataFrame, recommendations: pd.DataFrame,
             "player_id": pid, "player_name": row.player_name, "age": row.age,
             "position": row.position_display, "nationality": row.nationality_display,
             "current_club": row.current_club_display, "agency": row.agency,
+            # Post-Deployment Improvement Sprint (Part C.4) -- optional, same convention as
+            # destination_country elsewhere in this module: absent entirely (e.g. an older-shaped
+            # synthetic players frame in a unit test) degrades to no league line, never an error.
+            "current_league": getattr(row, "current_league_display", None),
+            "current_league_country": getattr(row, "current_league_country", None),
             "regular": reg_by_player.get(pid, []),
             "ao": _ao_dict(ao_rec, ao_exp) if ao_rec is not None else None,
         })
@@ -193,10 +206,24 @@ def render_player_results(results: list[dict]) -> None:
         with expander_ctx:
             st.markdown(f"### {player['player_name']}")
             nat_html = nationality_with_flag_html(player["nationality"])
+            club_line = f'{_html.escape(player["current_club"])}'
+            league = player.get("current_league")
+            if league:
+                # Part C.4: WHERE he currently plays -- a separate fact from nationality (WHO he
+                # is), so its own flag is shown even when the two countries happen to coincide (a
+                # Croatian playing in Croatia's league is still two independent facts, not one
+                # repeated fact). "Don't duplicate country info the league label already contains"
+                # means don't ALSO print the bare country name as its own separate word next to the
+                # league -- the flag (a compact glyph, not text) plus the league's own existing
+                # label (e.g. "Czechia 1", which already names the country as part of the league's
+                # real name) is exactly one mention, not two.
+                league_country = player.get("current_league_country")
+                league_flag = get_flag_html(league_country) if league_country else ""
+                league_html = f'{league_flag} {_html.escape(str(league))}' if league_flag else _html.escape(str(league))
+                club_line += f' · {league_html}'
             st.markdown(
                 f'<div style="font-size:0.875rem;color:#888;">{player["age"]} years old · '
-                f'{_html.escape(player["position"])} · {nat_html} · '
-                f'{_html.escape(player["current_club"])}</div>',
+                f'{_html.escape(player["position"])} · {nat_html} · {club_line}</div>',
                 unsafe_allow_html=True)
 
             total = len(player["regular"])
@@ -225,15 +252,30 @@ def render_player_results(results: list[dict]) -> None:
                             unsafe_allow_html=True)
 
 
+# Post-Deployment Improvement Sprint V2, Part D.7: exact, mathematically accurate wording for what
+# the two evidence numbers are. They are T-scores (standardized 0-100 ratings built from each
+# player's real on-pitch data for that Ability, and the club's own typical target for the role;
+# 50 = average, higher = stronger) -- NEVER called a percentile, a %, a "rating" in the vague
+# sense, or a "match" (those would each claim something these numbers don't mathematically mean).
+# Shown once per panel, not per row, to stay compact (Part D.7 / the earlier sprint's "keep it
+# compact" instruction) -- the two column labels themselves ("His profile" / "Club's typical
+# role") are the primary explanation; this is a one-line footnote for anyone who wants the exact
+# meaning, not a repeated disclaimer.
+_EVIDENCE_NOTE = ('<div class="evnote">Profile scores are standardized 0–100 ratings built '
+                   'from on-pitch data (50 = average for the role); higher means stronger in that '
+                   'Ability.</div>')
+
+
 def _evidence_rows_html(evidence: list[dict] | None) -> str:
     if not evidence:
         return ""
     rows = "".join(
         f'<div class="evrow"><span class="lab">{_html.escape(e["label"])}</span>'
-        f'<span class="val">Player {e["player_value"]:.0f} · Club {e["club_value"]:.0f}</span></div>'
+        f'<span class="val">His profile {e["player_value"]:.0f} · Club’s typical role '
+        f'{e["club_value"]:.0f}</span></div>'
         for e in evidence
     )
-    return rows
+    return rows + _EVIDENCE_NOTE
 
 
 def _caution_html(caution: dict | None) -> str:
@@ -241,7 +283,8 @@ def _caution_html(caution: dict | None) -> str:
         return ""
     if caution.get("player_value") is not None and caution.get("club_value") is not None:
         return (f'<div class="caution">Weaker match: {_html.escape(caution["label"])} '
-                f'(Player {caution["player_value"]:.0f} · Club {caution["club_value"]:.0f})</div>')
+                f'(his profile {caution["player_value"]:.0f} · club’s typical role '
+                f'{caution["club_value"]:.0f})</div>')
     return f'<div class="caution">Weaker match: {_html.escape(caution["label"])}</div>'
 
 
@@ -249,6 +292,29 @@ def _supporting_html(supporting: list[str] | None) -> str:
     if not supporting:
         return ""
     return "".join(f'<div class="supporting">{_html.escape(s)}</div>' for s in supporting)
+
+
+# Post-Deployment Improvement Sprint V2, Part E: labels for the always-visible badge -- present
+# only on the small, audited subset of cards where the displayed rank genuinely needs context (see
+# explanation_engine.py's Layer 2c docstring for the trigger + prevalence audit). Never a raw
+# internal term ("Exception") -- the client-facing concept is "career pathway".
+_RANK_CONTEXT_BADGE_LABEL = {
+    "career_pathway": "Career pathway",
+    "outranked_by_career_pathway": "Career pathway note",
+}
+
+
+def _rank_context_badge_html(rank_context: dict | None) -> str:
+    if not rank_context:
+        return ""
+    label = _RANK_CONTEXT_BADGE_LABEL.get(rank_context.get("trigger"), "Career pathway")
+    return f'<div class="pdf-rankctx-badge">{_html.escape(label)}</div>'
+
+
+def _rank_context_body_html(rank_context: dict | None) -> str:
+    if not rank_context:
+        return ""
+    return f'<div class="rankctx">{_html.escape(rank_context["text"])}</div>'
 
 
 def _card_html(rec: dict, ao: bool) -> str:
@@ -273,14 +339,16 @@ def _card_html(rec: dict, ao: bool) -> str:
     rank_html = f'<div class="rank">#{rec["rank"]}</div>' if not ao and rec.get("rank") is not None else ""
 
     headline = rec.get("headline") or ""
+    rank_context = rec.get("rank_context")
     body = ""
-    if headline or rec.get("evidence") or rec.get("caution") or rec.get("supporting"):
+    if headline or rec.get("evidence") or rec.get("caution") or rec.get("supporting") or rank_context:
         body = (
             f'<div class="pdf-explain{" ao" if ao else ""}">'
             f'<div class="headline">{_html.escape(headline)}</div>'
             f'{_evidence_rows_html(rec.get("evidence"))}'
             f'{_caution_html(rec.get("caution"))}'
             f'{_supporting_html(rec.get("supporting"))}'
+            f'{_rank_context_body_html(rank_context)}'
             f'</div>'
         )
     why_block = f'<details class="pdf-why"><summary>Why this club?</summary>{body}</details>' if body else ""
@@ -288,6 +356,7 @@ def _card_html(rec: dict, ao: bool) -> str:
     return (
         f'<div class="pdf-card{" ao" if ao else ""}">'
         f'{rank_html}'
+        f'{_rank_context_badge_html(rank_context)}'
         f'<div class="club">{club_name}</div>'
         f'<div class="league">{league_html}</div>'
         f'<div class="match-row"><div style="text-align:right;">'

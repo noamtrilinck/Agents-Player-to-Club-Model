@@ -140,6 +140,18 @@ def apply_filters(players: pd.DataFrame, min_age: int | None = None, max_age: in
     return df
 
 
+def order_by_quality(players: pd.DataFrame) -> pd.DataFrame:
+    """Post-Deployment Improvement Sprint (Part B.3): orders multi-player search results by
+    `quality_score` (precomputed in production/recommendation_engine/build_application_data_layer.py
+    from the existing, locked National Team Selection evaluation aggregates -- see that function's
+    docstring for the full audit/rationale; NOT recomputed here, NOT a new metric). Descending
+    (strongest first), with `player_id` ascending as a deterministic tiebreaker so the order never
+    depends on pandas' sort stability or row-insertion order. Has NO effect on recommendation
+    ranking inside a player -- that is a completely separate computation this function never
+    touches."""
+    return players.sort_values(["quality_score", "player_id"], ascending=[False, True])
+
+
 def list_leagues(players: pd.DataFrame) -> list[str]:
     """Sorted, deduplicated current/source leagues present in `players` (typically the post-
     agency pool -- Part 3's progressive-narrowing rule: options reflect the current base pool)."""

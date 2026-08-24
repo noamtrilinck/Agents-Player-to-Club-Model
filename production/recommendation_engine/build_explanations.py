@@ -64,7 +64,8 @@ def main():
     print("Loading production recommendations and joining source data...")
     recs = pd.read_csv(RECOMMENDATIONS_CSV, low_memory=False,
                         usecols=["player_id", "rec_type", "rank", "destination_club_id",
-                                  "style_fit_basis", "reliability", "observed_fit"])
+                                  "style_fit_basis", "reliability", "observed_fit",
+                                  "origin_classification", "exception_direction"])
     players = pd.read_csv(PLAYERS_CSV, low_memory=False, usecols=["player_id", "production_position"])
     style_fit = pd.read_csv(STYLE_FIT_CSV, engine="pyarrow",
                              usecols=["player_id", "candidate_club_id", "winning_system_profile_id"])
@@ -73,9 +74,14 @@ def main():
     recs = recs.merge(style_fit, left_on=["player_id", "destination_club_id"],
                        right_on=["player_id", "candidate_club_id"], how="left")
     n_before = len(recs)
-    recs = recs.dropna(subset=["winning_system_profile_id"])
+    recs = recs.dropna(subset=["winning_system_profile_id"]).reset_index(drop=True)
     if len(recs) != n_before:
         print(f"  WARNING: dropped {n_before - len(recs)} rows with no matching Style Fit source row")
+    # reset_index above is required, not cosmetic: everything downstream (sys_gap_z_df, the
+    # per-row loop's positional indexing via `for i in range(len(recs))`, and the distinctiveness
+    # groupby below) assumes recs.index is a clean 0..len(recs)-1 range. Without it, a non-empty
+    # drop above would leave gaps that silently misalign row i's data across every column built
+    # from a "recs.index"-keyed DataFrame.
 
     ability = load_player_ability_profile()
     recs = recs.merge(ability, on="player_id", how="left")
@@ -161,7 +167,42 @@ def main():
     player_val_rounded = {d: np.round(player_val_cols[d], 1) for d in CORE_DIMS}
     sys_target_rounded = {d: np.round(sys_target_cols[d], 1) for d in CORE_DIMS}
 
-    headlines, evidence_json, caution_json, supporting_json = [], [], [], []
+    print("Computing per-player club-distinctiveness (Post-Deployment Improvement Sprint V2, "
+          "Part D.8 -- 'why THIS club, not just his strongest Abilities')...")
+    # distinctiveness[player_id][dim] (per row) = this club's sys_gap_z - the player's own mean
+    # sys_gap_z for `dim` across his OTHER recommended destinations (Regular + AO). Computed here
+    # from sys_gap_z_df, which the signal layer above already produces -- no new statistic, no new
+    # data source; only a per-player re-aggregation of an already-computed value. Vectorized via
+    # groupby sum/count per ability, then "leave-one-out mean" per row (excludes the row's own
+    # value from its own comparison group) -- O(rows), not O(rows^2).
+    player_ids_arr = recs["player_id"].to_numpy()
+    distinctiveness_per_row: list[dict[str, float]] = [dict() for _ in range(len(recs))]
+    for dim in CORE_DIMS:
+        col = sys_gap_z_df[dim]
+        valid = col.notna()
+        grp = col[valid].groupby(recs.loc[valid, "player_id"])
+        player_sum = grp.transform("sum")
+        player_count = grp.transform("count")
+        # leave-one-out mean of the player's OTHER rows for this ability; NaN (excluded below)
+        # when this is the player's only row with a valid value for this ability.
+        other_mean = (player_sum - col[valid]) / (player_count - 1)
+        distinct = (col[valid] - other_mean).where(player_count > 1)
+        for idx, val in distinct.dropna().items():
+            distinctiveness_per_row[idx][dim] = float(val)
+
+    # Post-Deployment Improvement Sprint V2, Part E: "Why this rank?" -- one lookup, built once,
+    # of which players have >=1 Exception-origin row anywhere in their Top 9 (see the trigger
+    # audit in explanation_engine.py's Layer 2c docstring for why this single existing field is
+    # both necessary and sufficient, with no new threshold invented).
+    exception_rows = recs[(recs["rec_type"] == "REGULAR") & (recs["origin_classification"] == "EXCEPTION")]
+    players_with_exception = set(exception_rows["player_id"])
+    is_regular = (recs["rec_type"] == "REGULAR").to_numpy()
+    is_exception_row = (recs["origin_classification"] == "EXCEPTION").to_numpy()
+    exception_direction_arr = recs["exception_direction"].to_numpy()
+    rank_arr = recs["rank"].to_numpy()
+    player_id_arr = recs["player_id"].to_numpy()
+
+    headlines, evidence_json, caution_json, supporting_json, rank_context_json = [], [], [], [], []
     matches_out, broad_out, mismatch_out, obs_sim_out, diverg_out = [], [], [], [], []
     for i in range(len(recs)):
         sys_z = {d: (v if pd.notna(v) else None) for d, v in sys_gap_z_records[i].items()}
@@ -181,7 +222,8 @@ def main():
             obs_fit = observed_fit[i] if pd.notna(observed_fit[i]) else None
             sig = ee.compute_signals(sys_z, basis, rel, obs_fit)
             obs_z = {d: (v if pd.notna(v) else None) for d, v in obs_gap_z_records[i].items()}
-            payload = ee.build_regular_explanation_payload(sig, detail, obs_gap_z=obs_z)
+            payload = ee.build_regular_explanation_payload(
+                sig, detail, obs_gap_z=obs_z, distinctiveness=distinctiveness_per_row[i])
             matches_out.append(",".join(sig["strongest_matches"]))
             broad_out.append(sig["broad_alignment"])
             mismatch_out.append(sig["meaningful_mismatch"])
@@ -193,11 +235,22 @@ def main():
         caution_json.append(json.dumps(payload["caution"]) if payload["caution"] else "")
         supporting_json.append(json.dumps(payload["supporting"]) if payload["supporting"] else "")
 
+        # Part E -- "Why this rank?": only ever set for REGULAR rows, and only the two triggers
+        # confirmed by the audit above (never on every card -- Part 17's explicit instruction).
+        rc = None
+        if is_regular[i]:
+            if is_exception_row[i]:
+                rc = ee.rank_context_for_exception_row(exception_direction_arr[i])
+            elif rank_arr[i] <= 2 and player_id_arr[i] in players_with_exception:
+                rc = ee.rank_context_for_outranked_row()
+        rank_context_json.append(json.dumps(rc) if rc else "")
+
     out = pd.DataFrame({
         "player_id": recs["player_id"].values, "destination_club_id": recs["destination_club_id"].values,
         "rec_type": recs["rec_type"].values, "rank": recs["rank"].values,
         "explanation": headlines,
         "evidence_json": evidence_json, "caution_json": caution_json, "supporting_json": supporting_json,
+        "rank_context_json": rank_context_json,
         "strongest_matches": matches_out, "broad_alignment": broad_out,
         "meaningful_mismatch": mismatch_out, "observed_similarity": obs_sim_out,
         "divergence_ability": diverg_out,
@@ -217,6 +270,8 @@ def main():
           f"{(reg.evidence_json != '').mean():.1%}")
     print(f"Regular recs with quantitative caution (caution_json non-empty): "
           f"{(reg.caution_json != '').mean():.1%}")
+    print(f"Regular recs with a 'Why this rank?' context block: "
+          f"{(reg.rank_context_json != '').sum()} rows across {len(players_with_exception)} players")
 
 
 if __name__ == "__main__":
