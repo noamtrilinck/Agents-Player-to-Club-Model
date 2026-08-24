@@ -1,0 +1,16 @@
+{
+  "agency_name": "Kick&Run Sportsmanagement",
+  "source_url": "https://www.transfermarkt.com/kick-amp-run-sportsmanagement/beraterfirma/berater/1865",
+  "extracted_from": "https://www.transfermarkt.us/kick-amp-run-sportsmanagement/beraterfirma/berater/1865 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Small agency, 8 clients total, German lower-league/youth roster.",
+  "clients": [
+    {"name": "Bernardo", "age": 31, "current_club": "TSG 1899 Hoffenheim", "position": "Left-Back", "nationality": "Brazil", "transfermarkt_player_id": "364258"},
+    {"name": "Shinta Appelkamp", "age": 25, "current_club": "SpVgg Greuther Fürth", "position": "Attacking Midfield", "nationality": "Germany/Japan", "transfermarkt_player_id": "452121"},
+    {"name": "Martin Ndzie", "age": 23, "current_club": "Rapid Vienna", "position": "Defensive Midfield", "nationality": "Cameroon", "transfermarkt_player_id": "976234"},
+    {"name": "Joshua Eze", "age": 23, "current_club": "SC Verl", "position": "Defensive Midfield", "nationality": "Germany/Nigeria", "transfermarkt_player_id": "606079"},
+    {"name": "Tim van den Heuvel", "age": 21, "current_club": "Hannover 96 II", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "775980"},
+    {"name": "Felipe Trevizan", "age": 39, "current_club": "Retired", "position": "Centre-Back", "nationality": "Brazil/Italy", "transfermarkt_player_id": "68815"},
+    {"name": "Mario Mbassi", "age": 19, "current_club": "SV Werder Bremen II", "position": "Attacking Midfield", "nationality": "Germany/Spain", "transfermarkt_player_id": "1009445"},
+    {"name": "Tyrese Igwesi", "age": 19, "current_club": "Fortuna Düsseldorf U19", "position": "Left Midfield", "nationality": "Germany/Jamaica", "transfermarkt_player_id": "1150107"}
+  ]
+}

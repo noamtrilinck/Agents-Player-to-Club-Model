@@ -1,0 +1,23 @@
+{
+  "agency_name": "Prof Partners Int.",
+  "source_url": "https://www.transfermarkt.com/prof-partners-int-/beraterfirma/berater/11357",
+  "extracted_from": "https://www.transfermarkt.us/prof-partners-int-/beraterfirma/berater/11357 (single page, no pagination; page header confirms 15 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (15). Swedish-focused, mostly youth.",
+  "clients": [
+    {"name": "Jonathan Nilsson", "age": 24, "current_club": "Varbergs BoIS", "position": "Left Winger", "nationality": "Sweden", "transfermarkt_player_id": "1054860"},
+    {"name": "Hampus Källström", "age": 22, "current_club": "Falkenbergs FF", "position": "Right Winger", "nationality": "Sweden", "transfermarkt_player_id": "1178524"},
+    {"name": "Melvin Ljungqvist", "age": 18, "current_club": "Västerås SK", "position": "Right Winger", "nationality": "Sweden", "transfermarkt_player_id": "1390371"},
+    {"name": "Olle Lindberg", "age": 18, "current_club": "Mjällby AIF", "position": "Attacking Midfield", "nationality": "Sweden", "transfermarkt_player_id": "1400913"},
+    {"name": "Christian Wilhelmsson", "age": 46, "current_club": "Retired", "position": "Right Winger", "nationality": "Sweden", "transfermarkt_player_id": "9611"},
+    {"name": "Alexander Arnold Mezan", "age": 47, "current_club": "Retired", "position": "Right-Back", "nationality": "Sweden", "transfermarkt_player_id": "15350"},
+    {"name": "George Mourad", "age": 43, "current_club": "Retired", "position": "Centre-Forward", "nationality": "Syria/Sweden", "transfermarkt_player_id": "19258"},
+    {"name": "Viggo Karlsson", "age": 19, "current_club": "Trelleborgs FF", "position": "Left Midfield", "nationality": "Sweden", "transfermarkt_player_id": "1177724"},
+    {"name": "Jussi Tikkanen", "age": 20, "current_club": "Hässleholms IF", "position": "Central Midfield", "nationality": "Sweden", "transfermarkt_player_id": "1209374"},
+    {"name": "Elton Ursprung", "age": 19, "current_club": "Hässleholms IF", "position": "Goalkeeper", "nationality": "Sweden", "transfermarkt_player_id": "1411861"},
+    {"name": "Albin Romberg", "age": 18, "current_club": "Hässleholms IF", "position": "Right Winger", "nationality": "Sweden", "transfermarkt_player_id": "1440184"},
+    {"name": "Yassir Dib", "age": 19, "current_club": "FC Den Bosch U21", "position": "Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1461495"},
+    {"name": "Ismail Ljajic", "age": 19, "current_club": "FC Rosengård", "position": "Defender", "nationality": "Sweden", "transfermarkt_player_id": "1497830"},
+    {"name": "Loke Lundberg", "age": 17, "current_club": "Hässleholms IF", "position": "Attack", "nationality": "Sweden", "transfermarkt_player_id": "1499669"},
+    {"name": "Lipton Skagerholm", "age": 17, "current_club": "Hässleholms IF", "position": "Midfield", "nationality": "Sweden", "transfermarkt_player_id": "1517392"}
+  ]
+}

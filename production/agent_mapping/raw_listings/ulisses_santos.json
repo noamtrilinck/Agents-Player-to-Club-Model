@@ -1,0 +1,28 @@
+{
+  "agency_name": "Ulisses Santos (US11)",
+  "source_url": "https://www.transfermarkt.com/ulisses-santos-us11/beraterfirma/berater/3456",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "20 clients total, matching the page's own stated count exactly (15 active + 5 retired).",
+  "clients": [
+    {"name": "Samú Costa", "age": 25, "current_club": "Al-Nassr FC", "position": "Defensive Midfield", "nationality": "Portugal", "transfermarkt_player_id": "657430"},
+    {"name": "David Carmo", "age": 27, "current_club": "Olympiacos Piraeus", "position": "Centre-Back", "nationality": "Angola/Portugal", "transfermarkt_player_id": "498237"},
+    {"name": "Mirko Topic", "age": 25, "current_club": "Norwich City", "position": "Defensive Midfield", "nationality": "Serbia/Bosnia-Herzegovina", "transfermarkt_player_id": "615302"},
+    {"name": "Gelson Dala", "age": 30, "current_club": "Al-Wakrah SC", "position": "Centre-Forward", "nationality": "Angola/Portugal", "transfermarkt_player_id": "407907"},
+    {"name": "Tiago Almeida", "age": 24, "current_club": "Without Club", "position": "Right-Back", "nationality": "Portugal", "transfermarkt_player_id": "782612"},
+    {"name": "Otar Mamageishvili", "age": 23, "current_club": "Wolfsberger AC", "position": "Central Midfield", "nationality": "Georgia", "transfermarkt_player_id": "724966"},
+    {"name": "Vítor Costa", "age": 32, "current_club": "San Jose Earthquakes", "position": "Left-Back", "nationality": "Brazil", "transfermarkt_player_id": "384741"},
+    {"name": "Bruno Tavares", "age": 24, "current_club": "FK TransINVEST", "position": "Left-Back", "nationality": "Portugal/Cape Verde", "transfermarkt_player_id": "505641"},
+    {"name": "César Moreno", "age": 25, "current_club": "CD Numancia", "position": "Central Midfield", "nationality": "Spain", "transfermarkt_player_id": "672953"},
+    {"name": "Vincent Sasso", "age": 35, "current_club": "Le Havre AC", "position": "Centre-Back", "nationality": "France", "transfermarkt_player_id": "122115"},
+    {"name": "Hélder Lopes", "age": 37, "current_club": "Académica Coimbra", "position": "Left-Back", "nationality": "Portugal", "transfermarkt_player_id": "171068"},
+    {"name": "Giorgi Makaridze", "age": 36, "current_club": "Iberia 1999 Tbilisi", "position": "Goalkeeper", "nationality": "Georgia", "transfermarkt_player_id": "55977"},
+    {"name": "Gustavo Almeida", "age": 22, "current_club": "SC Beira-Mar", "position": "Right Winger", "nationality": "Portugal", "transfermarkt_player_id": "663240"},
+    {"name": "Francisco Brás", "age": 20, "current_club": "Rio Ave FC U23", "position": "Right-Back", "nationality": "Portugal", "transfermarkt_player_id": "1292820"},
+    {"name": "José Finisterra", "age": 20, "current_club": "RD Águeda", "position": "Left-Back", "nationality": "Portugal", "transfermarkt_player_id": "1436528"},
+    {"name": "Artur Moraes", "age": 45, "current_club": "Retired", "position": "Goalkeeper", "nationality": "Brazil/Italy", "transfermarkt_player_id": "20394"},
+    {"name": "Nuno Coelho", "age": 38, "current_club": "Retired", "position": "Defensive Midfield", "nationality": "Portugal", "transfermarkt_player_id": "46717"},
+    {"name": "Filipe Gonçalves", "age": 42, "current_club": "Retired", "position": "Defensive Midfield", "nationality": "Portugal", "transfermarkt_player_id": "31027"},
+    {"name": "Diogo Valente", "age": 41, "current_club": "Retired", "position": "Left Winger", "nationality": "Portugal", "transfermarkt_player_id": "23270"},
+    {"name": "Ricardo Silva", "age": 45, "current_club": "Retired", "position": "Centre-Back", "nationality": "Cape Verde/Portugal", "transfermarkt_player_id": "19375"}
+  ]
+}

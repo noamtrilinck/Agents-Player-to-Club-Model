@@ -1,0 +1,14 @@
+{
+  "agency_name": "AYMO Football Management",
+  "source_url": "https://www.transfermarkt.com/aymo-football-management/beraterfirma/berater/6468",
+  "extracted_from": "https://www.transfermarkt.us/aymo-football-management/beraterfirma/berater/6468 (single page, no pagination; page header confirms 6 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (6). Small Dutch/Turkish-focused agency.",
+  "clients": [
+    {"name": "Devyne Rensch", "age": 23, "current_club": "AS Roma", "position": "Right-Back", "nationality": "Netherlands/Suriname", "transfermarkt_player_id": "557407"},
+    {"name": "Naci Ünüvar", "age": 23, "current_club": "FC Twente Enschede", "position": "Left Winger", "nationality": "Turkey/Netherlands", "transfermarkt_player_id": "508639"},
+    {"name": "Emre Ünüvar", "age": 18, "current_club": "Ajax Amsterdam U21", "position": "Centre-Forward", "nationality": "Netherlands/Turkey", "transfermarkt_player_id": "1155804"},
+    {"name": "Nazjir Held", "age": 20, "current_club": "RKC Waalwijk", "position": "Left-Back", "nationality": "Curaçao/Netherlands", "transfermarkt_player_id": "940072"},
+    {"name": "Mark Engel", "age": 18, "current_club": "Ajax Amsterdam U19", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "1111061"},
+    {"name": "Amin Bouchouari", "age": 17, "current_club": "SC Telstar U19", "position": "Left-Back", "nationality": "Morocco/Netherlands", "transfermarkt_player_id": "1146467"}
+  ]
+}

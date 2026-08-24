@@ -1,0 +1,21 @@
+{
+  "agency_name": "AVE Sport Agency s.r.o.",
+  "source_url": "https://www.transfermarkt.com/ave-sport-agency-s-r-o-/beraterfirma/berater/12984",
+  "extracted_from": "https://www.transfermarkt.us/ave-sport-agency-s-r-o-/beraterfirma/berater/12984 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Small agency, 13 clients total, all Slovak nationals in Slovak lower-division clubs.",
+  "clients": [
+    {"name": "Adam Hanes", "age": 24, "current_club": "MFK Dukla Banska Bystrica", "position": "Attacking Midfield", "nationality": "Slovakia", "transfermarkt_player_id": "793107"},
+    {"name": "Filip Kiss", "age": 35, "current_club": "KFC Komarno", "position": "Defensive Midfield", "nationality": "Slovakia", "transfermarkt_player_id": "90360"},
+    {"name": "Miroslav Gono", "age": 25, "current_club": "MFK Zvolen", "position": "Central Midfield", "nationality": "Slovakia", "transfermarkt_player_id": "573573"},
+    {"name": "Timotej Zahumensky", "age": 31, "current_club": "MFK Zvolen", "position": "Left-Back", "nationality": "Slovakia", "transfermarkt_player_id": "326482"},
+    {"name": "Marian Smatlak", "age": 23, "current_club": "Banik Lehota pod Vtacnikom", "position": "Attacking Midfield", "nationality": "Slovakia", "transfermarkt_player_id": "582406"},
+    {"name": "Lukas Jendrek", "age": 23, "current_club": "Tatran Liptovsky Mikulas", "position": "Left Midfield", "nationality": "Slovakia", "transfermarkt_player_id": "726643"},
+    {"name": "Samuel Sefcik", "age": 29, "current_club": "FC Petrzalka", "position": "Right Winger", "nationality": "Slovakia", "transfermarkt_player_id": "403301"},
+    {"name": "Vladimir Bajtos", "age": 25, "current_club": "STK 1914 Samorin", "position": "Right-Back", "nationality": "Slovakia", "transfermarkt_player_id": "708961"},
+    {"name": "Jaroslav Holp", "age": 22, "current_club": "AS Trencin", "position": "Left-Back", "nationality": "Slovakia", "transfermarkt_player_id": "1025778"},
+    {"name": "David Kmeto", "age": 22, "current_club": "KFC Komarno", "position": "Midfield", "nationality": "Slovakia", "transfermarkt_player_id": "809944"},
+    {"name": "Juraj Kotula", "age": 30, "current_club": "USV Halbturn", "position": "Right-Back", "nationality": "Slovakia", "transfermarkt_player_id": "299587"},
+    {"name": "Adam Brenkus", "age": 27, "current_club": "Sandecja Nowy Sacz", "position": "Attacking Midfield", "nationality": "Slovakia", "transfermarkt_player_id": "412636"},
+    {"name": "David Bugar", "age": 18, "current_club": "FC ViOn Zlate Moravce-Vrable", "position": "Attack", "nationality": "Slovakia", "transfermarkt_player_id": "1299969"}
+  ]
+}

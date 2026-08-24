@@ -1,0 +1,23 @@
+{
+  "agency_name": "ML9 Sports",
+  "source_url": "https://www.transfermarkt.com/ml9-sports/beraterfirma/berater/12492",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "15 clients total, matching the page's own stated count exactly.",
+  "clients": [
+    {"name": "Aloísio Neto", "age": 28, "current_club": "PSM Makassar", "position": "Centre-Back", "nationality": "Brazil", "transfermarkt_player_id": "554040"},
+    {"name": "Huguinho", "age": 19, "current_club": "Botafogo de Futebol e Regatas", "position": "Defensive Midfield", "nationality": "Brazil", "transfermarkt_player_id": "1364573"},
+    {"name": "Sérgio Mendonça", "age": 22, "current_club": "Without Club", "position": "Centre-Forward", "nationality": "Brazil", "transfermarkt_player_id": "1036575"},
+    {"name": "Bruno Leite", "age": 26, "current_club": "Rayong FC", "position": "Attacking Midfield", "nationality": "Brazil", "transfermarkt_player_id": "722130"},
+    {"name": "Cayo Tenório", "age": 27, "current_club": "ABC Futebol Clube (RN)", "position": "Right-Back", "nationality": "Brazil", "transfermarkt_player_id": "739112"},
+    {"name": "Denílson", "age": 26, "current_club": "Associação Olímpica de Itabaiana", "position": "Right Winger", "nationality": "Brazil", "transfermarkt_player_id": "748778"},
+    {"name": "João Tavares", "age": 22, "current_club": "Londrina Esporte Clube (PR)", "position": "Defensive Midfield", "nationality": "Brazil", "transfermarkt_player_id": "1056019"},
+    {"name": "Fernandinho", "age": 23, "current_club": "Ferroviária", "position": "Defensive Midfield", "nationality": "Brazil", "transfermarkt_player_id": "1092436"},
+    {"name": "Fellipinho", "age": 22, "current_club": "Volta Redonda Futebol Clube (RJ)", "position": "Right Winger", "nationality": "Brazil", "transfermarkt_player_id": "1089147"},
+    {"name": "Rhenan", "age": 20, "current_club": "Maricá FC U20", "position": "Attacking Midfield", "nationality": "Brazil", "transfermarkt_player_id": "1373640"},
+    {"name": "Gabriel Ryan", "age": 18, "current_club": "SC Internacional U20", "position": "Left Winger", "nationality": "Brazil", "transfermarkt_player_id": "1386153"},
+    {"name": "Pedro Brito", "age": 19, "current_club": "Al-Raed SFC U19", "position": "Centre-Back", "nationality": "Brazil", "transfermarkt_player_id": "1496472"},
+    {"name": "Vitor", "age": 19, "current_club": "Botafogo FR U20", "position": "Attack", "nationality": "Brazil", "transfermarkt_player_id": "1499426"},
+    {"name": "João Marcelo", "age": 18, "current_club": "Maricá FC U20", "position": "Defensive Midfield", "nationality": "Brazil", "transfermarkt_player_id": "1499427"},
+    {"name": "Lucas Emanuel", "age": 17, "current_club": "Botafogo FR U17", "position": "Centre-Forward", "nationality": "Brazil", "transfermarkt_player_id": "1568045"}
+  ]
+}

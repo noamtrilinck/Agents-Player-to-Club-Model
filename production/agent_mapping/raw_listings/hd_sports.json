@@ -1,0 +1,25 @@
+{
+  "agency_name": "HD Sports",
+  "source_url": "https://www.transfermarkt.com/hd-sports/beraterfirma/berater/12147",
+  "extracted_from": "https://www.transfermarkt.us/hd-sports/beraterfirma/berater/12147 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Small agency, 17 clients total, French/Central African roster spanning Ligue 1 down to West African clubs.",
+  "clients": [
+    {"name": "Kevin Danso", "age": 27, "current_club": "Tottenham Hotspur", "position": "Centre-Back", "nationality": "Austria", "transfermarkt_player_id": "263236"},
+    {"name": "Lilian Brassier", "age": 26, "current_club": "Stade Rennais FC", "position": "Centre-Back", "nationality": "France/Togo", "transfermarkt_player_id": "485960"},
+    {"name": "Simon Banza", "age": 30, "current_club": "Al-Jazira Club", "position": "Centre-Forward", "nationality": "DR Congo/France", "transfermarkt_player_id": "344869"},
+    {"name": "Mario Lemina", "age": 32, "current_club": "Galatasaray", "position": "Defensive Midfield", "nationality": "Gabon/France", "transfermarkt_player_id": "170934"},
+    {"name": "Tom Pouilly", "age": 23, "current_club": "Pau FC", "position": "Right-Back", "nationality": "France", "transfermarkt_player_id": "917817"},
+    {"name": "Massadio Haïdara", "age": 33, "current_club": "Kocaelispor", "position": "Left-Back", "nationality": "Mali/France", "transfermarkt_player_id": "170929"},
+    {"name": "Nathan Monzango", "age": 25, "current_club": "FK Gabala", "position": "Centre-Back", "nationality": "France/DR Congo", "transfermarkt_player_id": "804715"},
+    {"name": "Frederic Ananou", "age": 28, "current_club": "NK Olimpija Ljubljana", "position": "Right-Back", "nationality": "Togo/Germany", "transfermarkt_player_id": "240263"},
+    {"name": "Kwabe Schulz", "age": 27, "current_club": "SV Sandhausen", "position": "Centre-Back", "nationality": "Germany/Ghana", "transfermarkt_player_id": "507677"},
+    {"name": "Noha Lemina", "age": 21, "current_club": "Manisa FK", "position": "Attacking Midfield", "nationality": "Gabon/France", "transfermarkt_player_id": "816124"},
+    {"name": "Prince Otubua", "age": 22, "current_club": "Aduana FC", "position": "Left Winger", "nationality": "Ghana", "transfermarkt_player_id": "845719"},
+    {"name": "Enzo Mongo", "age": 21, "current_club": "FC Nantes B", "position": "Centre-Back", "nationality": "France/Congo", "transfermarkt_player_id": "1119455"},
+    {"name": "Yusupha Sawaneh", "age": 22, "current_club": "BSC Güls", "position": "Centre-Forward", "nationality": "The Gambia/Germany", "transfermarkt_player_id": "821417"},
+    {"name": "Charles Noël Gnamian", "age": 17, "current_club": "Stade Brest 29 U17", "position": "Attack", "nationality": "Côte d'Ivoire", "transfermarkt_player_id": "1486125"},
+    {"name": "Levy Ndoutoume", "age": 23, "current_club": "Lyon - La Duchère", "position": "Left-Back", "nationality": "Gabon/France", "transfermarkt_player_id": "1079919"},
+    {"name": "Yannick Agora", "age": 22, "current_club": "Toulouse Rodéo FC", "position": "Right-Back", "nationality": "France/Côte d'Ivoire", "transfermarkt_player_id": "802998"},
+    {"name": "Bangaly Fofana", "age": 21, "current_club": "FC San Pedro", "position": "Right-Back", "nationality": "Côte d'Ivoire", "transfermarkt_player_id": "668944"}
+  ]
+}

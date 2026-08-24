@@ -1,0 +1,10 @@
+{
+  "agency_name": "225 Sport Management",
+  "source_url": "https://www.transfermarkt.com/225-sport-management/beraterfirma/berater/10515",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "2 clients total, matching the page's own stated count exactly.",
+  "clients": [
+    {"name": "Patrick Zabi", "age": 19, "current_club": "Paris FC", "position": "Central Midfield", "nationality": "Côte d'Ivoire", "transfermarkt_player_id": "1363293"},
+    {"name": "Hamed Kader Fofana", "age": 21, "current_club": "AEK Athens B", "position": "Central Midfield", "nationality": "Côte d'Ivoire", "transfermarkt_player_id": "1176199"}
+  ]
+}

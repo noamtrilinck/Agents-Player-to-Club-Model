@@ -1,0 +1,19 @@
+{
+  "agency_name": "Onus Sports Ltd",
+  "source_url": "https://www.transfermarkt.com/onus-sports-ltd/beraterfirma/berater/13347",
+  "extracted_from": "https://www.transfermarkt.us/onus-sports-ltd/beraterfirma/berater/13347 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Small agency, 11 clients total, spanning England/Ireland/Uganda/Egypt/Pakistan/Scotland nationalities across a wide range of leagues.",
+  "clients": [
+    {"name": "Anwar El Ghazi", "age": 31, "current_club": "Al-Sailiya SC", "position": "Right Winger", "nationality": "Netherlands/Morocco", "transfermarkt_player_id": "183720"},
+    {"name": "Rogers Mato", "age": 22, "current_club": "Heart of Midlothian FC", "position": "Left Winger", "nationality": "Uganda", "transfermarkt_player_id": "973449"},
+    {"name": "Sam Morsy", "age": 34, "current_club": "Blackburn Rovers", "position": "Central Midfield", "nationality": "Egypt/England", "transfermarkt_player_id": "123551"},
+    {"name": "Easah Suliman", "age": 28, "current_club": "Sumgayit PFC", "position": "Centre-Back", "nationality": "Pakistan/England", "transfermarkt_player_id": "282820"},
+    {"name": "Ali Reghba", "age": 26, "current_club": "NK Maribor", "position": "Left Winger", "nationality": "Ireland/Algeria", "transfermarkt_player_id": "615177"},
+    {"name": "Farouk Miya", "age": 28, "current_club": "Vipers SC", "position": "Attacking Midfield", "nationality": "Uganda", "transfermarkt_player_id": "339005"},
+    {"name": "Yian Gatbel", "age": 17, "current_club": "Kampala Capital City Authority FC", "position": "Right Winger", "nationality": "Uganda/Southern Sudan", "transfermarkt_player_id": "1361663"},
+    {"name": "Alex Jakubiak", "age": 29, "current_club": "Al-Ittihad SC", "position": "Centre-Forward", "nationality": "Scotland/England", "transfermarkt_player_id": "317032"},
+    {"name": "Yassine En-Neyah", "age": 26, "current_club": "Truro City FC", "position": "Attacking Midfield", "nationality": "Ireland/Morocco", "transfermarkt_player_id": "565681"},
+    {"name": "Tylah Wallace-Ming", "age": 21, "current_club": "Rimal Al-Sahra SC", "position": "Right-Back", "nationality": "England", "transfermarkt_player_id": "874431"},
+    {"name": "Hassan Hamid", "age": 19, "current_club": "Arizona Western College Matadors", "position": "Central Midfield", "nationality": "England", "transfermarkt_player_id": "1128634"}
+  ]
+}

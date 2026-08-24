@@ -1,0 +1,14 @@
+{
+  "agency_name": "AS Sports Management",
+  "source_url": "https://www.transfermarkt.com/as-sports-management/beraterfirma/berater/3464",
+  "extracted_from": "https://www.transfermarkt.us/as-sports-management/beraterfirma/berater/3464 (single page, no pagination; page header confirms 6 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (6). German youth-focused.",
+  "clients": [
+    {"name": "Max Marie", "age": 21, "current_club": "Eintracht Braunschweig", "position": "Central Midfield", "nationality": "Germany", "transfermarkt_player_id": "729176"},
+    {"name": "Amara Condé", "age": 29, "current_club": "SV 07 Elversberg", "position": "Defensive Midfield", "nationality": "Germany/Guinea", "transfermarkt_player_id": "207580"},
+    {"name": "Mame Diouf", "age": 38, "current_club": "Ankara Keciörengücü", "position": "Centre-Forward", "nationality": "Senegal", "transfermarkt_player_id": "62049"},
+    {"name": "Hamed Cherif", "age": 18, "current_club": "1.FC Köln U19", "position": "Centre-Back", "nationality": "Germany/Guinea", "transfermarkt_player_id": "1170088"},
+    {"name": "Ediz Eroglu", "age": 19, "current_club": "Without Club", "position": "Centre-Forward", "nationality": "Germany/Türkiye", "transfermarkt_player_id": "1283407"},
+    {"name": "Yazan Obayda", "age": 18, "current_club": "Without Club", "position": "Right-Back", "nationality": "Germany/Palestine", "transfermarkt_player_id": "1290544"}
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "agency_name": "Vulpes-vna",
+  "source_url": "https://www.transfermarkt.com/vulpes-vna/beraterfirma/berater/9563",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "15 clients total, matching the page's own stated count exactly.",
+  "clients": [
+    {"name": "Adriano Bertaccini", "age": 26, "current_club": "RSC Anderlecht", "position": "Centre-Forward", "nationality": "Belgium/Italy", "transfermarkt_player_id": "364896"},
+    {"name": "Maxence Maisonneuve", "age": 27, "current_club": "Wisla Kraków", "position": "Centre-Back", "nationality": "France", "transfermarkt_player_id": "589273"},
+    {"name": "Noah Mawete", "age": 20, "current_club": "SK Beveren", "position": "Defensive Midfield", "nationality": "DR Congo/Belgium", "transfermarkt_player_id": "743377"},
+    {"name": "Mohamed Medfai", "age": 26, "current_club": "Lokomotiv Sofia", "position": "Left Winger", "nationality": "Tunisia/France", "transfermarkt_player_id": "589271"},
+    {"name": "Alexis Calant", "age": 29, "current_club": "Olympic Charleroi", "position": "Centre-Back", "nationality": "France", "transfermarkt_player_id": "601670"},
+    {"name": "Guillaume François", "age": 36, "current_club": "Retired", "position": "Right-Back", "nationality": "Belgium", "transfermarkt_player_id": "72736"},
+    {"name": "Paolino Bertaccini", "age": 28, "current_club": "Crossing Schaerbeek", "position": "Right Winger", "nationality": "Belgium/Italy", "transfermarkt_player_id": "249526"},
+    {"name": "Loïc Besson", "age": 27, "current_club": "RSC Habay-La-Neuve", "position": "Defensive Midfield", "nationality": "Belgium", "transfermarkt_player_id": "643819"},
+    {"name": "Lucas Kalala", "age": 24, "current_club": "Without Club", "position": "Right-Back", "nationality": "Belgium/DR Congo", "transfermarkt_player_id": "717889"},
+    {"name": "Axel Benoît", "age": 26, "current_club": "Olympic Charleroi", "position": "Left-Back", "nationality": "France", "transfermarkt_player_id": "807656"},
+    {"name": "Andréa Librici", "age": 21, "current_club": "KFC Dessel Sport", "position": "Right-Back", "nationality": "Belgium", "transfermarkt_player_id": "1034646"},
+    {"name": "Soulaimane Berradi", "age": 21, "current_club": "Olympic Charleroi", "position": "Central Midfield", "nationality": "Belgium/Morocco", "transfermarkt_player_id": "975716"},
+    {"name": "Hugo Eugène", "age": 23, "current_club": "Tempo Overijse", "position": "Centre-Forward", "nationality": "Belgium", "transfermarkt_player_id": "1172455"},
+    {"name": "Alexandre Pirard", "age": 22, "current_club": "RRC Stockay Saint-Georges", "position": "Attack", "nationality": "Belgium", "transfermarkt_player_id": "1280538"},
+    {"name": "Matteo Croda", "age": 19, "current_club": "KAS Eupen U23", "position": "Centre-Back", "nationality": "Belgium", "transfermarkt_player_id": "1308949"}
+  ]
+}

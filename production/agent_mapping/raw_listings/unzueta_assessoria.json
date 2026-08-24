@@ -1,0 +1,16 @@
+{
+  "agency_name": "Unzueta Assessoria Intermediaçao de negocios Eireli",
+  "source_url": "https://www.transfermarkt.com/unzueta-assessoria-intermediacao-de-negocios-eireli/beraterfirma/berater/8376",
+  "extracted_from": "https://www.transfermarkt.us/unzueta-assessoria-intermediacao-de-negocios-eireli/beraterfirma/berater/8376 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Small agency, 8 clients total, all Brazilian, mostly outside major leagues.",
+  "clients": [
+    {"name": "Ewerton", "age": 29, "current_club": "Pyramids FC", "position": "Left Winger", "nationality": "Brazil", "transfermarkt_player_id": "456893"},
+    {"name": "Cadu", "age": 29, "current_club": "Ferencvárosi TC", "position": "Left-Back", "nationality": "Brazil", "transfermarkt_player_id": "748908"},
+    {"name": "Ygor Nogueira", "age": 31, "current_club": "FC Rostov", "position": "Centre-Back", "nationality": "Brazil", "transfermarkt_player_id": "187211"},
+    {"name": "Gustavo França", "age": 28, "current_club": "Arema FC", "position": "Attacking Midfield", "nationality": "Brazil/Italy", "transfermarkt_player_id": "455188"},
+    {"name": "Renan Oliveira", "age": 29, "current_club": "FK Kauno Zalgiris", "position": "Centre-Forward", "nationality": "Brazil", "transfermarkt_player_id": "522091"},
+    {"name": "Leandro Lima", "age": 23, "current_club": "(Unaffiliated)", "position": "Right Winger", "nationality": "Brazil", "transfermarkt_player_id": "688079"},
+    {"name": "Tortello", "age": 22, "current_club": "GD Prudente (SP)", "position": "Central Midfield", "nationality": "Brazil", "transfermarkt_player_id": "867811"},
+    {"name": "Bedeu", "age": 22, "current_club": "Morrinhos FC", "position": "Defensive Midfield", "nationality": "Brazil", "transfermarkt_player_id": "978055"}
+  ]
+}

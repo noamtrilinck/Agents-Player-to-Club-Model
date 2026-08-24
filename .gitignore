@@ -1,0 +1,58 @@
+# =================================================================================================
+# Agent's Player to Club Model -- .gitignore
+#
+# Written against this project's actual structure (not a generic template). The deployed Streamlit
+# app (dashboard/app.py) reads exactly 4 CSVs from production/recommendation_engine/results/ -- see
+# dashboard/app_config.py / dashboard/data_loader.py. Everything else under production/ is either
+# build-time source (.py scripts, kept -- they document/reproduce the pipeline) or generated
+# research/intermediate data (excluded below -- large, not needed at runtime, regenerable from the
+# source scripts).
+# =================================================================================================
+
+# --- Local backup, never part of the project ---
+.pre_gcs_v4_backup/
+
+# --- Python ---
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# --- Virtual environments ---
+venv/
+.venv/
+env/
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Secrets / local env (defensive -- none currently exist in this project) ---
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+
+# --- Logs / temp ---
+*.log
+*.tmp
+
+# --- Legacy / superseded work ---
+Archive/
+
+# --- Research, experiments, intermediate/build outputs (regenerable from production/*/*.py) ---
+production/*/research/
+production/style_compatibility/results/
+production/level_and_opportunity/results/
+production/club_pattern_model/results/
+production/player_evaluation_integration/results/
+production/agent_mapping/results/
+production/scope_and_eligibility/results/
+
+# NOTE: production/recommendation_engine/results/ is intentionally NOT ignored above -- it holds
+# the 4 CSVs the deployed dashboard reads at runtime (players.csv, recommendations.csv,
+# explanations.csv, league_coverage.csv) plus a small (~1KB) build-time stats file. Do not add a
+# blanket production/*/results/ rule without this exception, or the deployed app's own data goes
+# missing from the repo.

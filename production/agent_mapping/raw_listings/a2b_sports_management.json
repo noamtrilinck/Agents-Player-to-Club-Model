@@ -1,0 +1,16 @@
+{
+  "agency_name": "A2B Sports Management",
+  "source_url": "https://www.transfermarkt.com/a2b-sports-management/beraterfirma/berater/10024",
+  "extracted_from": "https://www.transfermarkt.us/a2b-sports-management/beraterfirma/berater/10024 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Small agency, 8 clients total, mostly English lower-league/youth.",
+  "clients": [
+    {"name": "Dominic Sadi", "age": 22, "current_club": "FK Novi Pazar", "position": "Right Winger", "nationality": "England", "transfermarkt_player_id": "936901"},
+    {"name": "Filozofe Mabete", "age": 21, "current_club": "Forest Green Rovers", "position": "Centre-Back", "nationality": "DR Congo/England", "transfermarkt_player_id": "812133"},
+    {"name": "Prosper Padera", "age": 19, "current_club": "SJK Seinäjoki", "position": "Defensive Midfield", "nationality": "Zimbabwe", "transfermarkt_player_id": "1366992"},
+    {"name": "Doumbe", "age": 21, "current_club": "Politehnica UTM Chișinău", "position": "Attack", "nationality": "Cameroon", "transfermarkt_player_id": "1526566"},
+    {"name": "David McGoldrick", "age": 38, "current_club": "Mansfield Town", "position": "Centre-Forward", "nationality": "Ireland/England", "transfermarkt_player_id": "35416"},
+    {"name": "Wesley Fonguck", "age": 29, "current_club": "Hampton & Richmond Borough", "position": "Central Midfield", "nationality": "England/Ghana", "transfermarkt_player_id": "380021"},
+    {"name": "Makise Evans", "age": 19, "current_club": "Colchester United U21", "position": "Centre-Forward", "nationality": "England", "transfermarkt_player_id": "1136964"},
+    {"name": "Jerome Richards", "age": 19, "current_club": "Derby County U21", "position": "Right Winger", "nationality": "England/Ireland", "transfermarkt_player_id": "1240385"}
+  ]
+}

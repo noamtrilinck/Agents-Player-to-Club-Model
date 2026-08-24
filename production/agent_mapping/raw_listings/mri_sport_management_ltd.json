@@ -1,0 +1,17 @@
+{
+  "agency_name": "M.R.I. Sport Management LTD",
+  "source_url": "https://www.transfermarkt.com/m-r-i-sport-management-ltd/beraterfirma/berater/7984",
+  "extracted_from": "https://www.transfermarkt.us/m-r-i-sport-management-ltd/beraterfirma/berater/7984 (single page, no pagination; page header confirms 9 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (9).",
+  "clients": [
+    {"name": "Ido Cohen", "age": 21, "current_club": "Maccabi Petah Tikva", "position": "Defensive Midfield", "nationality": "Israel/Poland", "transfermarkt_player_id": "1083165"},
+    {"name": "Yonatan Farber", "age": 24, "current_club": "Hapoel Tel Aviv", "position": "Attacking Midfield", "nationality": "Israel", "transfermarkt_player_id": "926941"},
+    {"name": "Nir Lax", "age": 32, "current_club": "Ironi Modiin", "position": "Defensive Midfield", "nationality": "Israel", "transfermarkt_player_id": "222030"},
+    {"name": "Matan Peleg", "age": 32, "current_club": "Without Club", "position": "Right-Back", "nationality": "Guatemala/Israel", "transfermarkt_player_id": "211785"},
+    {"name": "Avi Rikan", "age": 37, "current_club": "Retired", "position": "Attacking Midfield", "nationality": "Israel", "transfermarkt_player_id": "113486"},
+    {"name": "Amit Mizrahi", "age": 30, "current_club": "Hapoel Ironi Karmiel", "position": "Right Winger", "nationality": "Israel/Portugal", "transfermarkt_player_id": "247635"},
+    {"name": "Maor Gerassi", "age": 31, "current_club": "Without Club", "position": "Left-Back", "nationality": "Israel", "transfermarkt_player_id": "311866"},
+    {"name": "Or Vaknin", "age": 30, "current_club": "Retired", "position": "Central Midfield", "nationality": "Israel", "transfermarkt_player_id": "376893"},
+    {"name": "Ben Shimoni", "age": 30, "current_club": "Without Club", "position": "Defensive Midfield", "nationality": "Israel/France", "transfermarkt_player_id": "514703"}
+  ]
+}

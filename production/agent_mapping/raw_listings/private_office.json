@@ -1,0 +1,16 @@
+{
+  "agency_name": "Private Office",
+  "source_url": "https://www.transfermarkt.com/private-office/beraterfirma/berater/15303",
+  "extracted_from": "https://www.transfermarkt.us/private-office/beraterfirma/berater/15303 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Small agency, 8 clients total, Finnish/Baltic-centric roster.",
+  "clients": [
+    {"name": "Eymen Laghrissi", "age": 18, "current_club": "Karlsruher SC U19", "position": "Centre-Forward", "nationality": "Germany", "transfermarkt_player_id": "1163670"},
+    {"name": "Mikael Soisalo", "age": 28, "current_club": "Puskás Akadémia FC", "position": "Right Winger", "nationality": "Finland", "transfermarkt_player_id": "323010"},
+    {"name": "Baba Musah", "age": 26, "current_club": "Riga FC", "position": "Centre-Back", "nationality": "Ghana", "transfermarkt_player_id": "892010"},
+    {"name": "Doni Arifi", "age": 24, "current_club": "SpVgg Greuther Fürth", "position": "Defensive Midfield", "nationality": "Finland/Kosovo", "transfermarkt_player_id": "563841"},
+    {"name": "Rihards Matrevics", "age": 27, "current_club": "FC RFS", "position": "Goalkeeper", "nationality": "Latvia", "transfermarkt_player_id": "372115"},
+    {"name": "Maksim Stjopin", "age": 23, "current_club": "Ilves Tampere", "position": "Attacking Midfield", "nationality": "Finland/Estonia", "transfermarkt_player_id": "679593"},
+    {"name": "Otto Kemppainen", "age": 22, "current_club": "AC Oulu", "position": "Right-Back", "nationality": "Finland", "transfermarkt_player_id": "681616"},
+    {"name": "Johannes Viitala", "age": 20, "current_club": "SJK Seinäjoki", "position": "Goalkeeper", "nationality": "Finland", "transfermarkt_player_id": "927988"}
+  ]
+}

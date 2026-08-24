@@ -1,0 +1,38 @@
+{
+  "agency_name": "Fortitude Player Management",
+  "source_url": "https://www.transfermarkt.com/fortitude-player-management/beraterfirma/berater/3224",
+  "extracted_from": "https://www.transfermarkt.us/fortitude-player-management/beraterfirma/berater/3224 (pages 1-2)",
+  "extraction_note": "Extracted from the agency's client-listing pages only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (25+4=29). Dutch-focused.",
+  "clients": [
+    {"name": "Bassala Sambou", "age": 28, "current_club": "Neftchi PFK", "position": "Centre-Forward", "nationality": "England/Senegal", "transfermarkt_player_id": "406924"},
+    {"name": "Nigel Robertha", "age": 28, "current_club": "Sliema Wanderers", "position": "Centre-Forward", "nationality": "Curacao/Netherlands", "transfermarkt_player_id": "315280"},
+    {"name": "Kyvon Leidsman", "age": 27, "current_club": "FK Liepaja", "position": "Centre-Forward", "nationality": "Netherlands/Suriname", "transfermarkt_player_id": "243276"},
+    {"name": "Joshua Eijgenraam", "age": 24, "current_club": "Without Club", "position": "Defensive Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "618036"},
+    {"name": "Marvin Martins", "age": 31, "current_club": "FK Liepaja", "position": "Centre-Back", "nationality": "Luxembourg/Cape Verde", "transfermarkt_player_id": "313504"},
+    {"name": "Thomas Bruns", "age": 34, "current_club": "Heracles Almelo", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "172202"},
+    {"name": "Diego van Oorschot", "age": 20, "current_club": "Heracles Almelo", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "989998"},
+    {"name": "Timo Jansink", "age": 23, "current_club": "Heracles Almelo", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "703778"},
+    {"name": "Mike van Duinen", "age": 34, "current_club": "Without Club", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "183397"},
+    {"name": "Yoëll van Nieff", "age": 33, "current_club": "Anorthosis Famagusta", "position": "Defensive Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "187301"},
+    {"name": "Caner Cavlan", "age": 34, "current_club": "Aliaga FK", "position": "Left-Back", "nationality": "Türkiye/Netherlands", "transfermarkt_player_id": "136550"},
+    {"name": "Rigino Cicilia", "age": 31, "current_club": "FC Zbrojovka Brno", "position": "Centre-Forward", "nationality": "Curacao/Netherlands", "transfermarkt_player_id": "275939"},
+    {"name": "Evren Korkmaz", "age": 29, "current_club": "Sakaryaspor", "position": "Centre-Back", "nationality": "Türkiye/Netherlands", "transfermarkt_player_id": "349796"},
+    {"name": "Dries Wuytens", "age": 35, "current_club": "Retired", "position": "Centre-Back", "nationality": "Belgium", "transfermarkt_player_id": "83951"},
+    {"name": "Jimmy Mpanzu", "age": 24, "current_club": "Kryvbas Kryvyi Rig", "position": "Centre-Back", "nationality": "Portugal/Angola", "transfermarkt_player_id": "1029599"},
+    {"name": "Daryl Werker", "age": 32, "current_club": "Retired", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "269585"},
+    {"name": "Mimoun Mahi", "age": 32, "current_club": "Retired", "position": "Left Winger", "nationality": "Morocco/Netherlands", "transfermarkt_player_id": "216815"},
+    {"name": "Terell Ondaan", "age": 32, "current_club": "Retired", "position": "Right Winger", "nationality": "Guyana/Netherlands", "transfermarkt_player_id": "187598"},
+    {"name": "Michael Chacón", "age": 32, "current_club": "VV WKE '16 Emmen", "position": "Defensive Midfield", "nationality": "Netherlands/Colombia", "transfermarkt_player_id": "158540"},
+    {"name": "Manuel Prietl", "age": 35, "current_club": "Retired", "position": "Defensive Midfield", "nationality": "Austria", "transfermarkt_player_id": "152317"},
+    {"name": "Calvin Mac-Intosch", "age": 37, "current_club": "Retired", "position": "Centre-Back", "nationality": "Suriname/Netherlands", "transfermarkt_player_id": "113996"},
+    {"name": "Jordy Buijs", "age": 37, "current_club": "Retired", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "31111"},
+    {"name": "Jesse Larooi", "age": 19, "current_club": "SC Cambuur-Leeuwarden U21", "position": "Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1024698"},
+    {"name": "Latrell Aken", "age": 18, "current_club": "AZ Alkmaar U19", "position": "Right-Back", "nationality": "Netherlands", "transfermarkt_player_id": "1135625"},
+    {"name": "Finn Larooi", "age": 19, "current_club": "SC Cambuur-Leeuwarden U21", "position": "Defender", "nationality": "Netherlands", "transfermarkt_player_id": "1177933"},
+
+    {"name": "Julian Sijbrands", "age": 19, "current_club": "AZ Alkmaar U21", "position": "Defensive Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1182906"},
+    {"name": "Calvin Carrilho", "age": 17, "current_club": "AZ Alkmaar U19", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "1270411"},
+    {"name": "Derryl Hupsel", "age": 18, "current_club": "SC Cambuur-Leeuwarden U21", "position": "Left Winger", "nationality": "Netherlands", "transfermarkt_player_id": "1312839"},
+    {"name": "Massimilliano Frassino", "age": 17, "current_club": "SC Cambuur U19", "position": "Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1312841"}
+  ]
+}

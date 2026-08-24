@@ -1,0 +1,38 @@
+{
+  "agency_name": "SP The Agency",
+  "source_url": "https://www.transfermarkt.com/sp-the-agency/beraterfirma/berater/14077",
+  "extracted_from": "https://www.transfermarkt.us/sp-the-agency/beraterfirma/berater/14077 (pages 1-2)",
+  "extraction_note": "Extracted from the agency's client-listing pages only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (25+4=29). Dutch-focused.",
+  "clients": [
+    {"name": "Sem Steijn", "age": 24, "current_club": "Feyenoord Rotterdam", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "593519"},
+    {"name": "Mats Deijl", "age": 29, "current_club": "Feyenoord Rotterdam", "position": "Right-Back", "nationality": "Netherlands", "transfermarkt_player_id": "369554"},
+    {"name": "Shaquille Pinas", "age": 28, "current_club": "Al-Kholood Club", "position": "Centre-Back", "nationality": "Suriname/Netherlands", "transfermarkt_player_id": "446248"},
+    {"name": "Mitchell van Bergen", "age": 26, "current_club": "Sparta Rotterdam", "position": "Right Winger", "nationality": "Netherlands", "transfermarkt_player_id": "393239"},
+    {"name": "Vicko Sevelj", "age": 25, "current_club": "Dundee United FC", "position": "Defensive Midfield", "nationality": "Croatia", "transfermarkt_player_id": "575209"},
+    {"name": "Karim Rekik", "age": 31, "current_club": "Al-Jazira Club", "position": "Centre-Back", "nationality": "Netherlands/Tunisia", "transfermarkt_player_id": "182579"},
+    {"name": "Sem Scheperman", "age": 24, "current_club": "Heracles Almelo", "position": "Defensive Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "618083"},
+    {"name": "Dean Zandbergen", "age": 24, "current_club": "VVV-Venlo", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "942790"},
+    {"name": "Marc Cardona", "age": 31, "current_club": "Without Club", "position": "Centre-Forward", "nationality": "Spain", "transfermarkt_player_id": "443222"},
+    {"name": "Omar Rekik", "age": 24, "current_club": "NK Maribor", "position": "Centre-Back", "nationality": "Tunisia/Netherlands", "transfermarkt_player_id": "578292"},
+    {"name": "Jordan Courtney-Perkins", "age": 23, "current_club": "Sydney FC", "position": "Centre-Back", "nationality": "Australia", "transfermarkt_player_id": "691325"},
+    {"name": "Nikolas Brandis", "age": 21, "current_club": "FC Groningen", "position": "Left-Back", "nationality": "Slovakia", "transfermarkt_player_id": "930390"},
+    {"name": "Uriël van Aalst", "age": 19, "current_club": "Willem II Tilburg", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1052795"},
+    {"name": "Bert Esselink", "age": 26, "current_club": "Dundee United FC", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "462059"},
+    {"name": "Pepijn Reulen", "age": 18, "current_club": "NAC Breda", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "1409754"},
+    {"name": "Jevon Simons", "age": 21, "current_club": "Zulte Waregem", "position": "Right Winger", "nationality": "Netherlands/Suriname", "transfermarkt_player_id": "738492"},
+    {"name": "Rick Ketting", "age": 30, "current_club": "Phnom Penh Crown", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "309843"},
+    {"name": "Enes Mahmutovic", "age": 29, "current_club": "Without Club", "position": "Centre-Back", "nationality": "Luxembourg/Kosovo", "transfermarkt_player_id": "329055"},
+    {"name": "Mees Kreekels", "age": 24, "current_club": "Without Club", "position": "Right-Back", "nationality": "Netherlands", "transfermarkt_player_id": "494282"},
+    {"name": "Jens Mathijsen", "age": 18, "current_club": "Willem II Tilburg", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "1175838"},
+    {"name": "Anthony van den Hurk", "age": 33, "current_club": "Roda JC Kerkrade", "position": "Centre-Forward", "nationality": "Curacao/Netherlands", "transfermarkt_player_id": "226100"},
+    {"name": "Fodé Fofana", "age": 23, "current_club": "Without Club", "position": "Centre-Forward", "nationality": "Netherlands/Guinea", "transfermarkt_player_id": "594039"},
+    {"name": "Dano Lourens", "age": 22, "current_club": "Terrassa FC", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "1011472"},
+    {"name": "Nino Fancito", "age": 21, "current_club": "FC Eindhoven", "position": "Goalkeeper", "nationality": "Curacao/Netherlands", "transfermarkt_player_id": "1019546"},
+    {"name": "Jaden de Guzmán", "age": 19, "current_club": "PSV Eindhoven U21", "position": "Central Midfield", "nationality": "Netherlands/Canada", "transfermarkt_player_id": "865001"},
+
+    {"name": "Amar Bakkati", "age": 18, "current_club": "SC Cambuur-Leeuwarden U21", "position": "Defensive Midfield", "nationality": "Netherlands/Bosnia-Herzegovina", "transfermarkt_player_id": "1136526"},
+    {"name": "Tim Danhof", "age": 19, "current_club": "Excelsior Rotterdam U21", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "1235384"},
+    {"name": "Rafi Wolters", "age": 19, "current_club": "FC Den Bosch", "position": "Centre-Forward", "nationality": "Netherlands/Iran", "transfermarkt_player_id": "1309038"},
+    {"name": "Liam van Nistelrooy", "age": 18, "current_club": "PSV Eindhoven U19", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "1312329"}
+  ]
+}

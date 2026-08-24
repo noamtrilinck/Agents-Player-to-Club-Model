@@ -1,0 +1,25 @@
+{
+  "agency_name": "Status Pro Sport",
+  "source_url": "https://www.transfermarkt.com/status-pro-sport/beraterfirma/berater/7742",
+  "extracted_from": "https://www.transfermarkt.us/status-pro-sport/beraterfirma/berater/7742 (single page, no pagination; page header confirms 17 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (17). Dutch/Indonesian-focused.",
+  "clients": [
+    {"name": "Marc Klok", "age": 33, "current_club": "PERSIB Bandung", "position": "Central Midfield", "nationality": "Indonesia/Netherlands", "transfermarkt_player_id": "272708"},
+    {"name": "Shayne Pattynama", "age": 28, "current_club": "Persija Jakarta", "position": "Left-Back", "nationality": "Indonesia/Netherlands", "transfermarkt_player_id": "409335"},
+    {"name": "Bryan van Hove", "age": 26, "current_club": "FC Emmen", "position": "Left-Back", "nationality": "Belgium/Netherlands", "transfermarkt_player_id": "429929"},
+    {"name": "Kadek Arel", "age": 21, "current_club": "Bali United FC", "position": "Centre-Back", "nationality": "Indonesia", "transfermarkt_player_id": "989205"},
+    {"name": "Toshio Lake", "age": 25, "current_club": "Without Club", "position": "Centre-Forward", "nationality": "Netherlands/Sint Maarten", "transfermarkt_player_id": "514290"},
+    {"name": "Xiamaro Thenu", "age": 21, "current_club": "Vitesse Arnhem", "position": "Left-Back", "nationality": "Netherlands", "transfermarkt_player_id": "761283"},
+    {"name": "Bagas Kaffa", "age": 24, "current_club": "Semen Padang FC", "position": "Right-Back", "nationality": "Indonesia", "transfermarkt_player_id": "735557"},
+    {"name": "Djairo Tehubijuluw", "age": 21, "current_club": "MVV Maastricht", "position": "Left-Back", "nationality": "Netherlands", "transfermarkt_player_id": "995321"},
+    {"name": "Melle Witteveen", "age": 23, "current_club": "HHC Hardenberg", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "603477"},
+    {"name": "Made Tito", "age": 23, "current_club": "Bali United FC", "position": "Defensive Midfield", "nationality": "Indonesia", "transfermarkt_player_id": "1021532"},
+    {"name": "Ofosu Boakye", "age": 19, "current_club": "Go Ahead Eagles", "position": "Centre-Forward", "nationality": "Ghana/Netherlands", "transfermarkt_player_id": "1184614"},
+    {"name": "Lesly de Sa", "age": 33, "current_club": "Retired", "position": "Right Winger", "nationality": "Angola/Netherlands", "transfermarkt_player_id": "186858"},
+    {"name": "Joey Antonioli", "age": 22, "current_club": "VV Noordwijk", "position": "Central Midfield", "nationality": "Netherlands/Italy", "transfermarkt_player_id": "702856"},
+    {"name": "Ruben Ligeon", "age": 34, "current_club": "SV Real Sranang Amsterdam", "position": "Right-Back", "nationality": "Netherlands/Suriname", "transfermarkt_player_id": "111185"},
+    {"name": "Jim Croqué", "age": 22, "current_club": "NEC Nijmegen U21", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "748801"},
+    {"name": "Dielan Ghafour", "age": 20, "current_club": "FC Twente Enschede U21", "position": "Defensive Midfield", "nationality": "Netherlands/Iraq", "transfermarkt_player_id": "1093049"},
+    {"name": "Noel Németh", "age": 21, "current_club": "Kozakken Boys U23", "position": "Attacking Midfield", "nationality": "Hungary/Netherlands", "transfermarkt_player_id": "1256975"}
+  ]
+}

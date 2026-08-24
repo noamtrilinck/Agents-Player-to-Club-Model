@@ -1,0 +1,18 @@
+{
+  "agency_name": "ProPlay Partners",
+  "source_url": "https://www.transfermarkt.com/proplay-partners/beraterfirma/berater/13595",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "10 clients total, matching the page's own stated count exactly.",
+  "clients": [
+    {"name": "Tiago", "age": 21, "current_club": "Orlando City SC", "position": "Left Winger", "nationality": "Brazil", "transfermarkt_player_id": "1083095"},
+    {"name": "Kaick", "age": 20, "current_club": "FC Dallas", "position": "Defensive Midfield", "nationality": "Brazil", "transfermarkt_player_id": "1086377"},
+    {"name": "Gustavo Mancha", "age": 22, "current_club": "Rio Ave FC", "position": "Centre-Back", "nationality": "Brazil", "transfermarkt_player_id": "1082582"},
+    {"name": "Caíque França", "age": 31, "current_club": "Guarani Futebol Clube (SP)", "position": "Goalkeeper", "nationality": "Brazil", "transfermarkt_player_id": "408850"},
+    {"name": "Fabricio Dias", "age": 21, "current_club": "AA Internacional de Limeira", "position": "Defensive Midfield", "nationality": "Brazil", "transfermarkt_player_id": "1101134"},
+    {"name": "Luiz Henrique", "age": 21, "current_club": "Sport Recife U20", "position": "Central Midfield", "nationality": "Brazil", "transfermarkt_player_id": "1130056"},
+    {"name": "Robinho", "age": 22, "current_club": "AA Altos", "position": "Centre-Forward", "nationality": "Brazil", "transfermarkt_player_id": "1227004"},
+    {"name": "Kauan", "age": 19, "current_club": "EC Vitória U20", "position": "Centre-Back", "nationality": "Brazil", "transfermarkt_player_id": "1362167"},
+    {"name": "Gleidson", "age": 19, "current_club": "Chapecoense U20", "position": "Right Winger", "nationality": "Brazil", "transfermarkt_player_id": "1374547"},
+    {"name": "Harlley", "age": 18, "current_club": "Grêmio FBPA U20", "position": "Midfield", "nationality": "Brazil", "transfermarkt_player_id": "1430108"}
+  ]
+}

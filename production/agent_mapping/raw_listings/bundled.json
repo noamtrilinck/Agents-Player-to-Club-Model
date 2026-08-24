@@ -1,0 +1,26 @@
+{
+  "agency_name": "Bundled",
+  "source_url": "https://www.transfermarkt.com/bundled/beraterfirma/berater/6469",
+  "extracted_from": "https://www.transfermarkt.us/bundled/beraterfirma/berater/6469 (single page, no pagination; page header confirms 18 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (18). Dutch youth-focused, heavily FC Groningen academy.",
+  "clients": [
+    {"name": "Luciano Valente", "age": 22, "current_club": "Feyenoord Rotterdam", "position": "Attacking Midfield", "nationality": "Netherlands/Italy", "transfermarkt_player_id": "601495"},
+    {"name": "Kellian van der Kaap", "age": 27, "current_club": "Al-Sailiya SC", "position": "Centre-Back", "nationality": "Netherlands/Cameroon", "transfermarkt_player_id": "511128"},
+    {"name": "Agan Mjaki", "age": 23, "current_club": "FC Drita", "position": "Right-Back", "nationality": "Albania/Netherlands", "transfermarkt_player_id": "677654"},
+    {"name": "Leonel Miguel", "age": 25, "current_club": "TOP Oss", "position": "Centre-Back", "nationality": "Netherlands/Angola", "transfermarkt_player_id": "497252"},
+    {"name": "Layee Kromah", "age": 23, "current_club": "Without Club", "position": "Left Winger", "nationality": "Netherlands/Liberia", "transfermarkt_player_id": "865293"},
+    {"name": "Chiel Sunder", "age": 17, "current_club": "FC Emmen U21", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "1224098"},
+    {"name": "Stan van Manen", "age": 19, "current_club": "FC Emmen", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "1176188"},
+    {"name": "Nathan Holder", "age": 24, "current_club": "Lillehammer FK", "position": "Defensive Midfield", "nationality": "Curacao/Netherlands", "transfermarkt_player_id": "618025"},
+    {"name": "Samil Koroma", "age": 16, "current_club": "Feyenoord U17", "position": "Right Winger", "nationality": "Netherlands/Eritrea", "transfermarkt_player_id": "1562764"},
+    {"name": "Orlando Holder", "age": 16, "current_club": "FC Groningen U17", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "1379540"},
+    {"name": "Damian Westerhof", "age": 17, "current_club": "SC Cambuur-Leeuwarden U21", "position": "Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1259720"},
+    {"name": "Jahelille Hall", "age": 18, "current_club": "FC Groningen U19", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1174487"},
+    {"name": "Björn Veldhuis", "age": 19, "current_club": "FC Groningen U21", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "1141076"},
+    {"name": "Kyano Doesburg", "age": 20, "current_club": "FC Groningen U21", "position": "Defensive Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1045223"},
+    {"name": "Yénio Holder", "age": 19, "current_club": "FC Groningen U21", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1030009"},
+    {"name": "Jismerai Dillema", "age": 19, "current_club": "FC Groningen U21", "position": "Central Midfield", "nationality": "Netherlands/Indonesia", "transfermarkt_player_id": "1024694"},
+    {"name": "Naoufal Abdelwajid", "age": 20, "current_club": "FC Twente Enschede U21", "position": "Centre-Back", "nationality": "Morocco/Netherlands", "transfermarkt_player_id": "994249"},
+    {"name": "Roy Leicester", "age": 20, "current_club": "FC Groningen U21", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "949875"}
+  ]
+}

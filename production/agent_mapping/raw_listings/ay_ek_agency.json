@@ -1,0 +1,16 @@
+{
+  "agency_name": "AY.EK-Agency",
+  "source_url": "https://www.transfermarkt.com/ay-ek-agency/beraterfirma/berater/10900",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "8 clients total, matching the page's own stated count exactly. 2 managerial clients also listed -- excluded, not players, out of scope for player-agency matching.",
+  "clients": [
+    {"name": "Kai Cipot", "age": 25, "current_club": "NK Veres Rivne", "position": "Centre-Back", "nationality": "Slovenia", "transfermarkt_player_id": "685375"},
+    {"name": "Jean Batoum", "age": 24, "current_club": "Nyíregyháza Spartacus", "position": "Centre-Forward", "nationality": "Cameroon", "transfermarkt_player_id": "1416741"},
+    {"name": "Marvin Martin", "age": 38, "current_club": "Retired", "position": "Attacking Midfield", "nationality": "France", "transfermarkt_player_id": "77834"},
+    {"name": "Lilian Fournier", "age": 28, "current_club": "Angoulême Charente FC", "position": "Right Midfield", "nationality": "France/Algeria", "transfermarkt_player_id": "545576"},
+    {"name": "Galaye Gueye", "age": 25, "current_club": "FC UNA Strassen", "position": "Centre-Back", "nationality": "Senegal", "transfermarkt_player_id": "749006"},
+    {"name": "Junior Burban", "age": 26, "current_club": "Quevilly - Rouen Métropole", "position": "Centre-Forward", "nationality": "France/Cameroon", "transfermarkt_player_id": "788233"},
+    {"name": "Ibrahima Sylla", "age": 23, "current_club": "AS Pagny-sur-Moselle", "position": "Defensive Midfield", "nationality": "Guinea", "transfermarkt_player_id": "1178890"},
+    {"name": "Lamine Touré", "age": 24, "current_club": "FC UNA Strassen", "position": "Centre-Back", "nationality": "Guinea", "transfermarkt_player_id": "930599"}
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "agency_name": "teamplayer Sportmanagement GbR",
+  "source_url": "https://www.transfermarkt.com/teamplayer-sportmanagement-gbr/beraterfirma/berater/3171",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "23 clients total, matching the page's own stated count exactly.",
+  "clients": [
+    {"name": "Robert Andrich", "age": 31, "current_club": "Bayer 04 Leverkusen", "position": "Defensive Midfield", "nationality": "Germany", "transfermarkt_player_id": "159088"},
+    {"name": "Niklas Schmidt", "age": 28, "current_club": "FC Toulouse", "position": "Central Midfield", "nationality": "Germany", "transfermarkt_player_id": "275249"},
+    {"name": "Jan Urbich", "age": 22, "current_club": "Eintracht Braunschweig", "position": "Centre-Forward", "nationality": "Germany", "transfermarkt_player_id": "820723"},
+    {"name": "Kai Pröger", "age": 34, "current_club": "VfB Oldenburg", "position": "Centre-Forward", "nationality": "Germany", "transfermarkt_player_id": "223572"},
+    {"name": "Princewill Mbock", "age": 20, "current_club": "SV Werder Bremen II", "position": "Centre-Forward", "nationality": "Nigeria/France", "transfermarkt_player_id": "1025918"},
+    {"name": "Dominic Volkmer", "age": 30, "current_club": "VfL Bochum II", "position": "Centre-Back", "nationality": "Germany", "transfermarkt_player_id": "339596"},
+    {"name": "Linus Schäfer", "age": 23, "current_club": "VfB Oldenburg", "position": "Right Winger", "nationality": "Germany", "transfermarkt_player_id": "605706"},
+    {"name": "Moritz Onken", "age": 23, "current_club": "SSV Jeddeloh II", "position": "Goalkeeper", "nationality": "Germany", "transfermarkt_player_id": "688853"},
+    {"name": "Fritz Kleiner", "age": 23, "current_club": "Bremer SV", "position": "Centre-Forward", "nationality": "Germany", "transfermarkt_player_id": "701656"},
+    {"name": "Moritz Busch", "age": 20, "current_club": "Kickers Emden", "position": "Defensive Midfield", "nationality": "Germany", "transfermarkt_player_id": "1251246"},
+    {"name": "Jonas Kühl", "age": 26, "current_club": "FC Verden 04", "position": "Defensive Midfield", "nationality": "Germany", "transfermarkt_player_id": "681935"},
+    {"name": "Philipp Eggersglüß", "age": 31, "current_club": "Heeslinger SC", "position": "Right-Back", "nationality": "Germany", "transfermarkt_player_id": "253336"},
+    {"name": "Niklas Dams", "age": 36, "current_club": "Düsseldorfer CfR Linksrheinisch", "position": "Centre-Back", "nationality": "Germany", "transfermarkt_player_id": "57683"},
+    {"name": "Tim Urbich", "age": 16, "current_club": "SV Darmstadt 98 U19", "position": "Centre-Forward", "nationality": "Germany", "transfermarkt_player_id": "1564307"},
+    {"name": "August Janisch", "age": 18, "current_club": "FC St. Pauli U19", "position": "Central Midfield", "nationality": "Germany", "transfermarkt_player_id": "1428380"},
+    {"name": "Henrik Krüger", "age": 17, "current_club": "Kickers Offenbach U19", "position": "Goalkeeper", "nationality": "Germany/England", "transfermarkt_player_id": "1379468"},
+    {"name": "Lewis Diercks", "age": 18, "current_club": "SV Werder Bremen U19", "position": "Goalkeeper", "nationality": "Germany", "transfermarkt_player_id": "1320674"},
+    {"name": "Finn-Ole Lang", "age": 18, "current_club": "VfL Bochum U19", "position": "Right-Back", "nationality": "Germany", "transfermarkt_player_id": "1283095"},
+    {"name": "Piet Freiberg", "age": 20, "current_club": "FC Verden 04", "position": "Centre-Back", "nationality": "Germany", "transfermarkt_player_id": "1161130"},
+    {"name": "Hugo Weber", "age": 20, "current_club": "FC St. Pauli II", "position": "Central Midfield", "nationality": "Germany", "transfermarkt_player_id": "1152218"},
+    {"name": "Ben Hawighorst", "age": 18, "current_club": "Bayer 04 Leverkusen U19", "position": "Centre-Back", "nationality": "Germany", "transfermarkt_player_id": "1131921"},
+    {"name": "Jannick Schwarz", "age": 18, "current_club": "FC St. Pauli U19", "position": "Centre-Back", "nationality": "Germany", "transfermarkt_player_id": "1118029"},
+    {"name": "Pepe Lorenz", "age": 19, "current_club": "Hannover 96 II", "position": "Centre-Back", "nationality": "Germany", "transfermarkt_player_id": "1040682"}
+  ]
+}

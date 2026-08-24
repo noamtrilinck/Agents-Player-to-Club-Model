@@ -1,0 +1,16 @@
+{
+  "agency_name": "Absolute Sports Consultants",
+  "source_url": "https://www.transfermarkt.com/absolute-sports-consultants/beraterfirma/berater/6197",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "8 clients total, matching the page's own stated count exactly.",
+  "clients": [
+    {"name": "Max O'Leary", "age": 29, "current_club": "West Bromwich Albion", "position": "Goalkeeper", "nationality": "Ireland/England", "transfermarkt_player_id": "296582"},
+    {"name": "Tyrese Shade", "age": 26, "current_club": "Burton Albion", "position": "Right Winger", "nationality": "St. Kitts & Nevis/England", "transfermarkt_player_id": "500687"},
+    {"name": "Jordan Obita", "age": 32, "current_club": "Hibernian FC", "position": "Left-Back", "nationality": "Uganda/England", "transfermarkt_player_id": "158816"},
+    {"name": "Elliott Hewitt", "age": 32, "current_club": "Mansfield Town", "position": "Right-Back", "nationality": "Wales", "transfermarkt_player_id": "186624"},
+    {"name": "Ryan Howley", "age": 22, "current_club": "Bristol Rovers", "position": "Central Midfield", "nationality": "Wales/England", "transfermarkt_player_id": "920790"},
+    {"name": "Jake Taylor", "age": 34, "current_club": "Sutton United", "position": "Central Midfield", "nationality": "Wales/England", "transfermarkt_player_id": "130230"},
+    {"name": "Sam Mantom", "age": 34, "current_club": "Retired", "position": "Central Midfield", "nationality": "England", "transfermarkt_player_id": "141347"},
+    {"name": "Cian Tyler", "age": 24, "current_club": "Leamington FC", "position": "Goalkeeper", "nationality": "Wales/England", "transfermarkt_player_id": "547040"}
+  ]
+}

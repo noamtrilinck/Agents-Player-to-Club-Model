@@ -1,0 +1,20 @@
+{
+  "agency_name": "International Sports Management",
+  "source_url": "https://www.transfermarkt.com/international-sports-management/beraterfirma/berater/9945",
+  "extracted_from": "https://www.transfermarkt.us/international-sports-management/beraterfirma/berater/9945 (single page, no pagination; page header confirms 12 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (12).",
+  "clients": [
+    {"name": "Jay Idzes", "age": 26, "current_club": "US Sassuolo", "position": "Centre-Back", "nationality": "Indonesia/Netherlands", "transfermarkt_player_id": "546926"},
+    {"name": "Başar Önal", "age": 22, "current_club": "LOSC Lille", "position": "Left Winger", "nationality": "Türkiye/Netherlands", "transfermarkt_player_id": "864112"},
+    {"name": "Ilias Alhaft", "age": 29, "current_club": "Without Club", "position": "Right Winger", "nationality": "Netherlands", "transfermarkt_player_id": "337669"},
+    {"name": "Valentino Vermeulen", "age": 25, "current_club": "FC Džiugas Telšiai", "position": "Right-Back", "nationality": "Netherlands", "transfermarkt_player_id": "540928"},
+    {"name": "Amir Rais", "age": 21, "current_club": "Patro Eisden Maasmechelen", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "775050"},
+    {"name": "Luuk Verheij", "age": 21, "current_club": "VVV-Venlo", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "1054638"},
+    {"name": "Patrick van Aanholt", "age": 35, "current_club": "Without Club", "position": "Left-Back", "nationality": "Netherlands/Curacao", "transfermarkt_player_id": "52119"},
+    {"name": "Koen Oostenbrink", "age": 26, "current_club": "FC Nomme United", "position": "Defensive Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "461251"},
+    {"name": "Zakaria Haddaoui", "age": 20, "current_club": "FC Eindhoven", "position": "Attacking Midfield", "nationality": "Netherlands/Morocco", "transfermarkt_player_id": "1111570"},
+    {"name": "Anis Yadir", "age": 21, "current_club": "GVVV Veenendaal", "position": "Attacking Midfield", "nationality": "Netherlands/Morocco", "transfermarkt_player_id": "746976"},
+    {"name": "Shi-jon Martina", "age": 21, "current_club": "GVVV Veenendaal", "position": "Right Winger", "nationality": "Bonaire/Netherlands", "transfermarkt_player_id": "775987"},
+    {"name": "Aymn Badaoui", "age": 16, "current_club": "Without Club", "position": "Attacking Midfield", "nationality": "Morocco/Netherlands", "transfermarkt_player_id": "1366331"}
+  ]
+}

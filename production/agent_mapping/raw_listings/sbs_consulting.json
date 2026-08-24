@@ -1,0 +1,15 @@
+{
+  "agency_name": "SBS Consulting",
+  "source_url": "https://www.transfermarkt.com/sbs-consulting/beraterfirma/berater/13072",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "7 clients total, matching the page's own stated count exactly.",
+  "clients": [
+    {"name": "Alieu Fadera", "age": 24, "current_club": "Como 1907", "position": "Left Winger", "nationality": "The Gambia", "transfermarkt_player_id": "749552"},
+    {"name": "James Gomez", "age": 24, "current_club": "Odense Boldklub", "position": "Centre-Back", "nationality": "The Gambia", "transfermarkt_player_id": "689634"},
+    {"name": "Yaya Bojang", "age": 21, "current_club": "FC Alverca", "position": "Centre-Back", "nationality": "The Gambia", "transfermarkt_player_id": "1135770"},
+    {"name": "Karamba Gassama", "age": 21, "current_club": "Gaziantep FK", "position": "Central Midfield", "nationality": "The Gambia", "transfermarkt_player_id": "1111215"},
+    {"name": "Haruna Rasid Njie", "age": 20, "current_club": "FC RFS", "position": "Defensive Midfield", "nationality": "The Gambia", "transfermarkt_player_id": "1111846"},
+    {"name": "Modou Saidy", "age": 21, "current_club": "FC RFS", "position": "Attacking Midfield", "nationality": "The Gambia", "transfermarkt_player_id": "1378006"},
+    {"name": "Wail El Khatiri", "age": 19, "current_club": "Patro Eisden U21", "position": "Defensive Midfield", "nationality": "Belgium/Morocco", "transfermarkt_player_id": "1453424"}
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "agency_name": "Eleven Double Pass",
+  "source_url": "https://www.transfermarkt.com/eleven-double-pass/beraterfirma/berater/13712",
+  "extracted_from": "https://www.transfermarkt.us/eleven-double-pass/beraterfirma/berater/13712 (single page, no pagination; page header confirms 18 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (18). Dutch youth-focused (Ajax/AZ/Feyenoord academies).",
+  "clients": [
+    {"name": "Maxim Dekker", "age": 22, "current_club": "AZ Alkmaar", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "646704"},
+    {"name": "Julian Brandes", "age": 22, "current_club": "Without Club", "position": "Defensive Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "646699"},
+    {"name": "Kyano Kwint", "age": 19, "current_club": "De Graafschap Doetinchem", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "1088324"},
+    {"name": "Raphaël Sarfo", "age": 22, "current_club": "Without Club", "position": "Right-Back", "nationality": "Netherlands/Ghana", "transfermarkt_player_id": "646702"},
+    {"name": "Damian van der Vaart", "age": 20, "current_club": "Ajax Amsterdam U21", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "896732"},
+    {"name": "Kiani Inge", "age": 20, "current_club": "AZ Alkmaar U21", "position": "Right-Back", "nationality": "Netherlands", "transfermarkt_player_id": "1102070"},
+    {"name": "Lisandro Silva Dias", "age": 17, "current_club": "Feyenoord U19", "position": "Right-Back", "nationality": "Netherlands", "transfermarkt_player_id": "1473505"},
+    {"name": "Kelson Puati", "age": 16, "current_club": "Feyenoord U19", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1400838"},
+    {"name": "Alexander Veselov", "age": 16, "current_club": "ADO Den Haag U17", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1379546"},
+    {"name": "Denzel Darko", "age": 16, "current_club": "Ajax Amsterdam U17", "position": "Left Winger", "nationality": "Netherlands/Ghana", "transfermarkt_player_id": "1379543"},
+    {"name": "Owen Duijnisveld", "age": 16, "current_club": "FC Utrecht U17", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "1379539"},
+    {"name": "Jenairo Macnack", "age": 16, "current_club": "Feyenoord U17", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1379537"},
+    {"name": "Chavarello Hellings", "age": 17, "current_club": "AZ Alkmaar U19", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "1312838"},
+    {"name": "Xander Newstead", "age": 17, "current_club": "Ajax Amsterdam U19", "position": "Attacking Midfield", "nationality": "United States/Philippines", "transfermarkt_player_id": "1254211"},
+    {"name": "Janoa Elias", "age": 17, "current_club": "AZ Alkmaar U17", "position": "Defender", "nationality": "Netherlands/Indonesia", "transfermarkt_player_id": "1242187"},
+    {"name": "Luuk Beekman", "age": 18, "current_club": "Ajax Amsterdam U21", "position": "Right-Back", "nationality": "Netherlands", "transfermarkt_player_id": "1131844"},
+    {"name": "Iain de Jongh", "age": 19, "current_club": "AZ Alkmaar U21", "position": "Centre-Back", "nationality": "Netherlands/Curacao", "transfermarkt_player_id": "1079368"},
+    {"name": "Valentijn van der Velde", "age": 19, "current_club": "Ajax Amsterdam U21", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "987357"}
+  ]
+}

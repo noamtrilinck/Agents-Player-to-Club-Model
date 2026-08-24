@@ -1,0 +1,22 @@
+{
+  "agency_name": "Stephen Hunt Management",
+  "source_url": "https://www.transfermarkt.com/stephen-hunt-management/beraterfirma/berater/12441",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "14 clients total, matching the page's own stated count exactly.",
+  "clients": [
+    {"name": "Carl Rushworth", "age": 25, "current_club": "Coventry City", "position": "Goalkeeper", "nationality": "England", "transfermarkt_player_id": "646353"},
+    {"name": "John Egan", "age": 33, "current_club": "Hull City", "position": "Centre-Back", "nationality": "Ireland", "transfermarkt_player_id": "121324"},
+    {"name": "Paudie O'Connor", "age": 29, "current_club": "Reading FC", "position": "Centre-Back", "nationality": "Ireland", "transfermarkt_player_id": "364024"},
+    {"name": "Matty Jacob", "age": 25, "current_club": "Hull City", "position": "Left-Back", "nationality": "England", "transfermarkt_player_id": "729940"},
+    {"name": "David Harrington", "age": 26, "current_club": "Bolton Wanderers", "position": "Goalkeeper", "nationality": "Wales/Ireland", "transfermarkt_player_id": "625838"},
+    {"name": "Aaron Bolger", "age": 26, "current_club": "Galway United FC", "position": "Central Midfield", "nationality": "Ireland", "transfermarkt_player_id": "434216"},
+    {"name": "Luke Leahy", "age": 33, "current_club": "Wycombe Wanderers", "position": "Central Midfield", "nationality": "England/Scotland", "transfermarkt_player_id": "227315"},
+    {"name": "James Furlong", "age": 24, "current_club": "Without Club", "position": "Left-Back", "nationality": "Ireland", "transfermarkt_player_id": "580030"},
+    {"name": "Ronan Mansfield", "age": 20, "current_club": "Cobh Ramblers FC", "position": "Centre-Back", "nationality": "Ireland", "transfermarkt_player_id": "1121566"},
+    {"name": "Shaun MacDonald", "age": 29, "current_club": "Newport County", "position": "Goalkeeper", "nationality": "England", "transfermarkt_player_id": "386507"},
+    {"name": "Hugh Parker", "age": 20, "current_club": "Scunthorpe United", "position": "Centre-Forward", "nationality": "Ireland/England", "transfermarkt_player_id": "1243000"},
+    {"name": "Killian Barrett", "age": 22, "current_club": "Barrow AFC", "position": "Goalkeeper", "nationality": "Ireland", "transfermarkt_player_id": "1338614"},
+    {"name": "Mason Goulding", "age": 18, "current_club": "Wigan Athletic U21", "position": "Left-Back", "nationality": "England", "transfermarkt_player_id": "1342575"},
+    {"name": "Luca Alonzi", "age": 20, "current_club": "Mickleover FC", "position": "Centre-Forward", "nationality": "Wales/Italy", "transfermarkt_player_id": "1342578"}
+  ]
+}

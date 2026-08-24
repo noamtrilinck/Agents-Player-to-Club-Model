@@ -1,0 +1,28 @@
+{
+  "agency_name": "UKSPORTMANAGEMENT.COM",
+  "source_url": "https://www.transfermarkt.com/uksportmanagement-com/beraterfirma/berater/4853",
+  "extracted_from": "https://www.transfermarkt.us/uksportmanagement-com/beraterfirma/berater/4853 (single page, no pagination; page header confirms 20 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (20). Ghanaian/English-focused.",
+  "clients": [
+    {"name": "Kojo Peprah Oppong", "age": 22, "current_club": "OGC Nice", "position": "Centre-Back", "nationality": "Ghana", "transfermarkt_player_id": "1113451"},
+    {"name": "Mahala Opoku", "age": 25, "current_club": "Panetolikos", "position": "Right Winger", "nationality": "Ghana", "transfermarkt_player_id": "565774"},
+    {"name": "Bailey Wright", "age": 34, "current_club": "Lion City Sailors", "position": "Centre-Back", "nationality": "Australia/England", "transfermarkt_player_id": "147419"},
+    {"name": "Dyon Dorenbosch", "age": 23, "current_club": "Roda JC Kerkrade", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "640566"},
+    {"name": "Jort Borgmans", "age": 23, "current_club": "FC Eindhoven", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "736097"},
+    {"name": "Hafiz Ibrahim", "age": 24, "current_club": "Qanah FC", "position": "Central Midfield", "nationality": "Ghana", "transfermarkt_player_id": "1148701"},
+    {"name": "Stephen Bolma", "age": 21, "current_club": "IFK Norrköping", "position": "Central Midfield", "nationality": "Ghana", "transfermarkt_player_id": "1126890"},
+    {"name": "Charles Baah", "age": 21, "current_club": "GIF Sundsvall", "position": "Centre-Back", "nationality": "Ghana", "transfermarkt_player_id": "1390372"},
+    {"name": "Alhassan Benny", "age": 21, "current_club": "Without Club", "position": "Left Winger", "nationality": "Ghana", "transfermarkt_player_id": "1436948"},
+    {"name": "Andy Lonergan", "age": 42, "current_club": "Retired", "position": "Goalkeeper", "nationality": "England", "transfermarkt_player_id": "14044"},
+    {"name": "Abu Bawa", "age": 22, "current_club": "Attram de Visser Soccer Academy", "position": "Defensive Midfield", "nationality": "Ghana", "transfermarkt_player_id": "1223115"},
+    {"name": "Abdul Majeed Maswud", "age": 21, "current_club": "Attram de Visser Soccer Academy", "position": "Centre-Forward", "nationality": "Ghana", "transfermarkt_player_id": "981651"},
+    {"name": "Bernardinho Tetteh", "age": 30, "current_club": "Ethnikos Piraeus", "position": "Left Winger", "nationality": "Ghana", "transfermarkt_player_id": "525559"},
+    {"name": "Jesse Bertrams", "age": 31, "current_club": "Retired", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "272874"},
+    {"name": "Moses Makasi", "age": 30, "current_club": "Retired", "position": "Central Midfield", "nationality": "England/DR Congo", "transfermarkt_player_id": "242644"},
+    {"name": "Vinnie Vermeer", "age": 31, "current_club": "RKSV UDI '19 Uden", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "191255"},
+    {"name": "Nigel Bertrams", "age": 33, "current_club": "Retired", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "187594"},
+    {"name": "Tom Muyters", "age": 41, "current_club": "Retired", "position": "Goalkeeper", "nationality": "Belgium", "transfermarkt_player_id": "40412"},
+    {"name": "Pavel Pogrebnyak", "age": 42, "current_club": "Retired", "position": "Centre-Forward", "nationality": "Russia", "transfermarkt_player_id": "15074"},
+    {"name": "Hamza Idrissu", "age": 17, "current_club": "Attram de Visser Soccer Academy", "position": "Centre-Back", "nationality": "Ghana", "transfermarkt_player_id": "1258997"}
+  ]
+}

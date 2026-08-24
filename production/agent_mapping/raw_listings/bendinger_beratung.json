@@ -1,0 +1,31 @@
+{
+  "agency_name": "Bendinger Beratung",
+  "source_url": "https://www.transfermarkt.com/bendinger-beratung/beraterfirma/berater/12471",
+  "extracted_from": "https://www.transfermarkt.us/bendinger-beratung/beraterfirma/berater/12471 (single page, no pagination; page header confirms 23 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (23). German youth-focused.",
+  "clients": [
+    {"name": "Hüseyin Bulut", "age": 27, "current_club": "Corum FK", "position": "Right-Back", "nationality": "Türkiye/Germany", "transfermarkt_player_id": "342971"},
+    {"name": "Ahmet Engin", "age": 30, "current_club": "Muglaspor", "position": "Right Winger", "nationality": "Türkiye/Germany", "transfermarkt_player_id": "193612"},
+    {"name": "Jan-Simon Symalla", "age": 21, "current_club": "MSV Duisburg", "position": "Right Winger", "nationality": "Germany/Poland", "transfermarkt_player_id": "934523"},
+    {"name": "Yusuf Örnek", "age": 24, "current_club": "1461 Trabzon FK", "position": "Centre-Back", "nationality": "Türkiye/Germany", "transfermarkt_player_id": "598571"},
+    {"name": "Denis Milic", "age": 22, "current_club": "Sportfreunde Lotte", "position": "Centre-Back", "nationality": "Germany/Serbia", "transfermarkt_player_id": "796219"},
+    {"name": "Vahidin Turudija", "age": 21, "current_club": "VfL Bochum II", "position": "Defensive Midfield", "nationality": "Germany/Bosnia-Herzegovina", "transfermarkt_player_id": "745603"},
+    {"name": "Timo Böhm", "age": 21, "current_club": "SSVg Velbert 02", "position": "Right Winger", "nationality": "Germany", "transfermarkt_player_id": "1046091"},
+    {"name": "Tim Albutat", "age": 33, "current_club": "Retired", "position": "Defensive Midfield", "nationality": "Germany", "transfermarkt_player_id": "93658"},
+    {"name": "Kaspar Harbering", "age": 20, "current_club": "Fortuna Düsseldorf II", "position": "Centre-Back", "nationality": "Germany", "transfermarkt_player_id": "933471"},
+    {"name": "Leonard Frentrop", "age": 16, "current_club": "Preußen Münster U17", "position": "Goalkeeper", "nationality": "Germany", "transfermarkt_player_id": "1459354"},
+    {"name": "Diego Sciacca", "age": 17, "current_club": "MSV Duisburg U17", "position": "Right Winger", "nationality": "Germany", "transfermarkt_player_id": "1452310"},
+    {"name": "Leard Murici", "age": 17, "current_club": "Rot-Weiss Essen U19", "position": "Central Midfield", "nationality": "Germany", "transfermarkt_player_id": "1418521"},
+    {"name": "S. Osmani", "age": 16, "current_club": "FK Pirmasens U19", "position": "Defender", "nationality": null, "transfermarkt_player_id": "1381497"},
+    {"name": "E. Tuncay", "age": 18, "current_club": "DJK TuS Hordel U19", "position": "Attacking Midfield", "nationality": "Germany/Türkiye", "transfermarkt_player_id": "1374523"},
+    {"name": "Atilla Yapar", "age": 17, "current_club": "Rot-Weiss Essen U19", "position": "Right Winger", "nationality": "Germany/Türkiye", "transfermarkt_player_id": "1374504"},
+    {"name": "Philipp Kanzok", "age": 16, "current_club": "FC Schalke 04 U19", "position": "Centre-Forward", "nationality": "Germany", "transfermarkt_player_id": "1332557"},
+    {"name": "Roosevelt Tambetabi", "age": 18, "current_club": "Rot-Weiß Oberhausen U19", "position": "Centre-Back", "nationality": "Germany/Cameroon", "transfermarkt_player_id": "1298189"},
+    {"name": "Berdan Suri", "age": 18, "current_club": "Rot-Weiß Oberhausen U19", "position": "Defensive Midfield", "nationality": "Germany", "transfermarkt_player_id": "1298183"},
+    {"name": "Arda Oruç", "age": 18, "current_club": "Rot-Weiss Essen U19", "position": "Left-Back", "nationality": "Türkiye/Germany", "transfermarkt_player_id": "1281647"},
+    {"name": "Enes Babayigit", "age": 19, "current_club": "Without Club", "position": "Centre-Forward", "nationality": "Germany/Türkiye", "transfermarkt_player_id": "1162674"},
+    {"name": "Maddox Stadel", "age": 19, "current_club": "SV Rot-Weiss Wittlich", "position": "Centre-Forward", "nationality": "Germany", "transfermarkt_player_id": "1138230"},
+    {"name": "Blessing Mulweme", "age": 19, "current_club": "Without Club", "position": "Centre-Forward", "nationality": "Germany", "transfermarkt_player_id": "1128683"},
+    {"name": "Aleksandar Gudalovic", "age": 21, "current_club": "TSG Sprockhövel", "position": "Second Striker", "nationality": "Germany", "transfermarkt_player_id": "815844"}
+  ]
+}

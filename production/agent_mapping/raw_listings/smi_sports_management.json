@@ -1,0 +1,24 @@
+{
+  "agency_name": "SMI Sports Management International SA",
+  "source_url": "https://www.transfermarkt.com/smi-sports-management-international-sa/beraterfirma/berater/877",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "16 clients total, matching the page's own stated count exactly (10 active + 6 retired).",
+  "clients": [
+    {"name": "Johann Lepenant", "age": 23, "current_club": "FC Nantes", "position": "Defensive Midfield", "nationality": "France", "transfermarkt_player_id": "585973"},
+    {"name": "Jonathan Gradit", "age": 33, "current_club": "RC Lens", "position": "Centre-Back", "nationality": "France", "transfermarkt_player_id": "126557"},
+    {"name": "Alassane Pléa", "age": 33, "current_club": "PSV Eindhoven", "position": "Centre-Forward", "nationality": "France/Mali", "transfermarkt_player_id": "167329"},
+    {"name": "Lucas Perrin", "age": 27, "current_club": "FC Nantes", "position": "Centre-Back", "nationality": "France", "transfermarkt_player_id": "352392"},
+    {"name": "Jessy Deminguet", "age": 28, "current_club": "FC Metz", "position": "Central Midfield", "nationality": "France", "transfermarkt_player_id": "539232"},
+    {"name": "Enzo Crivelli", "age": 31, "current_club": "Without Club", "position": "Centre-Forward", "nationality": "France/Algeria", "transfermarkt_player_id": "291110"},
+    {"name": "Yann Bodiger", "age": 31, "current_club": "AD Ceuta FC", "position": "Central Midfield", "nationality": "France", "transfermarkt_player_id": "290533"},
+    {"name": "Sullivan Péan", "age": 26, "current_club": "FC Villefranche-Beaujolais", "position": "Goalkeeper", "nationality": "France", "transfermarkt_player_id": "593317"},
+    {"name": "Lucas Royes", "age": 29, "current_club": "SR Colmar", "position": "Goalkeeper", "nationality": "France/Senegal", "transfermarkt_player_id": "766893"},
+    {"name": "Sam Alexander", "age": 23, "current_club": "FC Espaly Saint-Marcel", "position": "Centre-Forward", "nationality": "France/England", "transfermarkt_player_id": "904709"},
+    {"name": "Cédric Carrasso", "age": 44, "current_club": "Retired", "position": "Goalkeeper", "nationality": "France", "transfermarkt_player_id": "5308"},
+    {"name": "Daniel Congré", "age": 41, "current_club": "Retired", "position": "Centre-Back", "nationality": "France/Guadeloupe", "transfermarkt_player_id": "22386"},
+    {"name": "Steve Mandanda", "age": 41, "current_club": "Retired", "position": "Goalkeeper", "nationality": "France/DR Congo", "transfermarkt_player_id": "23951"},
+    {"name": "Clément Chantôme", "age": 38, "current_club": "Retired", "position": "Defensive Midfield", "nationality": "France", "transfermarkt_player_id": "43458"},
+    {"name": "Johann Carrasso", "age": 38, "current_club": "Retired", "position": "Goalkeeper", "nationality": "France", "transfermarkt_player_id": "57367"},
+    {"name": "Laurent Koscielny", "age": 40, "current_club": "Retired", "position": "Centre-Back", "nationality": "France/Poland", "transfermarkt_player_id": "76277"}
+  ]
+}

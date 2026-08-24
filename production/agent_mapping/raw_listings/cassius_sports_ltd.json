@@ -1,0 +1,20 @@
+{
+  "agency_name": "Cassius Sports Ltd",
+  "source_url": "https://www.transfermarkt.com/cassius-sports-ltd/beraterfirma/berater/12261",
+  "extracted_from": "https://www.transfermarkt.us/cassius-sports-ltd/beraterfirma/berater/12261 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Small agency, 12 clients total, English roster spanning Premier League down to non-league, plus one retired manager (Michael O'Neill).",
+  "clients": [
+    {"name": "Josh Brownhill", "age": 30, "current_club": "Al-Shabab FC", "position": "Central Midfield", "nationality": "England", "transfermarkt_player_id": "293569"},
+    {"name": "Daniel Jebbison", "age": 23, "current_club": "AFC Bournemouth", "position": "Centre-Forward", "nationality": "Canada/England", "transfermarkt_player_id": "746740"},
+    {"name": "Alex Oxlade-Chamberlain", "age": 33, "current_club": "Celtic FC", "position": "Central Midfield", "nationality": "England", "transfermarkt_player_id": "143424"},
+    {"name": "Jamal Lowe", "age": 32, "current_club": "Sheffield Wednesday", "position": "Centre-Forward", "nationality": "Jamaica/England", "transfermarkt_player_id": "239949"},
+    {"name": "Owen Dodgson", "age": 23, "current_club": "Mansfield Town", "position": "Left-Back", "nationality": "England", "transfermarkt_player_id": "686839"},
+    {"name": "Morgan Fox", "age": 32, "current_club": "Wigan Athletic", "position": "Left-Back", "nationality": "Wales/England", "transfermarkt_player_id": "250277"},
+    {"name": "Louis Appéré", "age": 27, "current_club": "Cambridge United", "position": "Centre-Forward", "nationality": "Scotland/France", "transfermarkt_player_id": "449019"},
+    {"name": "Billy Blacker", "age": 20, "current_club": "Sheffield United U21", "position": "Central Midfield", "nationality": "England", "transfermarkt_player_id": "967318"},
+    {"name": "Zak Gilsenan", "age": 23, "current_club": "FC Halifax Town", "position": "Attacking Midfield", "nationality": "Ireland/Australia", "transfermarkt_player_id": "650883"},
+    {"name": "Otis Khan", "age": 30, "current_club": "Altrincham FC", "position": "Left Winger", "nationality": "Pakistan/England", "transfermarkt_player_id": "318799"},
+    {"name": "Michael O'Neill", "age": 57, "current_club": "Retired", "position": "Attacking Midfield", "nationality": "Northern Ireland", "transfermarkt_player_id": "21798"},
+    {"name": "Sai Sachdev", "age": 21, "current_club": "Boston United", "position": "Right-Back", "nationality": "England/India", "transfermarkt_player_id": "967304"}
+  ]
+}

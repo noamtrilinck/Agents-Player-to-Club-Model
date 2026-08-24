@@ -1,0 +1,14 @@
+{
+  "agency_name": "First Touch Consulting Agency",
+  "source_url": "https://www.transfermarkt.com/first-touch-consulting-agency/beraterfirma/berater/13844",
+  "extracted_from": "https://www.transfermarkt.us/first-touch-consulting-agency/beraterfirma/berater/13844 (single page, no pagination; page header confirms 6 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (6). Danish/Icelandic-focused, entirely outside our warehouse's league scope.",
+  "clients": [
+    {"name": "Lasse Sørensen", "age": 26, "current_club": "Huddersfield Town", "position": "Right-Back", "nationality": "Denmark", "transfermarkt_player_id": "357967"},
+    {"name": "Lasse Vigen", "age": 31, "current_club": "Esbjerg fB", "position": "Central Midfield", "nationality": "Denmark", "transfermarkt_player_id": "148376"},
+    {"name": "Andreas Søndergaard", "age": 25, "current_club": "Hobro IK", "position": "Goalkeeper", "nationality": "Denmark", "transfermarkt_player_id": "462820"},
+    {"name": "Ísak Óli Ólafsson", "age": 26, "current_club": "FH Hafnarfjördur", "position": "Centre-Back", "nationality": "Iceland", "transfermarkt_player_id": "472866"},
+    {"name": "Daníel Michal Grzegorzsson", "age": 17, "current_club": "ÍA Akranes", "position": "Midfield", "nationality": "Iceland", "transfermarkt_player_id": "1192089"},
+    {"name": "Tobias Brandt", "age": 18, "current_club": "Kolding IF U19", "position": "Goalkeeper", "nationality": "Denmark", "transfermarkt_player_id": "1247489"}
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "agency_name": "David-Stars Scouting & Agency",
+  "source_url": "https://www.transfermarkt.com/david-stars-scouting-amp-agency/beraterfirma/berater/13875",
+  "extracted_from": "https://www.transfermarkt.us/david-stars-scouting-amp-agency/beraterfirma/berater/13875 (single page, no pagination; page header confirms 7 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (7).",
+  "clients": [
+    {"name": "Andrew Idoko", "age": 20, "current_club": "Hapoel Jerusalem", "position": "Left Winger", "nationality": "Nigeria", "transfermarkt_player_id": "856625"},
+    {"name": "Akpan Udoh", "age": 27, "current_club": "Mosta FC", "position": "Goalkeeper", "nationality": "Nigeria", "transfermarkt_player_id": "401915"},
+    {"name": "Innocent Kingsley", "age": 24, "current_club": "Hapoel Afula", "position": "Right Winger", "nationality": "Nigeria", "transfermarkt_player_id": "743041"},
+    {"name": "Suleiman Idris", "age": 20, "current_club": "Kano Pillars", "position": "Defensive Midfield", "nationality": "Nigeria", "transfermarkt_player_id": "1209554"},
+    {"name": "Promise Damala", "age": 24, "current_club": "Plateau United FC", "position": "Attacking Midfield", "nationality": "Nigeria", "transfermarkt_player_id": "750010"},
+    {"name": "Yusuf Sulaiman", "age": 21, "current_club": "Birzebbuga St. Peters FC", "position": "Centre-Forward", "nationality": "Nigeria", "transfermarkt_player_id": "1232028"},
+    {"name": "Sani Abdulsalam", "age": 19, "current_club": "Hapoel Jerusalem", "position": "Right Winger", "nationality": "Nigeria", "transfermarkt_player_id": "1564630"}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "agency_name": "Stonemountain Management",
+  "source_url": "https://www.transfermarkt.com/stonemountain-management/beraterfirma/berater/3709",
+  "extracted_from": "https://www.transfermarkt.us/stonemountain-management/beraterfirma/berater/3709 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Very small agency, 4 clients total, mostly retired English/Irish players.",
+  "clients": [
+    {"name": "Callum McManaman", "age": 35, "current_club": "Wigan Athletic", "position": "Right Winger", "nationality": "England/Ireland", "transfermarkt_player_id": "61711"},
+    {"name": "Stephen Ward", "age": 40, "current_club": "Retired", "position": "Left-Back", "nationality": "Ireland", "transfermarkt_player_id": "34691"},
+    {"name": "Ben Mee", "age": 36, "current_club": "Retired", "position": "Centre-Back", "nationality": "England", "transfermarkt_player_id": "74810"},
+    {"name": "Alex Fletcher", "age": 27, "current_club": "Retired", "position": "Centre-Forward", "nationality": "England", "transfermarkt_player_id": "477233"}
+  ]
+}

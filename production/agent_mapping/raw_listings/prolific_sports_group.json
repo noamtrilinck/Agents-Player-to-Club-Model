@@ -1,0 +1,19 @@
+{
+  "agency_name": "Prolific Sports Group",
+  "source_url": "https://www.transfermarkt.com/prolific-sports-group/beraterfirma/berater/8567",
+  "extracted_from": "https://www.transfermarkt.us/prolific-sports-group/beraterfirma/berater/8567 (single page, no pagination; page header confirms 11 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (11). English/youth-focused, largely outside our warehouse's league scope.",
+  "clients": [
+    {"name": "Jeremie Frimpong", "age": 25, "current_club": "Liverpool FC", "position": "Right-Back", "nationality": "Netherlands/Ghana", "transfermarkt_player_id": "484547"},
+    {"name": "Anfernee Dijksteel", "age": 29, "current_club": "Kocaelispor", "position": "Centre-Back", "nationality": "Suriname/Netherlands", "transfermarkt_player_id": "428302"},
+    {"name": "Oumar Diallo", "age": 21, "current_club": "LASK Amateure OÖ", "position": "Centre-Forward", "nationality": "Canada/Guinea", "transfermarkt_player_id": "985403"},
+    {"name": "Patrick Mlynarski", "age": 18, "current_club": "Crewe Alexandra", "position": "Right Winger", "nationality": "Wales/Poland", "transfermarkt_player_id": "1142184"},
+    {"name": "Michael Mills", "age": 17, "current_club": "Newcastle United U18", "position": "Left Winger", "nationality": "England", "transfermarkt_player_id": "1146658"},
+    {"name": "Wesley Frimpong", "age": 21, "current_club": "Without Club", "position": "Right-Back", "nationality": "Netherlands/Ghana", "transfermarkt_player_id": "1289193"},
+    {"name": "Haydn Murray-Holme", "age": 17, "current_club": "Liverpool FC U18", "position": "Central Midfield", "nationality": "England", "transfermarkt_player_id": "1300030"},
+    {"name": "Alfie Rice", "age": 18, "current_club": "Blackburn Rovers U21", "position": "Centre-Back", "nationality": "England", "transfermarkt_player_id": "1349294"},
+    {"name": "Alfie Goodwin", "age": 18, "current_club": "Without Club", "position": "Attacking Midfield", "nationality": "England", "transfermarkt_player_id": "1349295"},
+    {"name": "Kai Morrall", "age": 16, "current_club": "Leeds United U18", "position": "Defender", "nationality": "Ireland/Jamaica", "transfermarkt_player_id": "1465765"},
+    {"name": "Layton Nicholls", "age": 17, "current_club": "FC Brentford U18", "position": "Goalkeeper", "nationality": "England", "transfermarkt_player_id": "1492305"}
+  ]
+}

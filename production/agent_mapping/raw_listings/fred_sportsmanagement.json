@@ -1,0 +1,35 @@
+{
+  "agency_name": "Fred Sportsmanagement",
+  "source_url": "https://www.transfermarkt.com/fred-sportsmanagement/beraterfirma/berater/9064",
+  "extracted_from": "https://www.transfermarkt.us/fred-sportsmanagement/beraterfirma/berater/9064 (pages 1-2)",
+  "extraction_note": "Extracted from the agency's client-listing pages only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (25+1=26). Dutch-focused, mostly lower-tier/youth clubs.",
+  "clients": [
+    {"name": "Sam Kersten", "age": 28, "current_club": "SC Heerenveen", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "430797"},
+    {"name": "Rik Mulders", "age": 26, "current_club": "SC Cambuur Leeuwarden", "position": "Right-Back", "nationality": "Netherlands", "transfermarkt_player_id": "469084"},
+    {"name": "Rúben Rodrigues", "age": 30, "current_club": "Bolton Wanderers", "position": "Attacking Midfield", "nationality": "Portugal/Netherlands", "transfermarkt_player_id": "531674"},
+    {"name": "Teun van Grunsven", "age": 26, "current_club": "Gwangju FC", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "633124"},
+    {"name": "Jort van der Sande", "age": 30, "current_club": "Bali United FC", "position": "Centre-Forward", "nationality": "Bonaire/Netherlands", "transfermarkt_player_id": "330909"},
+    {"name": "Nick de Groot", "age": 24, "current_club": "Fortuna Sittard", "position": "Left-Back", "nationality": "Netherlands", "transfermarkt_player_id": "639974"},
+    {"name": "Rein van Hedel", "age": 21, "current_club": "RKC Waalwijk", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "949914"},
+    {"name": "Stan Maas", "age": 25, "current_club": "FC Den Bosch", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "577462"},
+    {"name": "Sheddy Barglan", "age": 23, "current_club": "FC Den Bosch", "position": "Right-Back", "nationality": "Sudan/Netherlands", "transfermarkt_player_id": "562701"},
+    {"name": "Wouter van der Steen", "age": 36, "current_club": "Willem II Tilburg", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "159896"},
+    {"name": "Rhino Goutier", "age": 23, "current_club": "Without Club", "position": "Defensive Midfield", "nationality": "Netherlands/Philippines", "transfermarkt_player_id": "951320"},
+    {"name": "Niek Vossebelt", "age": 35, "current_club": "Retired", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "123140"},
+    {"name": "Sebastiaan van Bakel", "age": 25, "current_club": "De Treffers", "position": "Left Winger", "nationality": "Netherlands", "transfermarkt_player_id": "682252"},
+    {"name": "Jorn van Hedel", "age": 25, "current_club": "De Treffers", "position": "Right-Back", "nationality": "Netherlands", "transfermarkt_player_id": "469088"},
+    {"name": "Jordy Rondeel", "age": 32, "current_club": "Retired", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "349347"},
+    {"name": "Jordy Thomassen", "age": 33, "current_club": "Kozakken Boys Werkendam", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "266332"},
+    {"name": "Danny Verbeek", "age": 35, "current_club": "Retired", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "99508"},
+    {"name": "Tymen van Ramshorst", "age": 20, "current_club": "Blauw Geel '38", "position": "Left-Back", "nationality": "Netherlands", "transfermarkt_player_id": "949965"},
+    {"name": "Jillian Bernardina", "age": 20, "current_club": "Vitesse Arnhem U21", "position": "Right-Back", "nationality": "Curacao/Netherlands", "transfermarkt_player_id": "951128"},
+    {"name": "Teun Bosch", "age": 20, "current_club": "Vitesse Arnhem U21", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "983679"},
+    {"name": "Ward van Sleeuwen", "age": 19, "current_club": "Helmond Sport U19", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "1186222"},
+    {"name": "Mark Romantsov", "age": 19, "current_club": "RKC Waalwijk U21", "position": "Central Midfield", "nationality": "Ukraine", "transfermarkt_player_id": "1219771"},
+    {"name": "Milan Brouwer", "age": 19, "current_club": "Vitesse Arnhem U21", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "1479851"},
+    {"name": "Billy Mills", "age": 17, "current_club": "FC Den Bosch U21", "position": "Attacking Midfield", "nationality": "Netherlands/England", "transfermarkt_player_id": "1540456"},
+    {"name": "Kai de Rooij", "age": 16, "current_club": "FC Den Bosch", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "1540457"},
+
+    {"name": "Oscar Warchol", "age": 17, "current_club": "NEC Nijmegen U19", "position": "Centre-Forward", "nationality": "Netherlands/Poland", "transfermarkt_player_id": "1545016"}
+  ]
+}

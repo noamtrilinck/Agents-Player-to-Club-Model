@@ -1,0 +1,17 @@
+{
+  "agency_name": "MNG Players Agency",
+  "source_url": "https://www.transfermarkt.com/mngtm/beraterfirma/berater/15013",
+  "extracted_from": "https://www.transfermarkt.us/mngtm/beraterfirma/berater/15013 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Small agency, 9 clients total, Dutch/Surinamese-heavy roster.",
+  "clients": [
+    {"name": "Muhammed Cham", "age": 25, "current_club": "Red Star Belgrade", "position": "Attacking Midfield", "nationality": "Austria", "transfermarkt_player_id": "422281"},
+    {"name": "Jahnoah Markelo", "age": 23, "current_club": "Shabab Al-Ahli Club", "position": "Right Winger", "nationality": "Suriname/Netherlands", "transfermarkt_player_id": "677382"},
+    {"name": "Jaden Montnor", "age": 24, "current_club": "Omonia Nicosia", "position": "Left Winger", "nationality": "Suriname/Netherlands", "transfermarkt_player_id": "595943"},
+    {"name": "Derensili Sanches Fernandes", "age": 25, "current_club": "Huddersfield Town", "position": "Right Winger", "nationality": "Netherlands/Cape Verde", "transfermarkt_player_id": "608407"},
+    {"name": "Damienus Reverson", "age": 22, "current_club": "FC Zürich", "position": "Centre-Forward", "nationality": "Netherlands/Ghana", "transfermarkt_player_id": "675622"},
+    {"name": "Ilias Bronkhorst", "age": 29, "current_club": "Huddersfield Town", "position": "Right-Back", "nationality": "Netherlands/Morocco", "transfermarkt_player_id": "491292"},
+    {"name": "Tiago Çukur", "age": 23, "current_club": "Fatih Karagümrük", "position": "Centre-Forward", "nationality": "Türkiye/Netherlands", "transfermarkt_player_id": "594276"},
+    {"name": "Nordin Bukala", "age": 20, "current_club": "FC Volendam", "position": "Central Midfield", "nationality": "Netherlands/Morocco", "transfermarkt_player_id": "940095"},
+    {"name": "Tariq Blake", "age": 21, "current_club": "Without Club", "position": "Centre-Forward", "nationality": "Switzerland", "transfermarkt_player_id": "692196"}
+  ]
+}

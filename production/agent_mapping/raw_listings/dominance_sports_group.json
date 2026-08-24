@@ -1,0 +1,30 @@
+{
+  "agency_name": "Dominance Sports Group",
+  "source_url": "https://www.transfermarkt.com/dominance-sports-group/beraterfirma/berater/12899",
+  "extracted_from": "https://www.transfermarkt.us/dominance-sports-group/beraterfirma/berater/12899 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. 22 player clients (1 staff/manager entry excluded, per project scope), predominantly English youth academy prospects.",
+  "clients": [
+    {"name": "Josh Sheehan", "age": 31, "current_club": "Bolton Wanderers", "position": "Central Midfield", "nationality": "Wales", "transfermarkt_player_id": "197830"},
+    {"name": "James Dornelly", "age": 21, "current_club": "Peterborough United", "position": "Right-Back", "nationality": "England/St. Lucia", "transfermarkt_player_id": "1032875"},
+    {"name": "Tom Conlon", "age": 30, "current_club": "Tranmere Rovers", "position": "Central Midfield", "nationality": "England", "transfermarkt_player_id": "294056"},
+    {"name": "Rico Browne", "age": 22, "current_club": "Walsall FC", "position": "Centre-Back", "nationality": "St. Kitts & Nevis/England", "transfermarkt_player_id": "733305"},
+    {"name": "Bradley Mayo", "age": 21, "current_club": "Birmingham City", "position": "Goalkeeper", "nationality": "England", "transfermarkt_player_id": "927953"},
+    {"name": "Curtis Mitchell", "age": 16, "current_club": "Aston Villa U18", "position": "Centre-Back", "nationality": "England", "transfermarkt_player_id": "1565135"},
+    {"name": "Tirenioluwa Aiyegbusi", "age": 16, "current_club": "Manchester City U18", "position": "Centre-Forward", "nationality": "Finland/Nigeria", "transfermarkt_player_id": "1514363"},
+    {"name": "Damian Machaka", "age": 16, "current_club": "Leicester City Youth", "position": "Centre-Forward", "nationality": "England/Zimbabwe", "transfermarkt_player_id": "1479879"},
+    {"name": "Zachary Frost", "age": 16, "current_club": "Stoke City U18", "position": "Centre-Back", "nationality": "England", "transfermarkt_player_id": "1443399"},
+    {"name": "Ruben Wreford", "age": 16, "current_club": "Ipswich Town U18", "position": "Goalkeeper", "nationality": "England", "transfermarkt_player_id": "1443367"},
+    {"name": "Ludovico Rocca", "age": 17, "current_club": "Milan U18", "position": "Defender", "nationality": "Italy", "transfermarkt_player_id": "1437098"},
+    {"name": "Alexander Romanov", "age": 16, "current_club": "Toronto FC Academy", "position": "Centre-Forward", "nationality": "Canada/Russia", "transfermarkt_player_id": "1434980"},
+    {"name": "Josh McWilliams", "age": 17, "current_club": "Stoke City U18", "position": "Centre-Back", "nationality": "England", "transfermarkt_player_id": "1422889"},
+    {"name": "Charlie Wood", "age": 18, "current_club": "Ipswich Town U18", "position": "Central Midfield", "nationality": "England", "transfermarkt_player_id": "1372704"},
+    {"name": "Nelson Eze", "age": 18, "current_club": "Ipswich Town U18", "position": "Centre-Forward", "nationality": "England/Sweden", "transfermarkt_player_id": "1352941"},
+    {"name": "Charlie Dewar", "age": 19, "current_club": "Arbroath FC", "position": "Centre-Back", "nationality": "England", "transfermarkt_player_id": "1289645"},
+    {"name": "Rhys Oakley", "age": 17, "current_club": "Aston Villa U18", "position": "Goalkeeper", "nationality": "England/Wales", "transfermarkt_player_id": "1217886"},
+    {"name": "George Barrett", "age": 20, "current_club": "Ipswich Town U21", "position": "Goalkeeper", "nationality": "England", "transfermarkt_player_id": "1193542"},
+    {"name": "Oliver Bindley", "age": 17, "current_club": "Aston Villa U18", "position": "Central Midfield", "nationality": "England", "transfermarkt_player_id": "1172644"},
+    {"name": "Ashton McWilliams", "age": 19, "current_club": "Aston Villa U21", "position": "Right-Back", "nationality": "England/Jamaica", "transfermarkt_player_id": "1131944"},
+    {"name": "Tyrese Warmington", "age": 19, "current_club": "Birmingham City U21", "position": "Goalkeeper", "nationality": "England", "transfermarkt_player_id": "921742"},
+    {"name": "Harrison Rhone", "age": 20, "current_club": "Brackley Town", "position": "Goalkeeper", "nationality": "England", "transfermarkt_player_id": "890898"}
+  ]
+}

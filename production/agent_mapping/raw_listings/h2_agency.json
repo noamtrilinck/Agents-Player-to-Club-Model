@@ -1,0 +1,19 @@
+{
+  "agency_name": "H2 Agency",
+  "source_url": "https://www.transfermarkt.com/h2-agency/beraterfirma/berater/8469",
+  "extracted_from": "https://www.transfermarkt.us/h2-agency/beraterfirma/berater/8469 (single page, no pagination; page header confirms 11 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (11). Dutch-focused.",
+  "clients": [
+    {"name": "Jizz Hornkamp", "age": 28, "current_club": "AZ Alkmaar", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "185817"},
+    {"name": "Espen van Ee", "age": 23, "current_club": "FC Arouca", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "607144"},
+    {"name": "Laros Duarte", "age": 29, "current_club": "Puskás Akadémia FC", "position": "Defensive Midfield", "nationality": "Cape Verde/Netherlands", "transfermarkt_player_id": "258513"},
+    {"name": "Sven van Beek", "age": 32, "current_club": "Al-Shahania SC", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "256718"},
+    {"name": "Salah Oulad", "age": 22, "current_club": "Riga FC", "position": "Central Midfield", "nationality": "Netherlands/Morocco", "transfermarkt_player_id": "559330"},
+    {"name": "Dirk Abels", "age": 29, "current_club": "Cong An Ho Chi Minh City FC", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "333815"},
+    {"name": "Jetro Willems", "age": 32, "current_club": "Without Club", "position": "Centre-Back", "nationality": "Netherlands/Curacao", "transfermarkt_player_id": "146258"},
+    {"name": "Lucas Woudenberg", "age": 32, "current_club": "FC Dordrecht", "position": "Left-Back", "nationality": "Netherlands", "transfermarkt_player_id": "221766"},
+    {"name": "Nick Marsman", "age": 35, "current_club": "Go Ahead Eagles", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "158104"},
+    {"name": "Ismail Oulad M'Hand", "age": 21, "current_club": "Without Club", "position": "Central Midfield", "nationality": "Morocco/Netherlands", "transfermarkt_player_id": "738490"},
+    {"name": "Quinten Kraaivanger", "age": 19, "current_club": "Excelsior Rotterdam U21", "position": "Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1313157"}
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "agency_name": "Gorré Soccer Management B.V",
+  "source_url": "https://www.transfermarkt.com/gorre-soccer-management-b-v/beraterfirma/berater/3769",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "19 clients (players) total, matching the page's own stated count exactly. 1 manager (Edwin Guchelaar) also listed -- excluded, not a player, out of scope for player-agency matching.",
+  "clients": [
+    {"name": "Bryant Nieling", "age": 23, "current_club": "Modena FC", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "698082"},
+    {"name": "Joeri Heerkens", "age": 20, "current_club": "Ajax Amsterdam", "position": "Goalkeeper", "nationality": "Netherlands/Czech Republic", "transfermarkt_player_id": "923667"},
+    {"name": "Thijs Jansen", "age": 24, "current_club": "SC Cambuur Leeuwarden", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "514287"},
+    {"name": "Kenji Gorré", "age": 31, "current_club": "Maccabi Haifa", "position": "Left Winger", "nationality": "Curaçao/Netherlands", "transfermarkt_player_id": "374889"},
+    {"name": "Thomas Buitink", "age": 26, "current_club": "VV Sparta Nijkerk", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "357826"},
+    {"name": "Niv Antman", "age": 34, "current_club": "Maccabi Netanya", "position": "Goalkeeper", "nationality": "Israel/Romania", "transfermarkt_player_id": "307401"},
+    {"name": "Tom Hendriks", "age": 24, "current_club": "Alemannia Aachen", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "687560"},
+    {"name": "Boy Deul", "age": 38, "current_club": "Retired", "position": "Attacking Midfield", "nationality": "Curaçao/Netherlands", "transfermarkt_player_id": "59636"},
+    {"name": "Ryan Koolwijk", "age": 41, "current_club": "Retired", "position": "Central Midfield", "nationality": "Suriname/Netherlands", "transfermarkt_player_id": "65256"},
+    {"name": "Malcolm Esajas", "age": 40, "current_club": "Retired", "position": "Left Winger", "nationality": "Netherlands/Suriname", "transfermarkt_player_id": "117590"},
+    {"name": "Kevin Jansen", "age": 34, "current_club": "Without Club", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "126421"},
+    {"name": "Shelton Martis", "age": 43, "current_club": "Retired", "position": "Centre-Back", "nationality": "Curaçao/Netherlands", "transfermarkt_player_id": "21509"},
+    {"name": "Donovan Deekman", "age": 38, "current_club": "Retired", "position": "Right Winger", "nationality": "Netherlands/Suriname", "transfermarkt_player_id": "55754"},
+    {"name": "Ondrej Mastny", "age": 24, "current_club": "FC Vysocina Jihlava", "position": "Goalkeeper", "nationality": "Czech Republic", "transfermarkt_player_id": "552070"},
+    {"name": "Olaf Kok", "age": 24, "current_club": "SV Spakenburg", "position": "Right-Back", "nationality": "Netherlands", "transfermarkt_player_id": "612814"},
+    {"name": "Donovan Slijngard", "age": 38, "current_club": "Retired", "position": "Left-Back", "nationality": "Netherlands/Suriname", "transfermarkt_player_id": "45531"},
+    {"name": "Milano Koenders", "age": 40, "current_club": "Retired", "position": "Centre-Back", "nationality": "Netherlands/Suriname", "transfermarkt_player_id": "30617"},
+    {"name": "Euclides Tavares Lopes", "age": 28, "current_club": "SV DRL Rotterdam", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "400631"},
+    {"name": "Georgy Theuns", "age": 25, "current_club": "Retired", "position": "Left-Back", "nationality": "Netherlands", "transfermarkt_player_id": "420226"}
+  ]
+}

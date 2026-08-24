@@ -1,0 +1,27 @@
+{
+  "agency_name": "Foot & Ball",
+  "source_url": "https://www.transfermarkt.com/foot-amp-ball/beraterfirma/berater/458",
+  "extracted_from": "https://www.transfermarkt.us/foot-amp-ball/beraterfirma/berater/458 (single page, no pagination; page header confirms 19 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (19). Turkish-focused, heavily retired legends.",
+  "clients": [
+    {"name": "Onuralp Çevikkan", "age": 20, "current_club": "Trabzonspor", "position": "Goalkeeper", "nationality": "Türkiye", "transfermarkt_player_id": "1054214"},
+    {"name": "Batuhan Çelik", "age": 21, "current_club": "Basaksehir FK", "position": "Centre-Forward", "nationality": "Türkiye", "transfermarkt_player_id": "875249"},
+    {"name": "Melih Bostan", "age": 22, "current_club": "Ümraniyespor", "position": "Centre-Forward", "nationality": "Türkiye", "transfermarkt_player_id": "697917"},
+    {"name": "Uğur Kaan Yıldız", "age": 24, "current_club": "Kocaelispor", "position": "Right-Back", "nationality": "Türkiye", "transfermarkt_player_id": "700034"},
+    {"name": "Kerem Şen", "age": 24, "current_club": "Ümraniyespor", "position": "Central Midfield", "nationality": "Türkiye", "transfermarkt_player_id": "700010"},
+    {"name": "Atınç Nukan", "age": 33, "current_club": "Bandirma Spor", "position": "Centre-Back", "nationality": "Türkiye", "transfermarkt_player_id": "149516"},
+    {"name": "Volkan Babacan", "age": 38, "current_club": "Basaksehir FK", "position": "Goalkeeper", "nationality": "Türkiye", "transfermarkt_player_id": "52261"},
+    {"name": "Tolgay Arslan", "age": 35, "current_club": "Retired", "position": "Attacking Midfield", "nationality": "Germany/Türkiye", "transfermarkt_player_id": "53536"},
+    {"name": "Mert Hakan Yandaş", "age": 31, "current_club": "Fenerbahce", "position": "Attacking Midfield", "nationality": "Türkiye", "transfermarkt_player_id": "306462"},
+    {"name": "Emmanuel Emenike", "age": 39, "current_club": "Retired", "position": "Centre-Forward", "nationality": "Nigeria", "transfermarkt_player_id": "120630"},
+    {"name": "Emre Çolak", "age": 35, "current_club": "Retired", "position": "Attacking Midfield", "nationality": "Türkiye", "transfermarkt_player_id": "77707"},
+    {"name": "Ali Güneş", "age": 47, "current_club": "Retired", "position": "Central Midfield", "nationality": "Türkiye/Germany", "transfermarkt_player_id": "404"},
+    {"name": "Cenk Gönen", "age": 38, "current_club": "Without Club", "position": "Goalkeeper", "nationality": "Türkiye", "transfermarkt_player_id": "45214"},
+    {"name": "Gökhan Gönül", "age": 41, "current_club": "Retired", "position": "Right-Back", "nationality": "Türkiye", "transfermarkt_player_id": "33793"},
+    {"name": "Hakan Balta", "age": 43, "current_club": "Retired", "position": "Left-Back", "nationality": "Türkiye/Germany", "transfermarkt_player_id": "29494"},
+    {"name": "Arda Turan", "age": 39, "current_club": "Retired", "position": "Left Winger", "nationality": "Türkiye", "transfermarkt_player_id": "21369"},
+    {"name": "Okan Buruk", "age": 52, "current_club": "Retired", "position": "Right Midfield", "nationality": "Türkiye", "transfermarkt_player_id": "5791"},
+    {"name": "Emre Belözoğlu", "age": 45, "current_club": "Retired", "position": "Central Midfield", "nationality": "Türkiye", "transfermarkt_player_id": "5782"},
+    {"name": "Rüştü Reçber", "age": 53, "current_club": "Retired", "position": "Goalkeeper", "nationality": "Türkiye", "transfermarkt_player_id": "4077"}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "agency_name": "BRILLMANN",
+  "source_url": "https://www.transfermarkt.com/brillmann/beraterfirma/berater/12914",
+  "extracted_from": "https://www.transfermarkt.us/brillmann/beraterfirma/berater/12914 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Very small agency, 4 clients total, all Austrian.",
+  "clients": [
+    {"name": "Sanel Saljic", "age": 20, "current_club": "Austria Vienna", "position": "Attacking Midfield", "nationality": "Austria", "transfermarkt_player_id": "803967"},
+    {"name": "Emanuel Aiwu", "age": 25, "current_club": "Apollon Limassol", "position": "Centre-Back", "nationality": "Austria/Nigeria", "transfermarkt_player_id": "394152"},
+    {"name": "Maximilian Entrup", "age": 29, "current_club": "Eintracht Braunschweig", "position": "Centre-Forward", "nationality": "Austria", "transfermarkt_player_id": "403184"},
+    {"name": "Luca Pazourek", "age": 21, "current_club": "TSV Hartberg", "position": "Right-Back", "nationality": "Austria", "transfermarkt_player_id": "803933"}
+  ]
+}

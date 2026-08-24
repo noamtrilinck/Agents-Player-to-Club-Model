@@ -1,0 +1,15 @@
+{
+  "agency_name": "ITPA Agency",
+  "source_url": "https://www.transfermarkt.com/itpa-agency/beraterfirma/berater/10161",
+  "extracted_from": "https://www.transfermarkt.us/itpa-agency/beraterfirma/berater/10161 (single page, no pagination; page header confirms 7 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (7).",
+  "clients": [
+    {"name": "Simão Júnior", "age": 27, "current_club": "FK Banga Gargzdai", "position": "Centre-Back", "nationality": "Guinea-Bissau/Portugal", "transfermarkt_player_id": "695504"},
+    {"name": "Ahmad Khalaila", "age": 25, "current_club": "Hapoel Afula", "position": "Centre-Forward", "nationality": "Israel", "transfermarkt_player_id": "1310828"},
+    {"name": "Ido Vaier", "age": 29, "current_club": "Ironi Kiryat Shmona", "position": "Right-Back", "nationality": "Israel", "transfermarkt_player_id": "458465"},
+    {"name": "Nitay Bitan", "age": 26, "current_club": "Hapoel Afula", "position": "Centre-Back", "nationality": "Israel/United States", "transfermarkt_player_id": "947376"},
+    {"name": "Netanel Amoyal", "age": 25, "current_club": "Without Club", "position": "Left-Back", "nationality": "Israel", "transfermarkt_player_id": "701318"},
+    {"name": "Baha Shami", "age": 28, "current_club": "Beitar Nahariya", "position": "Defender", "nationality": "Israel", "transfermarkt_player_id": "1352132"},
+    {"name": "Nadav Ivgi", "age": 21, "current_club": "Maccabi Herzliya", "position": "Attack", "nationality": "Israel", "transfermarkt_player_id": "1410259"}
+  ]
+}

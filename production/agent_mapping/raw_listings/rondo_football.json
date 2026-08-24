@@ -1,0 +1,35 @@
+{
+  "agency_name": "Rondo Football",
+  "source_url": "https://www.transfermarkt.com/rondo-football/beraterfirma/berater/10174",
+  "extracted_from": "https://www.transfermarkt.us/rondo-football/beraterfirma/berater/10174 (pages 1-2)",
+  "extraction_note": "Extracted from the agency's client-listing pages only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (25+1=26). Dutch-focused.",
+  "clients": [
+    {"name": "Ernest Poku", "age": 22, "current_club": "Bayer 04 Leverkusen", "position": "Right Winger", "nationality": "Netherlands/Ghana", "transfermarkt_player_id": "718303"},
+    {"name": "Stije Resink", "age": 23, "current_club": "FC Groningen", "position": "Defensive Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "793099"},
+    {"name": "David van der Werff", "age": 21, "current_club": "FC Groningen", "position": "Right Winger", "nationality": "Netherlands", "transfermarkt_player_id": "671737"},
+    {"name": "Jorg Schreuders", "age": 21, "current_club": "FC Groningen", "position": "Right-Back", "nationality": "Netherlands", "transfermarkt_player_id": "671735"},
+    {"name": "Guus Offerhaus", "age": 25, "current_club": "FC Utrecht", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "590777"},
+    {"name": "Emmanuel Poku", "age": 21, "current_club": "Almere City FC", "position": "Right Winger", "nationality": "Netherlands", "transfermarkt_player_id": "1021391"},
+    {"name": "Marcelencio Esajas", "age": 24, "current_club": "TOP Oss", "position": "Central Midfield", "nationality": "Netherlands/Suriname", "transfermarkt_player_id": "706896"},
+    {"name": "Tyrese Simons", "age": 23, "current_club": "FC Eindhoven", "position": "Left Winger", "nationality": "Netherlands/Suriname", "transfermarkt_player_id": "1228735"},
+    {"name": "Joey Jacobs", "age": 26, "current_club": "Without Club", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "361124"},
+    {"name": "Tim Braem", "age": 20, "current_club": "De Graafschap Doetinchem", "position": "Defensive Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1087052"},
+    {"name": "Matthias Nartey", "age": 21, "current_club": "IK Sirius", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "963510"},
+    {"name": "Joshua Mukeh", "age": 23, "current_club": "FC Emmen", "position": "Centre-Back", "nationality": "Netherlands/Nigeria", "transfermarkt_player_id": "691975"},
+    {"name": "Daniël Beukers", "age": 22, "current_club": "FC Volendam", "position": "Right-Back", "nationality": "Netherlands", "transfermarkt_player_id": "670779"},
+    {"name": "Mawouna Amevor", "age": 34, "current_club": "FC Volendam", "position": "Centre-Back", "nationality": "Togo/Netherlands", "transfermarkt_player_id": "170720"},
+    {"name": "Maxim Mariani", "age": 21, "current_club": "TOP Oss", "position": "Centre-Back", "nationality": "Netherlands/Italy", "transfermarkt_player_id": "660059"},
+    {"name": "Fofin Turay", "age": 22, "current_club": "SC Telstar", "position": "Left Winger", "nationality": "Netherlands/Guinea", "transfermarkt_player_id": "671736"},
+    {"name": "Jochem Nap", "age": 21, "current_club": "RKC Waalwijk", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1182531"},
+    {"name": "Jasper Meijster", "age": 21, "current_club": "SC Cambuur Leeuwarden", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "704252"},
+    {"name": "Sisqo Lever", "age": 23, "current_club": "SV Spakenburg", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "679708"},
+    {"name": "Jay de Graef", "age": 19, "current_club": "VVV-Venlo U21", "position": "Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1472848"},
+    {"name": "Raf Vullers", "age": 19, "current_club": "VVV-Venlo U19", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1221445"},
+    {"name": "Jay Kuiper", "age": 22, "current_club": "TOP Oss", "position": "Left-Back", "nationality": "Netherlands", "transfermarkt_player_id": "657112"},
+    {"name": "Amin Laoukili", "age": 21, "current_club": "Fortuna Sittard U21", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1073562"},
+    {"name": "Thuto Mojanaga", "age": 19, "current_club": "PEC Zwolle U21", "position": "Central Midfield", "nationality": "Netherlands/South Africa", "transfermarkt_player_id": "987362"},
+    {"name": "Mart Haven", "age": 22, "current_club": "VV Harkemase Boys", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "963509"},
+
+    {"name": "Jereno van Gom", "age": 21, "current_club": "Almere City FC U23", "position": "Right-Back", "nationality": "Suriname/Netherlands", "transfermarkt_player_id": "929139"}
+  ]
+}

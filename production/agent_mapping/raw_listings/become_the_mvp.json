@@ -1,0 +1,16 @@
+{
+  "agency_name": "Become The MVP",
+  "source_url": "https://www.transfermarkt.com/become-the-mvp/beraterfirma/berater/7029",
+  "extracted_from": "https://www.transfermarkt.us/become-the-mvp/beraterfirma/berater/7029 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Small agency, 8 clients total, French lower-league/amateur roster.",
+  "clients": [
+    {"name": "Abdoulaye Sissako", "age": 28, "current_club": "Sint-Truidense VV", "position": "Defensive Midfield", "nationality": "France/Mali", "transfermarkt_player_id": "418661"},
+    {"name": "Moussa Sissako", "age": 25, "current_club": "FK IMT Belgrad", "position": "Centre-Back", "nationality": "Mali/France", "transfermarkt_player_id": "536475"},
+    {"name": "Sidi Cissé", "age": 23, "current_club": "AS Nancy-Lorraine", "position": "Right Winger", "nationality": "France/Mali", "transfermarkt_player_id": "911991"},
+    {"name": "Mouhamadou Konaté", "age": 25, "current_club": "Without Club", "position": "Centre-Back", "nationality": "France/Senegal", "transfermarkt_player_id": "945354"},
+    {"name": "Manu Agro", "age": 24, "current_club": "Gallia Club Lucciana FC", "position": "Goalkeeper", "nationality": "France/Côte d'Ivoire", "transfermarkt_player_id": "812807"},
+    {"name": "Naël Anouari", "age": 23, "current_club": "ASPTT Caen", "position": "Left Winger", "nationality": "Morocco/France", "transfermarkt_player_id": "811068"},
+    {"name": "Allan Amoros", "age": 24, "current_club": "FC Mulhouse", "position": "Defensive Midfield", "nationality": "France/Spain", "transfermarkt_player_id": "937929"},
+    {"name": "Loïck Massé", "age": 23, "current_club": "Bourges FC", "position": "Goalkeeper", "nationality": "France", "transfermarkt_player_id": "941270"}
+  ]
+}

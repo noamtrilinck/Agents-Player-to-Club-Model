@@ -1,0 +1,33 @@
+{
+  "agency_name": "Premium Stars Sportsmanagement",
+  "source_url": "https://www.transfermarkt.com/premium-stars-sportsmanagement/beraterfirma/berater/3859",
+  "extracted_from": "https://www.transfermarkt.us/premium-stars-sportsmanagement/beraterfirma/berater/3859 (single page, no pagination; page header confirms 25 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (25). Dutch-focused, heavy on lower-tier/amateur clubs.",
+  "clients": [
+    {"name": "Justin Hubner", "age": 22, "current_club": "Fortuna Sittard", "position": "Centre-Back", "nationality": "Indonesia/Netherlands", "transfermarkt_player_id": "678641"},
+    {"name": "Nick Fichtinger", "age": 22, "current_club": "PEC Zwolle", "position": "Defensive Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "806384"},
+    {"name": "Serano Seymor", "age": 24, "current_club": "Khor Fakkan SSC", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "618038"},
+    {"name": "Shedrach Ebite", "age": 20, "current_club": "Sparta Rotterdam U21", "position": "Centre-Forward", "nationality": "Netherlands/Nigeria", "transfermarkt_player_id": "1025425"},
+    {"name": "Ryan Leijten", "age": 22, "current_club": "Lokomotiv Plovdiv", "position": "Attacking Midfield", "nationality": "Netherlands/China", "transfermarkt_player_id": "892983"},
+    {"name": "Gladwin Curiel", "age": 24, "current_club": "Without Club", "position": "Right-Back", "nationality": "Aruba/Netherlands", "transfermarkt_player_id": "779750"},
+    {"name": "Bjarn Zorgdrager", "age": 22, "current_club": "RKC Waalwijk", "position": "Right-Back", "nationality": "Netherlands", "transfermarkt_player_id": "963506"},
+    {"name": "Myles Veldman", "age": 23, "current_club": "Valur Reykjavík", "position": "Left-Back", "nationality": "Netherlands/Suriname", "transfermarkt_player_id": "774996"},
+    {"name": "Junior van Beveren", "age": 20, "current_club": "HSV Hoek", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1165895"},
+    {"name": "Maxim van Peer", "age": 23, "current_club": "VV DOVO Veenendaal", "position": "Left Winger", "nationality": "Netherlands", "transfermarkt_player_id": "669095"},
+    {"name": "Arjan van der Laan", "age": 56, "current_club": "Retired", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "12110"},
+    {"name": "Jeremy Cijntje", "age": 28, "current_club": "Without Club", "position": "Left Winger", "nationality": "Curacao/Netherlands", "transfermarkt_player_id": "446247"},
+    {"name": "Michael Fabrie", "age": 28, "current_club": "Retired", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "341447"},
+    {"name": "Kelvin Leerdam", "age": 36, "current_club": "Without Club", "position": "Right-Back", "nationality": "Suriname/Netherlands", "transfermarkt_player_id": "92936"},
+    {"name": "Iliass el Filali", "age": 20, "current_club": "FC Den Bosch U21", "position": "Left Winger", "nationality": "Netherlands/Morocco", "transfermarkt_player_id": "1436945"},
+    {"name": "Owen Johnson", "age": 21, "current_club": "Fortuna Sittard U21", "position": "Attack", "nationality": "Netherlands", "transfermarkt_player_id": "1190921"},
+    {"name": "Josias Siby", "age": 19, "current_club": "Without Club", "position": "Centre-Forward", "nationality": "Netherlands/Curacao", "transfermarkt_player_id": "1082173"},
+    {"name": "Enoch George", "age": 23, "current_club": "SVV Scheveningen", "position": "Centre-Forward", "nationality": "Guyana/Netherlands", "transfermarkt_player_id": "1051135"},
+    {"name": "Youssef Hamdad", "age": 22, "current_club": "OJC Rosmalen", "position": "Centre-Forward", "nationality": "Netherlands", "transfermarkt_player_id": "949918"},
+    {"name": "Lars Reijnen", "age": 22, "current_club": "VVOG Harderwijk", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "813070"},
+    {"name": "Bent Driessen", "age": 22, "current_club": "Without Club", "position": "Left Winger", "nationality": "Netherlands", "transfermarkt_player_id": "804779"},
+    {"name": "Remi Akanni", "age": 21, "current_club": "KVV Quick Boys Katwijk", "position": "Centre-Back", "nationality": "Netherlands/Nigeria", "transfermarkt_player_id": "804771"},
+    {"name": "Djomar Giersthove", "age": 21, "current_club": "Sparta Rotterdam U21", "position": "Centre-Back", "nationality": "Netherlands/Suriname", "transfermarkt_player_id": "745623"},
+    {"name": "Thomas Wijnia", "age": 23, "current_club": "OJC Rosmalen", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "707369"},
+    {"name": "Chima Anyasi", "age": 24, "current_club": "VV Sparta Nijkerk", "position": "Centre-Back", "nationality": "Netherlands/Nigeria", "transfermarkt_player_id": "593831"}
+  ]
+}

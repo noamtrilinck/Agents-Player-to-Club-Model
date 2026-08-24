@@ -1,0 +1,12 @@
+# Runtime dependencies for the Streamlit application (dashboard/app.py).
+# Install with: pip install -r requirements.txt
+# Run with:     streamlit run dashboard/app.py
+
+streamlit>=1.60
+pandas>=2.2
+numpy>=1.26
+
+# Not required at application runtime (only by the production build scripts under production/,
+# which are run once by a developer to regenerate the data layer, not by the deployed app):
+#   pyarrow      -- engine="pyarrow" in the Stage 5/6/7.1 build scripts' pd.read_csv calls
+#   pytest       -- test suite only

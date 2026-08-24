@@ -1,0 +1,15 @@
+{
+  "agency_name": "Platinum One Group",
+  "source_url": "https://www.transfermarkt.com/platinum-one-group/beraterfirma/berater/4604",
+  "extracted_from": "https://www.transfermarkt.us/platinum-one-group/beraterfirma/berater/4604 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Small agency, 7 clients total, Irish/Northern Irish roster including 2 retired players.",
+  "clients": [
+    {"name": "Ethan Ampadu", "age": 25, "current_club": "Leeds United", "position": "Defensive Midfield", "nationality": "Wales/England", "transfermarkt_player_id": "392771"},
+    {"name": "Jack Byrne", "age": 30, "current_club": "Shamrock Rovers", "position": "Central Midfield", "nationality": "Ireland", "transfermarkt_player_id": "217757"},
+    {"name": "James McClean", "age": 37, "current_club": "Derry City", "position": "Left Midfield", "nationality": "Ireland/N. Ireland", "transfermarkt_player_id": "85935"},
+    {"name": "Rory Gaffney", "age": 36, "current_club": "Shamrock Rovers", "position": "Centre-Forward", "nationality": "Ireland", "transfermarkt_player_id": "184007"},
+    {"name": "Danny Lafferty", "age": 37, "current_club": "Limavady United FC", "position": "Left-Back", "nationality": "Northern Ireland", "transfermarkt_player_id": "85928"},
+    {"name": "Alan Mannus", "age": 44, "current_club": "Retired", "position": "Goalkeeper", "nationality": "N. Ireland/Canada", "transfermarkt_player_id": "62855"},
+    {"name": "Richie Towell", "age": 35, "current_club": "Retired", "position": "Attacking Midfield", "nationality": "Ireland", "transfermarkt_player_id": "114116"}
+  ]
+}

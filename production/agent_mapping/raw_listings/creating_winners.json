@@ -1,0 +1,17 @@
+{
+  "agency_name": "Creating Winners",
+  "source_url": "https://www.transfermarkt.com/creating-winners/beraterfirma/berater/7893",
+  "extracted_from": "https://www.transfermarkt.us/creating-winners/beraterfirma/berater/7893 (single page, no pagination; page header confirms 9 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (9). Dutch/Ghanaian-focused, mostly youth/lower-tier clubs.",
+  "clients": [
+    {"name": "Joran Hardeman", "age": 24, "current_club": "De Graafschap Doetinchem", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "663649"},
+    {"name": "Abdul Nurudeen", "age": 27, "current_club": "Without Club", "position": "Goalkeeper", "nationality": "Ghana/Belgium", "transfermarkt_player_id": "511168"},
+    {"name": "Kürsad Sürmeli", "age": 30, "current_club": "Sanliurfaspor", "position": "Defensive Midfield", "nationality": "Netherlands/Türkiye", "transfermarkt_player_id": "278761"},
+    {"name": "Daniel Afful", "age": 20, "current_club": "KF Egnatia", "position": "Goalkeeper", "nationality": "Ghana", "transfermarkt_player_id": "1172585"},
+    {"name": "Mustapha Yakubu", "age": 21, "current_club": "FK Sabail", "position": "Right Winger", "nationality": "Ghana", "transfermarkt_player_id": "1021820"},
+    {"name": "Ayman Belgadi", "age": 20, "current_club": "VV IJsselmeervogels U21", "position": "Left Winger", "nationality": "Netherlands/Morocco", "transfermarkt_player_id": "951140"},
+    {"name": "Tygo Grotenhuis", "age": 21, "current_club": "De Graafschap Doetinchem U21", "position": "Right-Back", "nationality": "Netherlands", "transfermarkt_player_id": "992170"},
+    {"name": "Kenji Goes", "age": 19, "current_club": "FC Utrecht U21", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1182914"},
+    {"name": "Silver Hop", "age": 19, "current_club": "FC Dordrecht U21", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "1378845"}
+  ]
+}

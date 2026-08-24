@@ -1,0 +1,13 @@
+{
+  "agency_name": "NEJA SPORT d.o.o.",
+  "source_url": "https://www.transfermarkt.com/neja-sport-d-o-o-/beraterfirma/berater/4507",
+  "extracted_from": "https://www.transfermarkt.us/neja-sport-d-o-o-/beraterfirma/berater/4507 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Very small agency, 5 clients total, all Croatian.",
+  "clients": [
+    {"name": "Darko Nejasmic", "age": 27, "current_club": "NEC Nijmegen", "position": "Defensive Midfield", "nationality": "Croatia", "transfermarkt_player_id": "526566"},
+    {"name": "Prince Ampem", "age": 28, "current_club": "Shanghai Port", "position": "Left Winger", "nationality": "Ghana", "transfermarkt_player_id": "562734"},
+    {"name": "Antonio Milic", "age": 32, "current_club": "Wieczysta Krakow", "position": "Centre-Back", "nationality": "Croatia", "transfermarkt_player_id": "179896"},
+    {"name": "Jakov Blagaic", "age": 26, "current_club": "NK Rudes", "position": "Attacking Midfield", "nationality": "Croatia", "transfermarkt_player_id": "434711"},
+    {"name": "Mijo Caktas", "age": 34, "current_club": "NK Dugopolje", "position": "Attacking Midfield", "nationality": "Croatia", "transfermarkt_player_id": "197032"}
+  ]
+}

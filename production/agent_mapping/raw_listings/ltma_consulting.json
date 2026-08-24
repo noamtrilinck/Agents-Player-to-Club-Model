@@ -1,0 +1,23 @@
+{
+  "agency_name": "Ltma Consulting",
+  "source_url": "https://www.transfermarkt.com/ltma-consulting/beraterfirma/berater/11532",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "15 clients total, matching the page's own stated count exactly.",
+  "clients": [
+    {"name": "Pablo Pagis", "age": 23, "current_club": "Paris FC", "position": "Left Winger", "nationality": "France", "transfermarkt_player_id": "810411"},
+    {"name": "Théo Le Bris", "age": 23, "current_club": "FC Lorient", "position": "Right Midfield", "nationality": "France", "transfermarkt_player_id": "766412"},
+    {"name": "Josué Homawoo", "age": 28, "current_club": "Standard Liège", "position": "Centre-Back", "nationality": "Togo/France", "transfermarkt_player_id": "655143"},
+    {"name": "Rayan Raveloson", "age": 29, "current_club": "Amed SK", "position": "Defensive Midfield", "nationality": "Madagascar/France", "transfermarkt_player_id": "344576"},
+    {"name": "Sekou Bangoura", "age": 24, "current_club": "Columbus Crew", "position": "Central Midfield", "nationality": "Guinea", "transfermarkt_player_id": "666929"},
+    {"name": "Peter Ouaneh", "age": 28, "current_club": "UTA Arad", "position": "Centre-Back", "nationality": "France/DR Congo", "transfermarkt_player_id": "391375"},
+    {"name": "Jordan Morel", "age": 23, "current_club": "USL Dunkerque", "position": "Central Midfield", "nationality": "France", "transfermarkt_player_id": "904663"},
+    {"name": "Momo Touré", "age": 24, "current_club": "Alashkert Yerevan FC", "position": "Centre-Forward", "nationality": "Guinea", "transfermarkt_player_id": "666923"},
+    {"name": "Vincent Marcel", "age": 29, "current_club": "Valenciennes FC", "position": "Attacking Midfield", "nationality": "France/Guadeloupe", "transfermarkt_player_id": "453597"},
+    {"name": "Ange Badey", "age": 23, "current_club": "FC Versailles 78", "position": "Centre-Back", "nationality": "Côte d'Ivoire", "transfermarkt_player_id": "1082205"},
+    {"name": "Youssouf Koné", "age": 31, "current_club": "Aviron Bayonnais", "position": "Left-Back", "nationality": "Mali", "transfermarkt_player_id": "274484"},
+    {"name": "Noah Le Gal", "age": 19, "current_club": "FC Lorient B", "position": "Left-Back", "nationality": "France", "transfermarkt_player_id": "1176375"},
+    {"name": "Mathis N'Tessa", "age": 18, "current_club": "Stade Laval U19", "position": "Goalkeeper", "nationality": "France/Congo", "transfermarkt_player_id": "1209417"},
+    {"name": "Sacha Mellier", "age": 18, "current_club": "Stade Laval U19", "position": "Central Midfield", "nationality": "France", "transfermarkt_player_id": "1362801"},
+    {"name": "Feydji Vienne", "age": 17, "current_club": "AJ Auxerre U19", "position": "Right Winger", "nationality": "France/Réunion", "transfermarkt_player_id": "1537046"}
+  ]
+}

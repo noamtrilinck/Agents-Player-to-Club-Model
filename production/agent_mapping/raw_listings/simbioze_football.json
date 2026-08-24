@@ -1,0 +1,28 @@
+{
+  "agency_name": "Simbioze Football",
+  "source_url": "https://www.transfermarkt.com/simbioze-football/beraterfirma/berater/5591",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "20 clients total, matching the page's own stated count exactly.",
+  "clients": [
+    {"name": "Milan Robin", "age": 26, "current_club": "Le Mans FC", "position": "Central Midfield", "nationality": "France", "transfermarkt_player_id": "371143"},
+    {"name": "Sekou Djanbou", "age": 21, "current_club": "Racing Ferrol", "position": "Central Midfield", "nationality": "Mali/Burkina Faso", "transfermarkt_player_id": "1131462"},
+    {"name": "Henry Camara", "age": 20, "current_club": "Atalanta Primavera", "position": "Centre-Forward", "nationality": "Guinea/France", "transfermarkt_player_id": "955427"},
+    {"name": "Declan Frith", "age": 24, "current_club": "Peterborough United", "position": "Right Winger", "nationality": "England/USA", "transfermarkt_player_id": "865917"},
+    {"name": "Mathieu Peybernes", "age": 35, "current_club": "FC Sochaux-Montbéliard", "position": "Centre-Back", "nationality": "France", "transfermarkt_player_id": "111026"},
+    {"name": "Cheick Doukouré", "age": 33, "current_club": "KF Prishtina e Re", "position": "Defensive Midfield", "nationality": "Côte d'Ivoire/France", "transfermarkt_player_id": "129679"},
+    {"name": "Joan Oleaga", "age": 20, "current_club": "Real Sociedad B", "position": "Central Midfield", "nationality": "Spain", "transfermarkt_player_id": "1313969"},
+    {"name": "Ander Ezpeleta", "age": 18, "current_club": "CD Basconia", "position": "Central Midfield", "nationality": "Spain", "transfermarkt_player_id": "1354336"},
+    {"name": "Aboubakary Sacko", "age": 23, "current_club": "Without Club", "position": "Left Midfield", "nationality": "France/Mali", "transfermarkt_player_id": "768561"},
+    {"name": "Christian Koffi", "age": 25, "current_club": "New York Cosmos", "position": "Left Winger", "nationality": "France/Côte d'Ivoire", "transfermarkt_player_id": "460658"},
+    {"name": "Ridge Duah-Adusei", "age": 25, "current_club": "CS Brétigny B", "position": "Centre-Forward", "nationality": "France", "transfermarkt_player_id": "618340"},
+    {"name": "Jordan D'Ambrosio", "age": 26, "current_club": "CS Chaumontois", "position": "Centre-Forward", "nationality": "France", "transfermarkt_player_id": "475408"},
+    {"name": "Bilel Hassaini", "age": 25, "current_club": "RC Kouba", "position": "Right Winger", "nationality": "Algeria/France", "transfermarkt_player_id": "463615"},
+    {"name": "Liam Baró", "age": 18, "current_club": "Without Club", "position": "Midfield", "nationality": "Spain", "transfermarkt_player_id": "1354779"},
+    {"name": "Xalbat Larralde", "age": 20, "current_club": "SD Amorebieta", "position": "Right Winger", "nationality": "Spain", "transfermarkt_player_id": "1354782"},
+    {"name": "Erik Pereira", "age": 18, "current_club": "Zarautz KE", "position": "Goalkeeper", "nationality": "Spain", "transfermarkt_player_id": "1396485"},
+    {"name": "Hugo Fernández", "age": 18, "current_club": "Valencia CF U19", "position": "Centre-Back", "nationality": "Spain/France", "transfermarkt_player_id": "1479525"},
+    {"name": "Julen Gaztañaga", "age": 18, "current_club": "Real Sociedad U19", "position": "Right-Back", "nationality": "Spain", "transfermarkt_player_id": "1516954"},
+    {"name": "Silvio Castillo", "age": 21, "current_club": "Sevilla FC C", "position": "Left Winger", "nationality": "Spain", "transfermarkt_player_id": "1546191"},
+    {"name": "Abiot de Prado", "age": 18, "current_club": "Real Sociedad U19", "position": "Left-Back", "nationality": "Spain", "transfermarkt_player_id": "1550659"}
+  ]
+}

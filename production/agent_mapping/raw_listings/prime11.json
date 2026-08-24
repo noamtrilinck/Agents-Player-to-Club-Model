@@ -1,0 +1,32 @@
+{
+  "agency_name": "Prime11",
+  "source_url": "https://www.transfermarkt.com/prime11/beraterfirma/berater/2148",
+  "extracted_from": "https://www.transfermarkt.us/prime11/beraterfirma/berater/2148 (single page, no pagination; page header confirms 24 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (24). Dutch-focused.",
+  "clients": [
+    {"name": "Tobias van den Elshout", "age": 19, "current_club": "Feyenoord U21", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "1087982"},
+    {"name": "Noah Naujoks", "age": 24, "current_club": "Excelsior Rotterdam", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "578544"},
+    {"name": "Jordy Clasie", "age": 35, "current_club": "AZ Alkmaar", "position": "Defensive Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "104223"},
+    {"name": "Hidde ter Avest", "age": 29, "current_club": "Willem II Tilburg", "position": "Right-Back", "nationality": "Netherlands", "transfermarkt_player_id": "258519"},
+    {"name": "Rick Meissen", "age": 24, "current_club": "Excelsior Rotterdam", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "596178"},
+    {"name": "Daniel van Vianen", "age": 23, "current_club": "Excelsior Rotterdam", "position": "Defensive Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "942960"},
+    {"name": "Bart Schenkeveld", "age": 34, "current_club": "Without Club", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "124895"},
+    {"name": "Jari Schuurman", "age": 29, "current_club": "Willem II Tilburg", "position": "Attacking Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "264857"},
+    {"name": "Fabian de Keijzer", "age": 26, "current_club": "Heracles Almelo", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "462285"},
+    {"name": "Mauresmo Hinoke", "age": 21, "current_club": "TOP Oss", "position": "Left Winger", "nationality": "Netherlands", "transfermarkt_player_id": "899740"},
+    {"name": "Christopher Mamengi", "age": 25, "current_club": "Shafa Baku", "position": "Centre-Back", "nationality": "Netherlands/Angola", "transfermarkt_player_id": "477249"},
+    {"name": "Ivar Jenner", "age": 22, "current_club": "Dewa United Banten FC", "position": "Central Midfield", "nationality": "Indonesia/Netherlands", "transfermarkt_player_id": "656796"},
+    {"name": "Thomas Lam", "age": 32, "current_club": "Bali United FC", "position": "Centre-Back", "nationality": "Finland/Netherlands", "transfermarkt_player_id": "131821"},
+    {"name": "Per Kloosterboer", "age": 21, "current_club": "FC Utrecht U21", "position": "Centre-Back", "nationality": "Netherlands", "transfermarkt_player_id": "937571"},
+    {"name": "Mitchell van Rooijen", "age": 27, "current_club": "SC Genemuiden", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "392744"},
+    {"name": "Rafael Struick", "age": 23, "current_club": "Dewa United Banten FC", "position": "Left Winger", "nationality": "Indonesia/Netherlands", "transfermarkt_player_id": "790420"},
+    {"name": "Mannou Berger", "age": 21, "current_club": "Feyenoord U21", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "746973"},
+    {"name": "Jens Raven", "age": 20, "current_club": "Bali United FC", "position": "Centre-Forward", "nationality": "Indonesia/Netherlands", "transfermarkt_player_id": "1158008"},
+    {"name": "Michel Vorm", "age": 42, "current_club": "Retired", "position": "Goalkeeper", "nationality": "Netherlands/Suriname", "transfermarkt_player_id": "26276"},
+    {"name": "Lars Veldwijk", "age": 34, "current_club": "Al-Nahda Club", "position": "Centre-Forward", "nationality": "South Africa/Netherlands", "transfermarkt_player_id": "175912"},
+    {"name": "Rick Kruys", "age": 41, "current_club": "Retired", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "17320"},
+    {"name": "Jemuel Erat", "age": 18, "current_club": "NAC Breda U21", "position": "Centre-Back", "nationality": "Netherlands/Suriname", "transfermarkt_player_id": "1088672"},
+    {"name": "Stenn de Mol", "age": 18, "current_club": "Feyenoord U21", "position": "Goalkeeper", "nationality": "Netherlands", "transfermarkt_player_id": "1172229"},
+    {"name": "Duron van Bennekom", "age": 17, "current_club": "Feyenoord U19", "position": "Goalkeeper", "nationality": "Curacao/Netherlands", "transfermarkt_player_id": "1242205"}
+  ]
+}

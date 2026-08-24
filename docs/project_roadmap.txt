@@ -1,0 +1,1300 @@
+================================================================================
+AGENT'S PLAYER TO CLUB MODEL — PROJECT ROADMAP
+================================================================================
+
+Status: Stages 1-3 (Scope & Eligibility, Agency Portfolio Mapping, Player
+Evaluation Integration) complete. Stage 4 (Club & Position Pattern Model)
+COMPLETE -- locked with specific limitations + Hybrid multi-profile
+extension, approved 2026-08-19; canonical output
+production/club_pattern_model/system_compatibility_candidate/results/
+system_compatible_profiles_multi.csv. Stage 5 (Player-Club Style
+Compatibility) COMPLETE AND FULLY LOCKED -- Sprints 5.1-5.10 complete,
+approved 2026-08-20. The Combined Style Fit production pipeline is locked
+and implemented: production/style_compatibility/build_style_compatibility.py
+produces the canonical production/style_compatibility/results/
+player_club_position_style_fit.csv (0.95 x SYSTEM Fit + 0.05 x OBSERVED Fit,
+SYSTEM ratio 1.15, OBSERVED ratio 1.0, both independently
+position-relative-percentile calibrated, SYSTEM-only fallback for
+fully-inferred Club x Positions, best-fit-to-either for multiple archetypes;
+3,823,104 rows, 7,467 players x 513 candidate clubs x 11 positions).
+Alternative Opportunity (candidate-flag mechanism, architecturally separate
+from Combined Style Fit) is also locked: SYSTEM Fit >= 92.5, a robust
+Club x Position-relative standardized SYSTEM-OBSERVED gap (median/MAD
+z-score, 1.4826 scale factor) >= 2.75, OBSERVED reliability HIGH/MEDIUM,
+genuine OBSERVED evidence required -- replacing the deprecated Sprint
+5.6/5.7 absolute-gap rule that caused a systematic Club x Position
+OBSERVED-baseline artifact (correlation -0.4288, reduced to -0.2279 under
+the final rule). 486 AO-eligible rows, 428 players (5.7%). 33 dedicated
+Stage 5 tests + full end-to-end QA, all passing; full project test suite
+271/271 passing; two independent clean rebuilds byte-identical. See
+docs/stage5_sprint5_10_final_ao_implementation_and_stage5_lock.md for the
+full final report. Stages 6-8 not started.
+
+Revision note: this roadmap was revised before Stage 1 began to reflect a
+methodological decision — the project reuses the validated player-evaluation
+framework already built in National Team Selection instead of building a
+separate player-scoring methodology from scratch. See "Key Architectural
+Decision" below.
+
+
+PROJECT OBJECTIVE
+--------------------------------------------------------------------------------
+Build a platform for football agents. An agent selects one of their players,
+applies relevant conditions/filters, and receives the three most suitable
+clubs in other countries for that player's next move.
+
+The model must be based only on information we can actually derive from our
+data. Do not introduce speculative concepts such as coaching preferences,
+tactical intentions, transfer budgets, salaries, contract situations, or any
+other information we do not currently have.
+
+
+KEY ARCHITECTURAL DECISION
+--------------------------------------------------------------------------------
+This project reuses the validated player-evaluation framework already built
+in National Team Selection (Ability scores, Attacking Philosophy/Profile
+scores, Defensive scores, Competitive/context adjustments, and relevant
+underlying player metrics) rather than re-deriving player quality from
+scratch. See Stage 3.
+
+The project's core, novel modelling challenge is learning club x position
+player patterns from those player profiles, and then calculating how
+compatible a candidate player's profile is with those patterns. See Stages
+4-5.
+
+The internal mathematical/statistical/ML calculations are never exposed to
+the end user. The final user-facing output is eventually a simple:
+
+    Match % + Explanation
+
+"Complexity inside, simplicity outside."
+
+
+DATA SOURCE
+--------------------------------------------------------------------------------
+The shared football data warehouse already exists at:
+
+    Football Data/Data/database/database.db
+
+This project reads from that database as its underlying raw data source. The
+warehouse is not modified for project-specific logic — every project-specific
+derived dataset or calculation lives inside this project's own production/
+structure, never in the shared database.
+
+This project does NOT automatically inherit the National Team Selection
+project's scope rules, master dataset, or assumptions. Every scope decision
+here (leagues, eligibility, minutes thresholds, goalkeeper handling, etc.)
+must be made fresh, for this project's own objective.
+
+Reusing National Team Selection's validated player-evaluation OUTPUTS (see
+Stage 3) is a separate matter from inheriting its SCOPE — the two are not the
+same decision, and one is not permission for the other.
+
+Note: reusing National Team Selection's scores is not permission to move,
+rewrite, or modify that project. It is documented here only as an intended
+dependency, to be worked out concretely in Stage 3.
+
+
+================================================================================
+STAGE 1 — SCOPE & ELIGIBILITY  [COMPLETE — implemented and validated]
+================================================================================
+Full detail: docs/stage1_scope_and_eligibility.md
+Outputs: production/scope_and_eligibility/results/
+  (eligible_players.csv, candidate_clubs.csv, stage1_validation_report.txt)
+Tests: tests/test_stage1_scope_and_eligibility.py (18 tests, all passing)
+
+Decision taken: this project uses EXACTLY the same player universe and league
+scope already approved and implemented in National Team Selection — not a
+redesign. League scope is imported directly from NTS's mvp_league_scope.py
+(EXCLUDED_LEAGUE_IDS, 16 excluded leagues); player eligibility is read
+directly from the master_player_dataset table NTS builds inside the shared
+warehouse. Neither rule is reimplemented in this project.
+
+Validated result: this project's eligible-player universe is byte-for-byte
+identical to NTS's (7,568 player-seasons, exact key match, zero
+discrepancy) — 33 leagues, 29 countries, 511 clubs, 0 goalkeepers, minimum
+observed minutes 900.0. The candidate destination-club universe (a broader,
+project-specific concept — see docs/stage1_scope_and_eligibility.md) is,
+after the post-Sprint-4.3 Luxembourg/North Macedonia exclusion, 513 clubs
+across 33 included leagues and 29 league countries. Canonical club country
+throughout this project = the country of the LEAGUE a club competes in
+(`leagues.country_id`), never a club's own nationality/geographic identity
+(`teams.country_id`) — see docs/stage1_scope_and_eligibility.md's "Canonical
+club country = league country" section. The different-country
+destination rule is documented and stubbed (cross_country_rule.py) but not
+yet applied — that is a Stage 7 (recommendation engine) concern; it compares
+LEAGUE countries, not club nationalities.
+
+Define the player and destination-club universe for this project.
+
+Establishes:
+  - Included leagues
+  - Eligible players
+  - Playing-time / data requirements
+  - Position handling
+  - Goalkeeper handling
+  - Candidate destination clubs
+  - Cross-country recommendation rules
+  - Missing-data rules
+
+Resolved (see above): rather than defining new rules, this project explicitly
+adopts National Team Selection's scope rules as-is (same leagues, same
+900-minute floor, goalkeepers excluded, same position handling) — a deliberate
+decision, not a default. The candidate destination-club universe and the
+different-country rule are this stage's own, project-specific additions on
+top of that inherited player scope.
+
+Home: production/scope_and_eligibility/
+
+
+================================================================================
+STAGE 2 — AGENCY PORTFOLIO MAPPING  [IN PROGRESS — reusable workflow built, 29 agencies processed]
+================================================================================
+CANONICAL FILE AS OF 2026-08-20:
+production/agent_mapping/results/agency_player_mapping_corrected.csv is now the
+SOURCE OF TRUTH for all agency-related work going forward. The original
+production/agent_mapping/results/agency_player_mapping.csv was found to be
+corrupted by the project owner and is NO LONGER authoritative -- it has not
+been deleted (kept for reference/audit trail only) but must not be read as
+current. agency_player_mapping_corrected.csv was rebuilt from
+agency_player_mapping_backup_before_manual_agency_merge.csv (base) merged with
+agency_mapping_unresolved_tm_review.csv (adds 136 players' agency values),
+after which the project owner manually reviewed and corrected every suspected
+duplicate/abbreviated agency name directly in this file. Same schema as the
+original file plus one extra diagnostic column (`agency_conflict_flag`, a
+safety net for the merge, currently all-blank). 7,467 rows (unchanged
+player-centric universe), 6,393 players with an agency, 1,074 without, 1,555
+distinct agency names.
+
+NOTE: the automated Stage 2 pipeline itself (`mapping_config.py`'s
+MAPPING_CSV constant, and every script under production/agent_mapping/ that
+reads/writes it) still points at the old agency_player_mapping.csv and was
+DELIBERATELY NOT repointed at agency_player_mapping_corrected.csv as part of
+this documentation update -- doing so would silently break
+tests/test_stage2_agency_mapping.py's exact-column-list assertion (the
+corrected file has one extra column) and touches multiple scripts' backup-path
+assumptions. Repointing the pipeline config is a distinct, not-yet-done follow-
+up task, should the project owner want future automated agency runs (not just
+manual/documentation work) to write to the corrected file directly.
+
+Outputs (LEGACY, superseded -- see above): production/agent_mapping/results/agency_player_mapping.csv
+         (player-centric: one row per Stage 1 eligible player, 7,467 rows,
+          fixed — an `agency` column filled in where a confident match exists)
+Tests: tests/test_stage2_agency_mapping.py (26 tests, all passing) -- still
+       validates the LEGACY file only; not yet updated to the corrected file
+       (see the pipeline-repointing note above).
+
+Build the mapping:
+
+    Agency -> Player -> Player ID
+
+Architecture (restructured 2026-08-13 — see docs/stage2_agency_portfolio_mapping.md
+for the full record): the canonical file is OUR ELIGIBLE-PLAYER UNIVERSE
+enriched with agency information, not a list of Transfermarkt clients
+enriched with matching information. Row count never changes during normal
+processing — it is always exactly the Stage 1 universe. Processing an agency
+means filling in the `agency` cell of that agency's matched players' EXISTING
+rows; it never adds rows for agency clients outside our scope, and never
+appends a second copy of a player.
+
+Practical workflow (as implemented):
+
+    Agency Transfermarkt portfolio page(s) -> extract clients -> match against
+    our eligible-player universe (Stage 1) -> fill in the agency column for
+    confidently matched players in the one canonical CSV
+
+Update-in-place semantics: blank -> agency assigned (applied); same agency
+already set -> no-op (idempotent rerun); a DIFFERENT agency already set ->
+conflict, flagged for manual review, never silently overwritten. Verified
+idempotent across all 29 processed agencies.
+
+Matching rule: primarily NAME + AGE. Current club, position, and nationality
+(all visible on the listing page) are supporting evidence only — a different
+current club never blocks an otherwise-clear match, since our data and
+Transfermarkt may reflect different points in time. Age is cross-checked
+against our stored date_of_birth (not the coarser NTS "age" field), tolerant
+of diacritics/transliteration/formatting differences in the name.
+
+Individual Transfermarkt player pages are NOT part of the standard matching
+workflow — only the agency's own client-listing pages are used, to keep
+processing fast. Coverage is expected to be partial and highly league-
+dependent (0% for agencies entirely outside our 33-league scope, up to ~30%
+for agencies concentrated in leagues we cover) — expected, not a defect.
+
+Uncertain/unmatched agency clients produce no row anywhere in the canonical
+file — there is no place for them in a player-indexed table, and out-of-scope
+Transfermarkt clients are deliberately excluded, not preserved.
+
+This layer remains separate from player performance/scoring data — the
+mapping CSV carries only identity fields, never Ability scores or metrics.
+
+Home: production/agent_mapping/
+
+
+================================================================================
+STAGE 3 — EXISTING PLAYER EVALUATION INTEGRATION  [COMPLETE — implemented and
+                                                     validated, awaiting approval]
+================================================================================
+Full detail: docs/stage3_player_evaluation_integration.md
+Outputs: production/player_evaluation_integration/results/player_evaluation_features.csv
+  (7,568 rows = the exact Stage 1 eligible-player universe, 77 columns, each
+   classified CORE / SUPPORTING / METADATA)
+Tests: tests/test_stage3_player_evaluation_integration.py (19 tests, all passing)
+
+This replaces the earlier concept of independently rebuilding the
+player-evaluation system for this project.
+
+Resolved: this project reuses National Team Selection's (NTS) 11
+Competitive-Context-adjusted Ability scores (8 attacking, 3 defensive) as the
+CORE feature set. Every score is read verbatim from NTS's own result CSVs and
+joined on (player_id, season_id, team_id) against Stage 1's eligible-player
+universe -- nothing is recomputed. Philosophy scores, raw (pre-context)
+Ability scores, Overall/Final Defensive Score, Context Ability, and
+Consistency are all reused as SUPPORTING (kept for transparency/traceability,
+documented as redundant with CORE columns by construction -- see the doc for
+the quantitative evidence), not fed to Stage 4 as primary inputs. NTS's
+"Reliability" concept does not exist as a built output (confirmed by direct
+codebase search) and was not invented here.
+
+Five consequential classification decisions (Abilities vs. Philosophy, raw
+vs. context-adjusted, Context Ability inclusion, Reliability/Consistency
+handling, and the defensive-side Abilities-vs-Final-Score split) were
+resolved with the project owner before/during implementation, not decided
+unilaterally -- see the doc's "Decisions requiring approval" section. No
+open classification questions remain.
+
+The shared raw warehouse remains Football Data/Data/database/database.db.
+This stage does not modify the warehouse, and does not modify any National
+Team Selection file -- verified both by an automated test and by the
+standard MD5/git-status check.
+
+Home: production/player_evaluation_integration/
+
+
+================================================================================
+STAGE 4 — CLUB & POSITION PATTERN MODEL  [COMPLETE — LOCKED WITH SPECIFIC
+                                           LIMITATIONS + HYBRID MULTI-PROFILE
+                                           EXTENSION, approved 2026-08-19]
+================================================================================
+Canonical methodology: docs/stage4_canonical_methodology.md (read this, not any
+individual sprint doc, for what later stages should consume). Canonical
+production file: production/club_pattern_model/system_compatibility_candidate/
+results/system_compatible_profiles_multi.csv. Sprint 4.8 is the final Stage 4
+sprint. Future System Compatibility / Player <-> Compatible Profile work
+(Stage 5+) must consume the Hybrid representation (one OR two Compatible
+Profiles per Club x Position) -- do not assume exactly one profile per
+Club x Position.
+
+A core modelling stage of this project.
+
+The goal is NOT to claim we know a manager's tactical intentions, and — a
+foundational correction made explicit on 2026-08-16 after Sprint 4.1 —
+Stage 4 must NOT assume that the players a club currently fields at a
+position represent what that club should recruit. A current Right Back may
+reflect genuine system preference, squad availability, injury cover, a
+recruitment limitation, or one of several equally valid archetypes.
+Similarity to the incumbent is evidence, not the definition of fit.
+
+Three separate questions, kept explicitly distinct throughout Stage 4 (never
+combined prematurely):
+
+  A. Observed Position Profile — "what types of players have actually
+     played this position for this club?" Descriptive evidence only. Built
+     in Sprint 4.2.
+  B. System Compatibility — "given how this team plays, what player
+     profiles are compatible with this position in this environment?" The
+     central Stage 4 modelling question. May have more than one compatible
+     archetype — the architecture must not force a single ideal vector if
+     the evidence doesn't support one. Built in Sprint 4.5+.
+  C. Squad Complementarity — "does a candidate add something the current
+     positional options do not provide?" Distinct from System
+     Compatibility: a player can be highly compatible with a team's
+     football, dissimilar to the incumbent, AND highly complementary — a
+     potentially excellent recommendation, not a contradiction. Explicitly
+     NOT calculated in Sprint 4.2 or before; the architecture must simply
+     preserve room to model it later, separately from System Compatibility
+     and from incumbent similarity.
+
+Basic modelling unit: Club x Position. Use the validated player-profile
+dimensions from Stage 3 (never recalculated). Use the canonical club
+universe (Stage 1's candidate_clubs.csv) and the canonical 11-position
+taxonomy (NTS's position_taxonomy.py) — do not hardcode or redesign either.
+
+Revised sprint breakdown (2026-08-16):
+
+  Sprint 4.1 — Existing Team Context Audit & Integration Assessment
+    [COMPLETE, audit only]. docs/stage4_sprint4_1_existing_team_context_audit.md.
+    NTS's club/league-strength signal (GlobalClubStrength_v3 +
+    OpponentQuality_v3, via Context Ability) is already wired into every
+    Ability/Philosophy/Defensive score at a locked 20% weight -- reusable
+    for Stage 4 only with an explicit double-counting design decision
+    (audit Section 10). A rich, currently-unused team-style feature
+    library (32-42 engineered team metrics, Team x Match and Team x Season
+    granularity) exists in the shared warehouse -- the cleanest,
+    lowest-duplication-risk material for the Team Environment layer.
+    Genuine fixture-level opponent-relative adjustment does not exist
+    anywhere in NTS -- confirmed MISSING.
+
+  Sprint 4.2 — Observed Club x Position Evidence [COMPLETE, descriptive
+    only]. docs/stage4_sprint4_2_observed_club_position_evidence.md.
+    Builds Layer A (Observed Position Profile) only -- direct, auditable,
+    minutes-weighted evidence of who has actually played each position at
+    each candidate club, plus coverage and within-position diversity
+    diagnostics. Explicitly not a target/recruitment profile.
+
+  Sprint 4.3 — Team Environment Feature Layer [COMPLETE; CORE(30)/
+    REVIEW(10)/EXCLUDE(4) classification LOCKED by user review, 2026-08-15].
+    docs/stage4_sprint4_3_team_environment_feature_layer.md (+ its
+    Addendum). Audited NTS's complete 44-active-feature Team Style library
+    (reused via a live parse of NTS's own docs/feature_registry.md, never
+    hand-copied); built the candidate club Team x Season dataset (median
+    aggregation, NTS's own precedent, but disclosing rather than imputing
+    below-threshold cells); ran feature-quality, redundancy/correlation,
+    scale, Stage-3-duplication, stability, and football-sanity diagnostics.
+    LOCKED (production/club_pattern_model/locked_team_environment_features.py):
+    30 CORE features = the approved Team Environment BASELINE FEATURE POOL,
+    not a mandate that all 30 enter a future ML model (later stages may
+    still select/regularize/reduce). 10 REVIEW features (all 8 xG-derived +
+    Pressure Sustainability + Big Chance Conversion) kept outside the
+    baseline as an optional/research layer, never deleted -- xG coverage
+    (~44-46% of candidate clubs) is too low to require it in the core
+    representation. 4 EXCLUDE features remain excluded (NTS's own Stage 6
+    Removed set). Locked redundancy constraint: Interception Preference and
+    Reactive Defending (r=-1.0000 exact) may never both independently
+    contribute to one model (currently satisfied by construction). Set
+    Pieces has zero CORE features (structural xG-coverage gap, documented,
+    not resolved with an invented metric).
+
+  Post-Sprint-4.3 scope correction [COMPLETE, 2026-08-15]. User-directed,
+    project-specific destination-scope decision: excluded Luxembourg's
+    National Division and North Macedonia's First League from THIS
+    PROJECT's candidate destination-club universe only (NTS's own scope
+    and the shared warehouse unchanged) -- both leagues already contributed
+    zero eligible players and were the sole source of this project's Team
+    Style feature-completeness gap (Sprint 4.3 finding). candidate_clubs.csv:
+    541 -> 513 clubs, 35 -> 33 leagues (all computed dynamically, never
+    hardcoded). eligible_players.csv unchanged (confirmed
+    zero rows from either league already). Sprint 4.2 and 4.3 outputs
+    rebuilt against the revised universe: Sprint 4.2 evidence/profiles
+    unchanged in content (the 28 removed clubs had zero evidence to begin
+    with), coverage 68.6% -> 72.3% (denominator-only effect, 513x11=5,643
+    Club x Position universe); Sprint 4.3's non-xG Team Style feature
+    coverage reached exactly 100% (up from ~94.8%), empirically confirming
+    the Sprint 4.3 diagnosis. See docs/stage1_scope_and_eligibility.md's
+    "Project-specific destination-scope decision" section for full detail.
+    Scope-consistency tests added to tests/test_stage1_scope_and_eligibility.py
+    and tests/test_stage4_sprint4_3_team_environment_feature_layer.py.
+
+  Sprint 4.4 — Opponent / Competitive Environment [COMPLETE, candidate/
+    diagnostic only -- awaiting user review before Sprint 4.5].
+    docs/stage4_sprint4_4_opponent_context.md. Classified all 30 LOCKED
+    CORE features into OPPONENT-ADJUSTABLE (14) / TEAM-INTRINSIC (12) /
+    REVIEW (4) (production/club_pattern_model/opponent_context_classification.py).
+    Built a leave-one-out, leakage-tested opponent-baseline methodology
+    (145,383 match-level rows, 513 candidate clubs x 8 deliberately
+    selected representative OPPONENT-ADJUSTABLE features spanning every
+    family) -- NOT all 14, and NOT all 30 CORE features, per the explicit
+    boundary. Home/away split investigated and found immaterial (kept
+    pooled). Sample sizes healthy (min 23 matches/baseline, 0 below a
+    10-match floor) -- no shrinkage needed. Three adjustment methods
+    compared (Difference/Ratio/%-over-expected); Difference recommended as
+    primary. Information-overlap audit vs GlobalClubStrength_v3/
+    OpponentQuality_v3 found NO strong overlap (max |r|=0.336) -- the
+    opponent-relative layer earns its place as additive information, not a
+    repackaged league-strength model. Raw Sprint 4.3 features preserved
+    unmodified; opponent-relative layer is a separate candidate dataset.
+    21 new tests including explicit leakage-injection tests. No ML,
+    archetypes, System Compatibility, Squad Complementarity, or Match %
+    calculated. Do not proceed to Sprint 4.5 without explicit approval.
+
+  Canonical club country = league country [COMPLETE, 2026-08-15]. User-
+    directed semantic correction, triggered by a scope audit that found the
+    project's own candidate-club country field (`teams.country_id`, club
+    nationality) diverging from the league-host-country concept the audit
+    itself used (29 league countries vs 32 club-nationality countries for
+    the same 513/33 candidate universe -- see docs/stage1_scope_and_
+    eligibility.md's "Canonical club country = league country" section for
+    the 5 real cross-border cases that caused the split: Swansea City,
+    Cardiff City, Wrexham -> England; FC Andorra -> Spain; Derry City ->
+    Republic of Ireland). Decision: club country = the country of the
+    LEAGUE a club competes in (`leagues.country_id`), never the club's own
+    nationality (`teams.country_id`), for every project-level use. Root
+    fix: build_candidate_clubs.py's query now joins `countries` on
+    `leagues.country_id`; candidate_clubs.csv's sole country fields are now
+    `league_country_id`/`league_country_name` (the old, ambiguous
+    `country_id`/`country_name` columns removed entirely, not kept
+    alongside). Propagated through every downstream reader:
+    cross_country_rule.py (renamed params, rule now explicitly compares
+    league countries), validate_against_nts.py, build_observed_club_
+    position_evidence.py + build_coverage_and_diversity_reports.py (Sprint
+    4.2), build_team_environment_candidate_dataset.py + analyze_team_
+    environment_features.py (Sprint 4.3), build_opponent_relative_
+    features.py + analyze_opponent_relative_features.py (Sprint 4.4).
+    Rebuilt: candidate_clubs.csv and every Sprint 4.2/4.3/4.4 output that
+    carries a club-country column. NOT rebuilt (unaffected): Stage 3
+    player_evaluation_features.csv. Verified every rebuilt output's actual
+    values (club/league/feature counts, coverage %, correlations, etc.)
+    are byte-identical to before the correction -- only the country LABEL
+    changed, confirming this was a pure semantic/mapping fix. Final
+    canonical scope: 513 candidate clubs, 33 leagues, 29 league countries
+    (4 hosting 2 leagues each: Belgium, Denmark, England, Netherlands).
+    6 new/updated tests locking the rule (including all 5 cross-border
+    examples and a no-legacy-country-column guard); full suite 141/141.
+    Do not proceed to Sprint 4.5 without explicit approval.
+
+  Sprint 4.5 — System Compatibility Pattern Learning (Layer B) [COMPLETE,
+    RESEARCH ONLY -- awaiting user approval before Sprint 4.6].
+    docs/stage4_sprint4_5_system_compatibility_pattern_learning.md.
+    Central finding: Team Environment (Sprint 4.3's 30 CORE features)
+    carries real but POSITION-DEPENDENT signal about Club x Position player
+    profiles, beyond position alone -- Outcome B of the sprint's own
+    decision framework, not a uniform "ML works" or "ML doesn't work"
+    verdict. Strong signal: Centre Back only (R^2 ~0.20-0.22 out-of-sample,
+    club-grouped 5-fold CV, vs a ~0 positional-mean baseline). Moderate:
+    backs, Central Midfield, Centre Forward, Defensive Midfield, wingers
+    (R^2 ~0.05-0.09). No reliable signal: Left/Right Midfielder (n=86/102,
+    too thin). Target formulation: Club x Position minutes-weighted
+    observed profile (Sprint 4.2's own unit) empirically confirmed superior
+    to an individual-contributing-player formulation (R^2 0.218 vs 0.100,
+    Centre Back, same features/CV) -- non-independence of same-club player
+    rows dilutes signal, as anticipated. Opponent-Relative layer (Sprint
+    4.4) does NOT earn its place: consistently weaker than RAW alone in
+    isolation, and COMBINED rarely beats RAW ONLY by more than fold-to-fold
+    noise -- not recommended as a required Sprint 4.6 input. Competitive-
+    Context double-counting audit found NO evidence the model is a
+    disguised "strong club -> strong player" proxy (adding context_ability
+    as an extra covariate moved R^2 by 0.00007 -- noise). League-holdout
+    generalization (unseen league, not just unseen club) is nearly as good
+    as club-holdout (R^2 0.078 vs ~0.08-0.084) -- reassuring for the
+    project's cross-country recommendation use case. Heterogeneity-vs-
+    predictability hypothesis tested and found INCONSISTENT across
+    positions (not confirmed) -- no multi-archetype target adopted this
+    sprint. Validation: GroupKFold by club_id throughout (never split a
+    club's own positions across train/test); a secondary league-holdout
+    GroupKFold used for the harder generalization test. Recommended
+    methodology for Sprint 4.6: RAW-only Ridge as the default per-position
+    model (interpretable, matches RandomForest's performance), with
+    explicit strong/moderate/weak/insufficient-evidence confidence tiers by
+    position, carried forward rather than one blanket confidence level. No
+    System Compatibility production score, Squad Complementarity, Level
+    Fit, or Match % calculated -- research/model-selection only, isolated
+    under production/club_pattern_model/research/ (Sprint 4.2-4.4 locked
+    outputs untouched). Do not proceed to Sprint 4.6 without explicit
+    approval.
+
+  Sprint 4.6 — System Compatibility Profile Construction [COMPLETE,
+    PRODUCTION-CANDIDATE BUILT -- not permanently locked, awaiting user
+    review]. docs/stage4_sprint4_6_system_compatibility_profiles.md.
+    Turned Sprint 4.5's validated finding into a reproducible candidate:
+    System-Compatible Profiles for all 5,643 Club x Position combinations
+    (513 clubs x 11 positions). Two refinements beyond Sprint 4.5: (1)
+    Sprint 4.5's fixed alpha=10 was under-tuned -- nested GroupKFold alpha
+    selection found alpha=100-300 substantially improves out-of-sample R^2
+    almost everywhere and rescues Left/Right Midfielder from negative R^2
+    to marginally positive; (2) feature-panel reduction (15/20/25 of 30
+    features) adds nothing once alpha is properly tuned -- kept the full
+    30-feature CORE panel (simpler rule, per its own instruction).
+    Mandatory anomalous-fold investigation (user's Decision 6) found a
+    clean, complete root cause: one club (Koninklijke Lierse Sportkring)
+    has 3 Team Environment "Preference" features recorded as exactly 0.0
+    despite a normal 32-match sample -- a data-completeness artifact
+    isolated to that one club, pushing it to an extreme outlier position
+    (42.9 standardized distance to nearest training club vs 2.4-10
+    typical) and producing an implausible extrapolated prediction under
+    the old alpha=10 model. Not tuned away or excluded -- diagnosed,
+    documented, and left in training; still the dataset's single
+    worst-fitted case even under the final model. Right/Left Midfielder
+    use an evidence-based pooled fallback (position-encoded Ridge sharing
+    information with the SAME-FLANK Back + Winger positions, not the
+    same-name Winger alone, which was empirically the weaker contributor)
+    -- clearly beats both the positional baseline and independent Ridge.
+    Reliability tiers (evidence-based, not sample size alone): STRONG =
+    Centre Back only (R^2=0.241); MODERATE = the other 8 independently-
+    modelled positions (R^2 0.070-0.115, tightly clustered -- Attacking
+    Midfield revised up from the earlier approximate WEAK guess once
+    alpha was properly tuned); WEAK = Right/Left Midfielder (pooled
+    methodology, R^2 0.036/0.050, real but modest). Shrinkage toward the
+    positional baseline tested and found to NEVER help for any position --
+    not adopted. Archetype/heterogeneity diagnostic: ~16% of Club x
+    Position rows show a genuine second contributor with a materially
+    different profile, but diffusely spread across positions/leagues (no
+    concentration) -- insufficient to justify multi-archetype now,
+    preserved as an explicit Sprint 4.7 research question. Coefficient
+    interpretation: 100% sign consistency across CV folds for every
+    top-3 relationship checked (297 relationship-fold combinations).
+    Environment-novelty diagnostic (nearest-training-club distance)
+    independently and correctly flagged the same anomalous-fold club as
+    the single most novel case across multiple positions -- a genuine
+    self-validation of that diagnostic's usefulness. Zero clubs have any
+    predicted dimension >15 points outside the position's own observed
+    training range. Production-candidate architecture
+    (production/club_pattern_model/system_compatibility_candidate/)
+    clearly separated from research/ and from the locked Sprint 4.2-4.4
+    outputs (untouched). No Match %, Squad Complementarity, Level Fit, or
+    Squad Opportunity calculated. Do not proceed to Sprint 4.7 without
+    explicit approval.
+
+  Sprint 4.7 — Final System Compatibility Validation & Methodology Lock
+    [COMPLETE, RECOMMENDATION = LOCK WITH SPECIFIC LIMITATIONS -- awaiting
+    user review, not permanently locked]. docs/stage4_sprint4_7_final_
+    system_compatibility_validation.md. Validation/decision sprint, no new
+    modelling layer. Shrinkage (Sprint 4.6's omitted detail, recovered):
+    tested fixed-weight AND novelty-adaptive blending, BOTH reject for
+    EVERY position (pure Ridge always wins) -- not adopted. Built a
+    genuinely two-layer reliability framework: static Position Model
+    Reliability (unchanged tiers) vs per-row Individual Club x Position
+    Reliability (HIGH/MEDIUM/LOW/VERY_LOW, rule-based, no fake precision)
+    -- driven by the ingredients empirically shown to predict out-of-fold
+    error (evidence depth/concentration, |r|=0.47-0.56, 3x stronger than
+    environment novelty or heterogeneity, |r|=0.16-0.20). Generalized the
+    Lierse SK anomalous-input case into a reusable detection rule (>=2
+    exact-zero features OR >=1 extreme z-score) -- found 4 of 513 clubs
+    flagged, Lierse dramatically more severe (9 zero features, max|z|=17.4)
+    than the other 3 mild borderline cases (2 zero features, max|z|<=4.5);
+    flagged clubs get individual_reliability=VERY_LOW across all 11
+    positions, not a club-specific rule. Confirmed absence of direct
+    Sprint 4.2 evidence does NOT itself predict higher error -- inferred
+    rows are not penalized merely for lacking evidence. Deep dive into the
+    Sprint 4.6 15.8%-heterogeneous-cases finding: ~51% of those cases show
+    the predicted profile resembling NEITHER major contributor (Pattern
+    B) -- real, but only ~4.4% of the full 4,062-row evidence base;
+    multi-archetype decision = B (research justified, not production
+    required). Position x Ability learnability matrix built (11x11,
+    STRONG 25/MODERATE 41/WEAK 28/NONE 27 of 121 cells) --
+    ball_retention_security is STRONG for all 11 positions; recommendation
+    is to KEEP all 11 dimensions in every profile but carry this matrix as
+    reliability metadata for later weighting, not remove dimensions.
+    Coefficient signs reconfirmed stable across alpha variation (0.78-1.00
+    agreement) and league holdouts (0.86-0.90 agreement). League/country
+    robustness: real but modest variation (worst/best country ratio
+    ~1.25x, no catastrophic single-country failure). Practical
+    discrimination test: median pairwise distance between two random
+    clubs' predicted profiles (same position) is 6.6-10.9 -- clubs ARE
+    genuinely differentiated, not clustered on one generic answer. Caught
+    and fixed a real audit gap: league_name alone undercounts the
+    canonical 33-league universe to 31 distinct strings (2 name
+    collisions: "Super League" and "Superliga" each shared by two
+    genuinely different leagues) -- league_id was missing from the
+    production CSV and has been added. FINAL DECISION: LOCK WITH SPECIFIC
+    LIMITATIONS (RM/LM pooled-only and WEAK tier; individual_reliability
+    must gate future customer-facing use; anomalous-input scan must be
+    re-run on data refresh; Defensive Midfield's defensive_ball_winning
+    and Left/Right Winger's fold-stability are documented soft spots;
+    multi-archetype question stays open; league/country variation must
+    not be assumed uniform). No Player <-> Club System Compatibility %,
+    Squad Complementarity, Level Fit, Opportunity, Match %, or
+    recommendation ranking calculated. Stage 4 not permanently locked
+    until user approval.
+
+  Sprint 4.8 — Multiple Compatible Profiles for Heterogeneous Club x
+    Position Cases [COMPLETE AND APPROVED, 2026-08-19 -- Option B (HYBRID
+    ARCHITECTURE) is now the CANONICAL, LOCKED Stage 4 production
+    methodology]. docs/stage4_sprint4_8_multiple_compatible_profiles.md
+    (experiment record); docs/stage4_canonical_methodology.md (canonical,
+    locked spec -- read this for what Stage 5+ should consume). Canonical
+    production file: production/club_pattern_model/system_compatibility_
+    candidate/results/system_compatible_profiles_multi.csv (5,898 rows:
+    5,643 Club x Position combinations, 255 with two profiles). The prior
+    single-profile-only file is no longer a top-level deliverable -- the
+    exact Sprint 4.7-validated snapshot is archived unedited at
+    Archive/stage4_sprint4_7_single_profile_legacy/, and an equivalent is
+    now regenerated only as an internal intermediate build input at
+    system_compatibility_candidate/results/intermediate/
+    ridge_single_profile_base.csv. Targeted extension resolving the Sprint
+    4.7 Pattern-B
+    limitation -- does NOT reopen Team Environment, Opponent-Relative,
+    Ridge model selection, alpha tuning, RM/LM methodology, or the core
+    reliability framework. Eligibility rule for a second profile ("R2_
+    moderate", chosen after testing 5 candidate rules and seeing their
+    consequences -- a share/minutes-only rule (R5) was a decisive negative
+    result, flagging 73% of HOMOGENEOUS cases as false positives): second
+    contributor share>=0.30 AND total minutes>=1800 AND learnable-
+    dimension-only distance (STRONG/MODERATE Position x Ability
+    dimensions, Sprint 4.7's matrix) >=1.5x the position's own
+    homogeneous-case median. 255 of 5,643 Club x Position combinations
+    (4.5%) qualify -- captures 45% of Pattern B and 67% of Pattern A cases
+    at a 4.2% homogeneous false-positive rate. Circularity explicitly
+    measured and fixed: pure evidence-weighted cluster means (no Ridge
+    contribution) put the constructed profiles at ~0 distance from the
+    raw anchor player (literal "Player A = Archetype A" copying, since
+    most qualifying cases have only 2-3 total contributors) -- a 30%-
+    Ridge/70%-cluster-mean blend raised that distance to a median of 9.0
+    while barely denting validation (median 18.7-point improvement in
+    nearest-profile fit for the two major contributors, 99.4% of 510
+    comparisons improved, 0.2% worsened). Fully-inferred Club x Position
+    cases (1,581 of 5,643) NEVER receive a second profile by design --
+    tested whether Team Environment alone predicts archetype multiplicity
+    and found NO defensible signal (AUC 0.47-0.64 across every position
+    with enough data, indistinguishable from chance). No position/league
+    concentration found (8-19% qualifying rate across well-sampled
+    positions, spread across many leagues) -- no position- or league-
+    specific rule created. Production output (system_compatible_profiles_
+    multi.csv, 5,898 rows = 5,643 Club x Position combinations, 255 with
+    a second ALTERNATIVE profile) is now the CANONICAL Stage 4 production
+    file -- the original single-profile file's exact Sprint 4.7-validated
+    content is preserved unedited at Archive/stage4_sprint4_7_single_
+    profile_legacy/, never deleted, no longer a top-level deliverable. No
+    Player <-> Club Match %, Level Fit, Opportunity, Squad
+    Complementarity, or recommendation ranking calculated. APPROVED
+    2026-08-19: the Stage 4 canonical methodology
+    (docs/stage4_canonical_methodology.md) is now LOCKED WITH SPECIFIC
+    LIMITATIONS + HYBRID MULTI-PROFILE EXTENSION -- Stage 4 is COMPLETE.
+    Do not begin Stage 5 (Player <-> Compatible Profile matching) without
+    explicit approval.
+
+Squad Complementarity (`Does this player add capabilities the existing
+positional options lack?`) must eventually be evaluated as its own,
+separate measurement from System Compatibility (`Does this type of player
+fit the football environment?`) and from plain Current-Player Similarity
+(`How similar is this player to who's there now?`). A player can score
+High/Low/High on those three respectively and still be an excellent
+recommendation -- do not combine these three measurements prematurely at
+any point in Stage 4.
+
+Home: production/club_pattern_model/
+
+
+================================================================================
+STAGE 5 — PLAYER-CLUB STYLE COMPATIBILITY  [IN PROGRESS — Sprints 5.1-5.2
+                                             complete, no compatibility model
+                                             built yet]
+================================================================================
+Sprint 5.1 — Stage 4 Output Audit & Modeling Contract [COMPLETE, audit only].
+docs/stage5_sprint5_1_output_audit_and_modeling_contract.md. Audited the
+actual final Stage 4 canonical file (system_compatible_profiles_multi.csv,
+5,898 rows/5,643 Club x Position combos) and the Stage 3 player-side output
+(player_evaluation_features.csv) field-by-field. Finding: exactly one field
+family is genuinely, directly comparable between the two sides -- the 11
+CORE Ability dimensions (same names, same T-score scale on both sides);
+Philosophy scores, Overall Defensive Score, Context Ability, Team
+Environment, and Consistency have no valid Stage 4 counterpart and must not
+be force-mapped. Confirmed no Overall Attacking Score exists or is assumed
+anywhere. Confirmed the Player x Candidate Club x Position join keys line up
+cleanly (identical club universe and position vocabulary on both sides) but
+surfaced two real structural issues: (1) 101 players have 2 player-season
+rows (a representative-row policy is needed, Stage 2 already set a
+precedent); (2) a significant, quantified leakage risk -- 45.8% of
+evidence-bearing Club x Position combos have exactly one contributing
+player, and a worked example proves the Observed profile is bit-identical
+to that sole player's own Stage 3 profile in that case. Proposed a Stage 5
+Modeling Contract (inputs, allowed/excluded features, unit of evaluation,
+position handling, missing-data policy, leakage policy, structural-only
+output schema with placeholder fields for Observed Fit / System Compatibility
+/ Squad Complementarity / Style Compatibility -- no formula or weights
+decided). Four genuine methodological decisions flagged for approval before
+Sprint 5.2 (multi-season representative-row policy, leakage-safeguard
+strength/sequencing, missing-CORE-dimension policy, whether/when to build
+true multi-position evaluation). No compatibility model, formula, weight,
+or calibration was built or chosen in this sprint.
+
+Sprint 5.1 decisions APPROVED 2026-08-19 and locked (see the doc's Section 9): Stage 2's
+representative-row precedent reused as-is for multi-season players; production
+recommendations hard-exclude a player's own current club while the underlying
+player<->current-club relationship is retained (never scrubbed) for a future
+leakage-safe training/validation methodology; missing CORE dimensions are scored
+on the available subset only, never imputed, with a disclosed dims-used count;
+multi-position evaluation deferred (single production position only).
+
+Sprint 5.2 — Define and Test the Meaning of Style Fit [COMPLETE, methodology-
+selection and diagnostic sprint only]. docs/stage5_sprint5_2_style_fit_methodology.md,
+backed by production/style_compatibility/research/sprint5_2_similarity_methods.py
+(reproducible; all cited numbers regenerated by it, none hand-computed). Traced
+the actual Stage 4 build code (not planning docs) to establish exact profile
+semantics: OBSERVED = pure minutes-weighted descriptive mean, no modeling;
+System-Compatible predicted_<dim> = Ridge(Team Environment) output, unblended
+with a club's own evidence except for the 255 two-profile cases (30% Ridge /
+70% cluster-evidence blend); ALTERNATIVE = a second, independently legitimate
+archetype for evidence-supported heterogeneous cases only. Confirmed Observed
+Fit and System Compatibility are both legitimate, distinct signals that must
+stay separate; confirmed Squad Complementarity does not exist anywhere in
+Stage 4 and must not be fabricated -- recommended deferring it as its own
+future component rather than building or dropping it now. Tested 6 similarity
+methods across the full population (7,467 players x real candidate profiles,
+self-club excluded, 3.82M pairs): raw cosine on T-scores is empirically
+unusable (mean 0.989, negligible spread); mean-centering fixes it but shape-
+based metrics (centered cosine, Pearson shape-correlation) disagree with
+magnitude-based MAD often enough (rho 0.66-0.79) to be dangerous as a
+standalone signal -- proved concretely with a real case (Aaron Morley vs.
+Patro Eisden Maasmechelen) where cosine ranked a 9-18-point-short candidate
+3rd of 512 while MAD correctly ranked him 506th. Tested asymmetric
+deficit-vs-surplus weighting (deficit penalized more than surplus); confirmed
+it behaves as intended (identical to symmetric MAD when no deficit exists,
+larger when real deficits exist) using real worked examples. For the 255
+ALTERNATIVE-profile cases, found Profile B is the better fit for ~51% of
+realistic candidates on average (not secondary evidence) with a large mean
+31.9-point separation between archetypes -- recommended best-fit-to-either,
+never averaged. Recommended (not locked): magnitude-based distance (MAD or
+standardized Euclidean) as the primary signal with deficits weighted more
+than surpluses, shape correlation as secondary/explanatory only. Six
+decisions flagged for approval before Sprint 5.3. No compatibility model,
+formula, or weight was built, trained, or hardcoded into production.
+
+Sprint 5.2 decisions APPROVED 2026-08-19 and locked: MAD (not Euclidean) is the
+base distance metric; asymmetric MAD (deficits penalized more than surpluses) is
+the locked framework with the exact ratio deferred to empirical calibration;
+Squad Complementarity stays fully out of Style Fit, with a related but distinct
+"Conditional Alternative Opportunity" concept (low/moderate OBSERVED similarity +
+high SYSTEM compatibility) approved for Sprint 5.3 research only, not production;
+shape similarity is diagnostic/explanatory only, never enters ranking; multiple
+OBSERVED archetypes use best-fit-to-either, never averaged, PRIMARY never
+automatically favored; no separate Extreme Surplus Penalty (large surpluses are a
+Stage 6 Level & Opportunity question, not Stage 5).
+
+Sprint 5.3 — Asymmetric MAD Calibration & Style Fit Prototype [COMPLETE,
+calibration/validation/prototype sprint only]. docs/stage5_sprint5_3_calibration_
+and_prototype.md, backed by production/style_compatibility/research/sprint5_3_
+calibration.py (reproducible). Pre-implementation Style-vs-Level audit traced
+Context Ability/GlobalClubStrength/OpponentQuality/OwnDominance/Team Environment
+directly against NTS's actual build code (not planning docs) -- discovered and
+corrected a documentation inaccuracy in Stage 3's own feature_manifest.py and
+stage3_player_evaluation_integration.md (comment/rationale text only, no
+computation or locked methodology changed): Context Ability's 20% blend applies
+only to the Philosophy/Defensive-Final SUPPORTING columns (raw-vs-adjusted corr
+0.82), NOT to the individual CORE *_final columns Stage 4/5 use (raw-vs-adjusted
+corr 0.9999, essentially untouched) -- the exclude-from-CORE decision itself was
+already correct, only the stated mechanism was wrong. Found a small (~2.35 T-score
+point), residual, uncorrected league-level effect in the CORE Ability T-scores
+from NTS's pooled-across-leagues (not per-league) T-score standardization --
+disclosed as a soft, symmetric-on-both-sides confound requiring no formula change.
+Implemented and calibrated asymmetric MAD across ratios 1.00/1.25/1.50/1.75/2.00:
+pooled distributions scale roughly linearly with ratio; 45-65% of sampled
+players' best-fit candidate club changes between ratio 1.0 and 2.0 (a real,
+practically consequential choice). Leakage-safe leave-one-out validation (5,343
+usable contributor instances, 100% of eligible evidence, 1,900 single-contributor
+cases correctly excluded as unreconstructable) found symmetric MAD (ratio 1.0)
+recovers the true club-position relationship marginally best, with a small,
+monotonic recovery cost as the ratio increases -- recommended ratio 1.25 as the
+asymmetric value closest to symmetric's recovery while still respecting the
+locked asymmetric framework, flagged for approval (not a clean optimum). OBSERVED
+Fit and SYSTEM Fit kept fully separate per instruction, not combined. Conditional
+Alternative Opportunity investigated: loose thresholds (p60/p20) qualify over
+half the population (too permissive by design intent), only a very-strict tier
+(p90/p5, 7.3% of players) looks genuinely selective -- no threshold locked,
+flagged for football judgment. Shape-vs-MAD diagnostic found 39.6% of pairs fall
+in a disagreement quadrant (confirms shape must stay ranking-excluded). Multiple-
+archetype best-fit-to-either confirmed to behave sensibly under asymmetric MAD
+(49%/51% A/B split, 1.84-point mean improvement over A-only, unchanged in
+character from Sprint 5.2's symmetric-MAD finding). Two score-calibration
+options explored (percentile-based recommended; fixed-anchor sigmoid requires a
+subjective anchor choice) -- neither locked. Five decisions flagged for approval
+before Sprint 5.4. No production formula, ML model, or Stage 4/NTS change made.
+
+Sprint 5.3 decisions reviewed 2026-08-20: MAD base metric, best-fit-to-either for
+multiple archetypes, Shape diagnostic-only, no Squad Complementarity in Style
+Fit, and no Extreme Surplus rule all reconfirmed as locked. OBSERVED and SYSTEM
+approved to use DIFFERENT deficit treatments rather than one shared ratio
+(OBSERVED -> symmetric, SYSTEM -> mild-asymmetry candidate, fine-tuned in
+Sprint 5.4). Position handling reconfirmed: player's existing production
+position only, no Transfermarkt secondary positions.
+
+Sprint 5.4 -- Decision Experiments & Style Fit Integration [COMPLETE, focused
+decision-experiment sprint]. docs/stage5_sprint5_4_decision_experiments.md,
+backed by production/style_compatibility/research/sprint5_4_residual_league_
+effect.py and sprint5_4_decisions_1_to_4.py (both reproducible). Residual
+league effect fully traced: the "~2.35" figure is a RANGE of per-league mean
+CORE scores across the 33 canonical leagues (not a std dev or pairwise stat),
+explaining only 2.13% of total variance (eta^2); driven mainly by volume-
+metric Abilities (Ball Carrying/Dribbling range 10.5 vs. Finishing's 2.5) via
+NTS's pooled-across-ALL-leagues T-score standardization (confirmed absent of
+Context Ability/Club Strength, again); direction-of-effect evidence (Premier
+League/Championship sitting at the LOW end, several small Baltic/Scandinavian
+leagues at the HIGH end) favors a standardization artifact over a genuine
+ability gradient; a concrete Slovak Nike Liga central midfielder was confirmed
+to rank #1 of 513 candidate clubs for System Fit against an English
+Championship club, demonstrating the Style/Level separation holds in practice.
+No correction made -- audit only, per instruction. OBSERVED confirmed locked
+at symmetric MAD (ratio 1.0, re-validated). SYSTEM fine-grained ratio test
+(1.00-1.25) found no single ratio decisively superior -- self-club-rank proxy
+(explicitly flagged as NOT leakage-safe, unlike OBSERVED's clean leave-one-out
+validation) declines only slightly and smoothly across the whole range;
+14.6% of sampled players' best-fit club changes at ratio 1.15 vs. 1.00, a
+real, mixed effect (genuinely deficit-driven in some real cases, near-tie
+reshuffling in others) -- 1.15 remains reasonable but unproven optimal,
+flagged for approval. Position-relative percentile calibration recommended
+over global (real ~3-point position-fairness bias under global vs. negligible
+stability difference, confirmed via a 300-fixed-pair population-perturbation
+stability test, max shift 0.008 for either method). Conditional Alternative
+Opportunity 3-criteria threshold grid (SYSTEM strength x SYSTEM-OBSERVED gap x
+OBSERVED reliability) found the gap-size requirement dominates by far (5pt gap
+-> 7-20% of players qualify; 12pt gap -> 0% under every combination tested) --
+population size is genuinely determined by the football definition, not
+reverse-engineered toward a target. OBSERVED+SYSTEM combination experiment
+produced a result that is EXPLICITLY FLAGGED AS CONFOUNDED, not a recommendation:
+SYSTEM's own leave-one-out baseline uses the real, unmodified predicted_ profile
+(never reconstructed, since that would require retraining Stage 4's Ridge model
+per left-out player -- out of this sprint's scope) while OBSERVED's genuinely
+excludes the left-out player, so "more SYSTEM weight scores higher" reflects
+residual Ridge-training leakage, not necessarily better real fit quality --
+stopped and returned to the project owner per explicit instruction rather than
+recommending a combined Style Fit from a confounded result. A disagreement
+quadrant analysis (descriptive, not leakage-dependent) found OBSERVED and
+SYSTEM agree on 72.8% of pairs and disagree on 27.2% (correlation 0.65) --
+confirmed they carry genuinely different information and must stay separate.
+Five decisions flagged for approval before Sprint 5.5. No compatibility
+formula locked, no Stage 4/NTS methodology touched, no residual-effect
+correction made.
+
+Sprint 5.4 decisions reviewed 2026-08-20: OBSERVED locked at symmetric MAD (1.0),
+no further ratio testing planned for OBSERVED. MAD base metric, best-fit-to-
+either, Shape diagnostic-only, no Squad Complementarity in Style Fit, no
+Extreme Surplus rule, current-position-only all reconfirmed. Decision 4's
+OBSERVED+SYSTEM combination result explicitly NOT locked -- flagged as
+confounded pending a leakage-materiality audit.
+
+Sprint 5.5 -- Validation & Final Style Architecture Decisions [COMPLETE,
+research/validation sprint]. docs/stage5_sprint5_5_validation_and_final_style_
+architecture.md, backed by 3 reproducible scripts under production/style_
+compatibility/research/. SYSTEM leakage influence audit (240 stratified
+instances, re-fitting Stage 4's own unmodified Ridge functions from research
+code on leave-one-out-modified training data): median profile movement 0.12
+T-score points, max 1.01 -- tiny next to the ~6-9 population std. Cross-
+checked against Sprint 5.4: the leakage magnitude is an order of magnitude too
+small to explain the SYSTEM-vs-OBSERVED recovery gap found there, so that gap
+is mostly genuine signal, not leakage -- full out-of-sample retraining judged
+NOT justified for this sprint's decisions, per the brief's own conditional-
+next-step logic. Final SYSTEM 1.00 vs 1.15 head-to-head (full population,
+7,467 players): Top-1 changes for 12.99%, but only 16.7% of those changes are
+materially real (>1pt gap at 1.00) -- 83.3% are near-tie coin-flip swaps.
+Recommended (not decisively proven) ratio: 1.15. OBSERVED reliability
+analysis confirmed contributor count alone does NOT capture evidence
+consistency (corr with dispersion = -0.012) -- Stage 4's individual_
+reliability tier correlates with but doesn't fully capture leakage risk
+(blind spot: extreme-profile contributors). Combination architecture testing
+(fixed blends, reliability-weighted, gated/fallback) found NONE beat SYSTEM-
+only outright in leave-one-out testing, and uncovered a genuine methodological
+bug: a naive RAW-SCALE gated/fallback architecture actively underperforms
+OBSERVED-only, because OBSERVED distances run systematically larger than
+SYSTEM distances at the same position (Ridge regularization produces smoother
+predictions) -- corrected by gating on calibrated (position-relative
+percentile) scores instead, which recovers to a reasonable level. A combined
+single Style Fit was NOT locked -- returned to the project owner per the
+explicit stopping rule, since the leave-one-out test population structurally
+excludes the low-evidence regime gated/fallback is actually designed for.
+Conditional Alternative Opportunity: the originally suggested 5-10 calibrated-
+Fit-point gap range was tested directly and found far too permissive (36-73%
+of players would qualify) -- a genuinely selective operating point requires
+roughly a 50-70+ point gap (e.g. gap>=60 + SYSTEM>=90 + HIGH/MEDIUM
+reliability -> 15.3% of players qualify), offered as a starting candidate, not
+locked. Residual league effect reconfirmed unchanged, no correction made; an
+explicit Stage 6 double-counting guardrail was written into the record. Five
+decisions flagged for approval before Sprint 5.6. No compatibility formula
+locked, no Stage 4/NTS methodology changed, no research machinery
+productionized.
+
+Sprint 5.5 decisions reviewed 2026-08-20 and LOCKED: SYSTEM ratio = 1.15, OBSERVED
+ratio = 1.00, no full leave-one-player-out SYSTEM retraining (leakage
+documented, not corrected), and calibration-before-combination (OBSERVED/SYSTEM
+raw MAD may never be combined directly -- each must be independently
+position-relative-percentile-calibrated first) all locked as hard requirements.
+Residual league effect remains uncorrected.
+
+Sprint 5.6 -- Final Style Fit Weighting & Alternative Opportunity Calibration
+[COMPLETE, research/decision sprint]. docs/stage5_sprint5_6_final_weighting_
+and_alternative_opportunity.md, backed by 3 reproducible scripts. Tested small
+fixed OBSERVED weights (0/5/10/15/20/25/30%) on top of SYSTEM-dominant,
+independently-calibrated Combined Style Fit across the full 7,467-player
+population: Top-1 destination change rate rises smoothly from 0% to 51.8%
+across the range, but the SYSTEM-Fit-gap-overturned distribution shows a clear
+qualitative transition -- at 5% weight, 82% of Top-1 overturns are sub-1-point
+pure tie-breaks (max override anywhere: 4.27 points); by 15% a genuine
+>10-point "real override" tail appears for the first time and the tie-break
+share drops below a comfortable majority. LOCKED Combined Style Fit at 5%
+OBSERVED / 95% SYSTEM, fixed (not reliability-adjusted) weighting -- fixed
+weighting beat reliability-adjusted weighting at every tested level in
+leave-one-out validation, confirming the simpler architecture. Real football
+examples confirmed the pattern: clean tie-breaks at 5%, a materially real
+11-point override at 15% (Nicky Cadden), a 27-point override at 30% (Falcao).
+Extreme-profile-contributor blind spot re-investigated with a corrected,
+properly-calibrated threshold (the first-pass absolute cutoff was
+inadvertently close to the population median, not extreme) -- found real but
+rare/localized (11.5% of HIGH/MEDIUM-reliability multi-contributor combos,
+median 3.7-point OBSERVED movement), and diluted to ~0.2 practical Combined-
+score points at the locked 5% weight -- no Stage 4 action taken. Alternative
+Opportunity refined threshold grid (SYSTEM Fit >=90/92.5/95 x gap
+>=50/55/60/65/70 x HIGH+MEDIUM/HIGH-only reliability, using PURE calibrated
+SYSTEM Fit, never the Combined score) recommended SYSTEM>=92.5 + gap>=60 +
+HIGH+MEDIUM reliability as the lead candidate (11.7% of players qualify,
+median 1 candidate each) -- confirmed the most extreme SYSTEM-vs-OBSERVED
+disagreements in the unfiltered population are concentrated in LOW-reliability
+cases, correctly excluded by the reliability gate. Confirmed directly that
+Alternative Opportunity candidates' Combined Style Fit is measurably lower
+than their pure SYSTEM Fit (mean 3.4-point drop) and that this must never
+disqualify a candidate -- the two mechanisms are architecturally independent,
+as required. Five decisions flagged for approval before the next sprint,
+including whether Stage 6 kickoff is now appropriate.
+
+Sprint 5.6 decisions reviewed 2026-08-20 and LOCKED: Combined Style Fit =
+0.95 x SYSTEM Fit + 0.05 x OBSERVED Fit (fixed weighting); Alternative
+Opportunity's proposed rule (SYSTEM>=92.5, gap>=60, HIGH/MEDIUM reliability)
+approved SUBJECT TO a mandatory pre-production cluster sanity audit (Sprint
+5.7); extreme-profile blind spot confirmed no Stage 4 action needed.
+
+Sprint 5.7 -- Production Implementation, Final Validation & Stage 5 Lock
+[COMPLETE -- PARTIAL LOCK]. docs/stage5_sprint5_7_production_implementation_
+and_final_validation.md. The mandatory Alternative Opportunity cluster audit
+(Maccabi Tel Aviv Central Midfield, Preston North End Left Back) found a
+GENUINE SYSTEMATIC METHODOLOGICAL ISSUE, not two isolated football-legible
+cases: a population-wide check across all 2,186 HIGH/MEDIUM-reliability
+Club x Position combos found a strong negative correlation (-0.40) between a
+club's median OBSERVED Fit across the ENTIRE player population and how many
+"Alternative Opportunity candidates" it generates -- clubs whose OBSERVED
+archetype is itself a population outlier (built from 1-2 stylistically
+extreme real contributors) mechanically inflate candidate counts for nearly
+ANY average player, independent of anything specific to that player. Both
+flagged clusters' ~40-player candidate pools have an almost exactly AVERAGE
+mean CORE profile (confirming they are not coherent specialist matches, just
+"any ordinary player" triggering the mechanism), and a 4-club control group
+confirmed the pattern (normal clubs sit at meaningfully higher population-
+median-OBSERVED-Fit than the magnet clubs). Per the sprint's own explicit
+stopping rule: ALTERNATIVE OPPORTUNITY THRESHOLDS ARE NOT LOCKED INTO
+PRODUCTION -- a proposed (not implemented) correction concept (club-specific
+gap normalization instead of a single global threshold) was returned for
+approval rather than silently applied. The Combined Style Fit methodology
+(OBSERVED ratio 1.0, SYSTEM ratio 1.15, independent position-relative
+percentile calibration, 95/5 fixed combination, SYSTEM-only fallback for
+fully-inferred profiles, best-fit-to-either archetype handling) is
+UNAFFECTED by this finding and IS locked and production-ready: implemented
+in production/style_compatibility/ (config.py, build_style_compatibility.py),
+producing the canonical production/style_compatibility/results/player_club_
+position_style_fit.csv (3,823,104 rows = 7,467 players x 513 candidate clubs
+x 11 positions, self-club excluded -- exactly matching every prior Sprint
+5.2-5.6 population-size diagnostic). Full QA passed: 0 duplicate rows, 0
+nulls in key fields, valid [0,100] score bounds, 0 self-club leakage
+(confirmed after correcting a bug in the QA check itself, not the
+production build), missing-dimension disclosure and archetype-winner
+distribution both matching expected patterns exactly. 7 end-to-end QA cases
+(A-G: strong agreement, 5% tie-break, high-SYSTEM/low-OBSERVED diagnostic
+example, fully-inferred SYSTEM-only fallback, multi-archetype best-fit,
+missing-dimension disclosure, cross-league) all passed. Added tests/
+test_stage5_style_compatibility.py (24 tests, including a full deterministic-
+rebuild reproducibility check) -- caught and fixed a config.py module-name
+collision (the same recurring multi-stage-config issue seen earlier this
+project) before it could affect the full suite. Full project test suite:
+262/262 passing. No Stage 4/NTS/Stage 3 methodology was touched; no Overall
+Attacking Score, secondary positions, Squad Complementarity, Level, or
+Extreme Surplus penalty were introduced. Stage 6 was NOT begun. Stage 5 is
+NOT YET declared fully locked -- pending the project owner's decision on the
+Alternative Opportunity correction approach.
+
+Sprint 5.7 approved 2026-08-20 as a PARTIAL LOCK: the Combined Style Fit
+production pipeline is approved and locked; Alternative Opportunity remains
+unresolved pending correction.
+
+Sprint 5.8 -- Alternative Opportunity Artifact Correction & Final Stage 5
+Lock [COMPLETE, research sprint -- clear recommendation found, NOT
+productionized]. docs/stage5_sprint5_8_alternative_opportunity_correction_
+and_final_lock.md, backed by 2 reproducible research scripts, all read-only
+against the locked production Style Fit file (zero writes to production).
+Reproduced the Sprint 5.7 artifact exactly (correlation -0.4288 vs. the
+original -0.40). Tested 7 correction families: Option A (global OBSERVED
+floor) confirmed to NOT touch the artifact at all (correlation unchanged at
+every floor -0.43) -- rejected. Option B (club-relative gap percentile)
+reduces the artifact only at very loose, non-selective thresholds (up to
+39.5% of players qualifying) -- rejected. Options D/E (OBSERVED-relative
+rarity) returned ZERO candidates at every threshold tested -- informative,
+not a bug: SYSTEM Fit and OBSERVED Fit carry a real positive correlation for
+the same player at the same club, so "elite SYSTEM AND worst OBSERVED" is
+nearly a null set. Hybrids (Option G/G2) did not beat the leading candidate.
+RECOMMENDED (not locked): Option C -- a robust (median/MAD) WITHIN-CLUB
+z-score of the SYSTEM-OBSERVED gap (>=3) combined with absolute SYSTEM
+Fit>=92.5 and HIGH/MEDIUM reliability -- cuts the artifact correlation from
+-0.43 to -0.19, and completely eliminates both Sprint 5.7 regression cases
+(Maccabi Tel Aviv Central Midfield: 47->0 candidates; Preston North End Left
+Back: 34->0). Negative control: 100% of old big-magnet-club candidates (832
+pairs) removed. Positive control: only 13.1% of old genuinely-isolated
+(non-magnet) candidates survive -- a real, disclosed trade-off, not resolved
+unilaterally per the sprint's own instruction not to silently choose between
+materially different football interpretations. Corrected-method prevalence:
+3.33% of players, median 1 candidate each, max 2 -- new top magnet (FC
+Twente/Centre Back, 11 candidates) inspected and confirmed genuinely varied,
+not a repeat of the average-player artifact. NOT implemented in production --
+returned for approval. Combined Style Fit pipeline remains fully locked and
+untouched. Stage 5 is NOT YET fully locked. Stage 6 was NOT begun.
+
+Sprint 5.8 conceptually approved (Option C, robust median/MAD within-club
+z-score); exact z-threshold NOT yet approved -- requested a sensitivity
+sweep before committing.
+
+Sprint 5.9 -- Option C z-Threshold Sensitivity Analysis [COMPLETE, focused
+read-only follow-up, NOT productionized].
+docs/stage5_sprint5_9_option_c_zthreshold_sensitivity.md, backed by
+sprint5_9_z_threshold_sensitivity.py. Tested 13 z-values (1.5-5.0). Central
+finding: naively reading z=2.0's attractive aggregate numbers (both known
+magnets at 0, 75.4% retention) would have been WRONG -- inspecting which
+clubs generate the largest candidate counts (not just the 2 originally
+flagged) revealed two new, equally severe magnets never previously
+inspected (Bodo/Glimt and Ceuta, both Centre Back, 30 and 32 candidates at
+z=2.0, median population OBSERVED Fit 1.6-9.3 -- the same signature).
+Both are genuinely contained (collapse to 1 and 3 candidates) only from
+z=2.75 upward. Three options presented: Conservative (z=3.00, 3.3%
+prevalence, 13.1% retention, 100% magnet removal, correlation -0.192),
+Balanced (z=2.75, 5.7% prevalence, 22.0% retention, 99.9% magnet removal,
+correlation -0.228), Exploratory (z=2.00, NOT recommended -- still permits
+the newly-discovered magnet artifact). Recommended Balanced (z=2.75).
+
+Sprint 5.9 approved 2026-08-20: z=2.75 (Balanced) locked as the final
+Alternative Opportunity threshold, alongside SYSTEM Fit>=92.5, HIGH/MEDIUM
+reliability, and genuine OBSERVED evidence required.
+
+Sprint 5.10 -- Final Alternative Opportunity Implementation & Stage 5
+Production Lock [COMPLETE, PRODUCTIONIZED AND LOCKED].
+docs/stage5_sprint5_10_final_ao_implementation_and_stage5_lock.md.
+Implemented the approved final AO formula (robust Club x Position-relative
+median/MAD standardized gap, z>=2.75) in
+production/style_compatibility/build_style_compatibility.py as a pure
+post-processing step; zero changes to the locked SYSTEM/OBSERVED/Combined
+computation, re-verified byte-identical across all 13 shared columns
+against the pre-AO Sprint 5.7 file. Zero-MAD degenerate case confirmed to
+never occur in the actual population (0 of 3,284,629 evidence rows) but
+handled defensively (NaN propagation, no divide-by-zero, no fabrication).
+Rebuilt from scratch: 3,823,104 rows, unchanged. All 4 magnet regression
+checks matched exactly (Maccabi CM 0, Preston LB 0, Bodo/Glimt CB 1, Ceuta
+CB 3). Population-wide artifact correlation reduced from -0.4288 (deprecated
+rule) to -0.2279 (final rule). Final AO prevalence: 486 candidate rows, 428
+players (5.7%), matching Sprint 5.9's read-only prediction almost exactly.
+All threshold boundaries (SYSTEM=92.5, z=2.75, reliability tiers, evidence
+gate) confirmed deterministic; reliability gate confirmed hard-locked (LOW/
+VERY_LOW: 0 of 230 rows otherwise meeting both gates became eligible). All
+7 Sprint 5.7 end-to-end cases (A-G) reproduce exactly. 12 new AO-specific
+tests added (33 Stage 5 tests total); full project test suite 271/271
+passing. Two independent clean rebuilds byte-identical on all 19 scored/
+derived columns (stronger than the project's semantic-equivalence fallback
+standard). Stage 5 -- Style Compatibility declared FULLY PRODUCTION-READY
+AND LOCKED. Stage 6 was NOT begun, per instruction, pending approval.
+
+Using the patterns learned in Stage 4, calculate how compatible a candidate
+player's profile is with each potential destination club for his position.
+
+Conceptually:
+
+    Candidate Player Profile -> Club x Position Pattern -> Compatibility
+
+The appropriate mathematical similarity/compatibility method is determined
+only after experimentation and validation.
+
+The raw internal calculation may use complex statistical or ML outputs. These
+calculations are INTERNAL ONLY. The final platform must not expose technical
+measures such as:
+  - Z-scores
+  - Distances
+  - Cluster probabilities
+  - Similarity vectors
+  - Model parameters
+  - Other implementation-level mathematics
+
+Instead, the user eventually sees a clear Style Compatibility %, with a
+human-readable explanation of the strongest reasons for the match and, where
+relevant, the main concern.
+
+Output: Style Compatibility Score
+
+Home: production/style_compatibility/
+
+Keep Stage 4 (learning club patterns) and Stage 5 (matching a player against
+those patterns) separate — different concerns, different validation needs.
+
+
+================================================================================
+STAGE 6 — LEVEL & SQUAD OPPORTUNITY
+================================================================================
+Develop these recommendation dimensions independently from Style
+Compatibility.
+
+Level Fit
+    Answer: is this club a realistic competitive destination for the
+    player's current level?
+    Potential concepts:
+      - Significant step down
+      - Step down
+      - Similar level
+      - Reasonable step up
+      - Ambitious step up
+      - Unrealistic step up
+
+Squad Opportunity
+    Evaluate the current positional competition at the destination.
+    Potential observable inputs include:
+      - Number of players in the relevant position
+      - Minutes distribution
+      - Player ages
+      - Existing player-evaluation scores
+      - Relative quality of the candidate vs. positional competitors
+    Do not claim to predict exact future minutes.
+
+These components must be developed and validated independently before being
+combined with Style Compatibility.
+
+Outputs: Level Fit Score, Squad Opportunity Score
+
+Home: production/level_and_opportunity/
+
+--------------------------------------------------------------------------------
+STAGE 6 STATUS
+--------------------------------------------------------------------------------
+Sprint 6.1 (Club Strength) -- LOCKED 2026-08-20. 513-club ranking, 70% raw squad
+market value / 20% EffectiveValue (r=1.5) / 10% secondary (League Market
+Strength 75/25 replacing UEFA). See docs/stage6_sprint6_1i_final_club_strength_lock.md.
+
+Sprint 6.2 (Level Tiers & Exception mechanism) -- LOCKED / PRODUCTION READY,
+2026-08-22. 9 internal Club Level Tiers over the Sprint 6.1 ranking; source-
+tier-keyed Normal destination windows; a single adjacent Exception tier per
+direction (upward/downward) per source tier, gated by Combined Style Fit >= 85
+(absolute), an Expected-Max pool-size-corrected Adjusted Advantage >= +5
+(relative to a Top-3-Mean benchmark), and (upward into Tier 1/2 only) age < 25;
+7 categories of hard exclusion (5 named rivalries, Ukraine nationality ->
+Russian clubs, first-team/reserve-team pairs). Final output is always exactly
+3 recommended clubs -- Normal #1, Normal #2, and either Normal #3 or a
+qualifying Exception, never a 4th slot. Full record: docs/stage6_sprint6_2_tier_lock.md.
+Build: production/level_and_opportunity/build_level_tiers.py,
+build_exception_recommendations.py. Output: results/exception_recommendations.csv.
+
+Sprint 6.3 -- NOT STARTED. Awaiting explicit approval before beginning
+(Squad Opportunity Score and/or the Stage 7 combination step, per the original
+Stage 6/7 plan above).
+
+
+================================================================================
+STAGE 7 — FILTERS & RECOMMENDATION ENGINE
+================================================================================
+Build the final candidate filtering and ranking pipeline.
+
+Potential filters include:
+  - Destination must be in another country
+  - Position
+  - Age
+  - Included/excluded countries
+  - League level
+  - Minimum/maximum acceptable competitive move
+  - Data availability
+  - Other user-selected conditions approved later
+
+The final recommendation model is expected to combine validated information
+from:
+  - Style Compatibility
+  - Level Fit
+  - Squad Opportunity
+
+Do NOT lock the final weighting formula yet — first validate each component
+separately.
+
+The internal engine may use mathematical scores that are never exposed
+directly to the user.
+
+Final user-facing result (eventually): Player -> Top 3 Recommended Clubs
+
+For each club, the platform should primarily present:
+  - Overall Match %
+  - Explanation of why the club fits
+  - Main positive factors
+  - Important concern, where applicable
+
+We can decide later whether individual component percentages should also be
+visible.
+
+Home: production/recommendation_engine/
+
+
+================================================================================
+STAGE 8 — VALIDATION, ML EVALUATION & PLATFORM
+================================================================================
+Validation needs two layers.
+
+Football / Recommendation Validation
+    Test recommendations across:
+      - Positions
+      - Ages
+      - Countries
+      - Leagues
+      - Competitive levels
+      - Different player profiles
+    Look for:
+      - Unrealistic destinations
+      - Missing logical destinations
+      - Level mismatches
+      - Squad competition errors
+      - Strange country/league concentration
+      - Ranking instability
+
+Statistical / ML Validation
+    Evaluate whether the Club x Position models (Stage 4) are actually
+    learning meaningful patterns rather than noise. Should eventually
+    include appropriate checks for:
+      - Sample-size reliability
+      - Out-of-sample behaviour
+      - Model stability
+      - Sensitivity to individual players
+      - Season/time stability where possible
+      - Cluster/archetype quality if clustering is used
+      - Missing-data effects
+      - Overfitting
+      - Whether simpler statistical approaches outperform more complex ML
+        approaches
+
+Do not assume a more complex ML model is automatically better — the final
+methodology is selected based on evidence.
+
+Only after the recommendation engine has been validated should the
+user-facing platform be completed.
+
+Expected platform flow:
+
+    Agency -> Player -> Conditions/Filters -> Generate Recommendations -> Top 3 Clubs
+
+Primary user-facing philosophy: complexity inside, simplicity outside. The
+model can perform substantial mathematical/statistical calculations
+internally, while the agent receives a simple Match % and a clear football
+explanation.
+
+Home: tests/ (validation), dashboard/ (platform)
+
+
+================================================================================
+DEVELOPMENT PRINCIPLES
+================================================================================
+1.  Build and approve one stage at a time. Do not implement later stages
+    before the current stage has been reviewed and approved.
+2.  Never invent unavailable data. If our database cannot support a
+    variable, do not silently approximate it.
+3.  Reuse validated player-evaluation work instead of rebuilding it
+    unnecessarily.
+4.  Do not assume that existing National Team Selection scope rules
+    automatically apply to this project.
+5.  Separate observable player patterns from claims about tactical
+    intentions.
+6.  Keep Club Pattern Learning (Stage 4) separate from Player-Club
+    Compatibility (Stage 5).
+7.  Keep Style Compatibility, Level Fit, and Squad Opportunity independent
+    until each is validated.
+8.  Do not lock final recommendation weights early.
+9.  Use ML only where it provides measurable value over simpler methods.
+10. Account explicitly for sample size and model reliability.
+11. Keep technical calculations internal; provide simple user-facing
+    outputs (Match % + explanation).
+12. Preserve full traceability from every Match % back to its underlying
+    model components.
+13. Do not modify the shared warehouse for project-specific logic.
+
+
+================================================================================
+PROJECT STRUCTURE
+================================================================================
+Agent's Player to Club Model/
+|
++-- docs/
+|   +-- project_roadmap.txt              (this file)
+|
++-- production/
+|   +-- scope_and_eligibility/           Stage 1
+|   +-- agent_mapping/                   Stage 2
+|   +-- player_evaluation_integration/   Stage 3
+|   +-- club_master/                     Stage 3 (club side)
+|   +-- club_pattern_model/              Stage 4
+|   +-- style_compatibility/             Stage 5
+|   +-- level_and_opportunity/           Stage 6
+|   +-- recommendation_engine/           Stage 7
+|
++-- dashboard/                           Stage 8 (platform)
++-- tests/                               Stage 8 (validation) + ongoing
++-- scripts/                             one-off / utility scripts
++-- outputs/                             generated exports, not committed source
++-- Archive/                             superseded/retired work

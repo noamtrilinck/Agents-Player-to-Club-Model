@@ -1,0 +1,31 @@
+{
+  "agency_name": "Premier Football Agency",
+  "source_url": "https://www.transfermarkt.com/premier-football-agency/beraterfirma/berater/11965",
+  "extracted_from": "https://www.transfermarkt.us/premier-football-agency/beraterfirma/berater/11965 (single page, no pagination; page header confirms 23 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (23).",
+  "clients": [
+    {"name": "Matous Trmal", "age": 27, "current_club": "FK Teplice", "position": "Goalkeeper", "nationality": "Czech Republic", "transfermarkt_player_id": "549039"},
+    {"name": "Richard Ofori", "age": 32, "current_club": "Without Club", "position": "Goalkeeper", "nationality": "Ghana", "transfermarkt_player_id": "274756"},
+    {"name": "Gustas Baliutavičius", "age": 25, "current_club": "FA Siauliai", "position": "Goalkeeper", "nationality": "Lithuania", "transfermarkt_player_id": "874591"},
+    {"name": "Jure Marinovich", "age": 26, "current_club": "Atlètic Club d'Escaldes", "position": "Goalkeeper", "nationality": "Argentina/Croatia", "transfermarkt_player_id": "1022312"},
+    {"name": "Kosta Vangjeli", "age": 26, "current_club": "KF Skënderbeu", "position": "Right-Back", "nationality": "Albania/Greece", "transfermarkt_player_id": "676445"},
+    {"name": "Alpha Turay", "age": 21, "current_club": "Without Club", "position": "Centre-Back", "nationality": "Sierra Leone", "transfermarkt_player_id": "1072392"},
+    {"name": "Laurit Krasniqi", "age": 25, "current_club": "FK Panevezys", "position": "Left-Back", "nationality": "Kosovo/Belgium", "transfermarkt_player_id": "879631"},
+    {"name": "Georgios Konstantakopoulos", "age": 21, "current_club": "Iraklis Thessaloniki", "position": "Central Midfield", "nationality": "Greece", "transfermarkt_player_id": "1166093"},
+    {"name": "David Beranek", "age": 22, "current_club": "FC Sellier & Bellot Vlasim", "position": "Left-Back", "nationality": "Czech Republic", "transfermarkt_player_id": "724027"},
+    {"name": "Isaque Gavioli", "age": 25, "current_club": "F91 Dudelange", "position": "Centre-Back", "nationality": "Brazil/Italy", "transfermarkt_player_id": "837533"},
+    {"name": "Jegor Zuravljov", "age": 21, "current_club": "JK Trans Narva", "position": "Central Midfield", "nationality": "Estonia", "transfermarkt_player_id": "961323"},
+    {"name": "Aleksander Lubik", "age": 27, "current_club": "Tarxien Rainbows", "position": "Goalkeeper", "nationality": "Poland", "transfermarkt_player_id": "474169"},
+    {"name": "Petar Ristic", "age": 26, "current_club": "FK FAP Priboj", "position": "Right Winger", "nationality": "Serbia", "transfermarkt_player_id": "604947"},
+    {"name": "Chikamso Amaefula", "age": 20, "current_club": "Rivers United FC", "position": "Defensive Midfield", "nationality": "Nigeria", "transfermarkt_player_id": "1447671"},
+    {"name": "Baba Moro Abdulai", "age": 22, "current_club": "Bechem United FC", "position": "Centre-Back", "nationality": "Ghana", "transfermarkt_player_id": "1314082"},
+    {"name": "Sunday Adehi", "age": 20, "current_club": "Kun Khalifat Football Club", "position": "Left-Back", "nationality": "Nigeria", "transfermarkt_player_id": "1447663"},
+    {"name": "Lukas Jonaitis", "age": 19, "current_club": "FC Hegelmann", "position": "Centre-Forward", "nationality": "Lithuania", "transfermarkt_player_id": "991433"},
+    {"name": "Andranik Grigoryan", "age": 21, "current_club": "FC Van II", "position": "Right Midfield", "nationality": "Armenia", "transfermarkt_player_id": "876104"},
+    {"name": "Bartłomiej Krasiewicz", "age": 20, "current_club": "Jagiellonia Bialystok", "position": "Centre-Back", "nationality": "Poland", "transfermarkt_player_id": "1046873"},
+    {"name": "Aldin Delimehic", "age": 20, "current_club": "Eordaikos FC", "position": "Centre-Forward", "nationality": "Croatia", "transfermarkt_player_id": "1174882"},
+    {"name": "Meir Buhbut", "age": 21, "current_club": "Maccabi Bnei Reineh", "position": "Left Winger", "nationality": "Israel", "transfermarkt_player_id": "1305791"},
+    {"name": "Eithan Catillon", "age": 18, "current_club": "Hapoel Hadera U19", "position": "Central Midfield", "nationality": "France/Israel", "transfermarkt_player_id": "1314458"},
+    {"name": "Justas Žukovskis", "age": 19, "current_club": "FC Hegelmann B", "position": "Right-Back", "nationality": "Lithuania", "transfermarkt_player_id": "1508806"}
+  ]
+}

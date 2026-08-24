@@ -1,0 +1,30 @@
+{
+  "agency_name": "Joseba Diaz",
+  "source_url": "https://www.transfermarkt.com/joseba-diaz/beraterfirma/berater/1063",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "22 clients total, matching the page's own stated count exactly.",
+  "clients": [
+    {"name": "Andrés Castrín", "age": 23, "current_club": "Sevilla FC", "position": "Centre-Back", "nationality": "Spain", "transfermarkt_player_id": "719999"},
+    {"name": "Ahmed Touba", "age": 28, "current_club": "Panathinaikos", "position": "Centre-Back", "nationality": "Algeria/Belgium", "transfermarkt_player_id": "325924"},
+    {"name": "Arthur Zagré", "age": 24, "current_club": "FC Utrecht", "position": "Left-Back", "nationality": "Burkina Faso/France", "transfermarkt_player_id": "536477"},
+    {"name": "Dani Raba", "age": 30, "current_club": "Valencia CF", "position": "Second Striker", "nationality": "Spain", "transfermarkt_player_id": "413262"},
+    {"name": "Mario Soberón", "age": 29, "current_club": "Albacete Balompié", "position": "Centre-Forward", "nationality": "Spain", "transfermarkt_player_id": "522110"},
+    {"name": "Juan Gutiérrez", "age": 26, "current_club": "Córdoba CF", "position": "Centre-Back", "nationality": "Spain", "transfermarkt_player_id": "531121"},
+    {"name": "Pablo Santiago", "age": 25, "current_club": "CD Castellón", "position": "Left Winger", "nationality": "Spain", "transfermarkt_player_id": "634110"},
+    {"name": "Kike García", "age": 36, "current_club": "RCD Espanyol Barcelona", "position": "Centre-Forward", "nationality": "Spain", "transfermarkt_player_id": "93936"},
+    {"name": "Oier Luengo", "age": 28, "current_club": "Burgos CF", "position": "Centre-Back", "nationality": "Spain", "transfermarkt_player_id": "447823"},
+    {"name": "Mikel Rodriguez", "age": 24, "current_club": "Deportivo Alavés", "position": "Central Midfield", "nationality": "Spain", "transfermarkt_player_id": "721660"},
+    {"name": "Cheick Condé", "age": 26, "current_club": "SK Beveren", "position": "Defensive Midfield", "nationality": "Guinea", "transfermarkt_player_id": "698560"},
+    {"name": "Unai Ropero", "age": 24, "current_club": "Racing Ferrol", "position": "Right Winger", "nationality": "Spain", "transfermarkt_player_id": "718029"},
+    {"name": "Franck Etouga", "age": 24, "current_club": "CR Belouizdad", "position": "Centre-Forward", "nationality": "Cameroon", "transfermarkt_player_id": "952411"},
+    {"name": "Ignasi Miquel", "age": 33, "current_club": "CD Leganés", "position": "Centre-Back", "nationality": "Spain", "transfermarkt_player_id": "70245"},
+    {"name": "Nikola Stajic", "age": 24, "current_club": "Panetolikos", "position": "Centre-Back", "nationality": "Serbia", "transfermarkt_player_id": "615300"},
+    {"name": "Marc-Olivier Doué", "age": 25, "current_club": "CD Castellón", "position": "Central Midfield", "nationality": "France/Côte d'Ivoire", "transfermarkt_player_id": "540654"},
+    {"name": "Moussa Koté", "age": 20, "current_club": "Ittihad Tanger", "position": "Centre-Forward", "nationality": "Senegal", "transfermarkt_player_id": "1375920"},
+    {"name": "Miki Juanola", "age": 23, "current_club": "Without Club", "position": "Right-Back", "nationality": "Spain", "transfermarkt_player_id": "636691"},
+    {"name": "Drazen Mudresa", "age": 20, "current_club": "FK Budva", "position": "Midfield", "nationality": "Montenegro", "transfermarkt_player_id": "987707"},
+    {"name": "Hants Mbega", "age": 22, "current_club": "AS Mangasport Moanda", "position": "Attacking Midfield", "nationality": "Gabon", "transfermarkt_player_id": "1149177"},
+    {"name": "Joshua Ndiefi", "age": 19, "current_club": "Rodez Aveyron Football B", "position": "Midfield", "nationality": "France/Cameroon", "transfermarkt_player_id": "1210113"},
+    {"name": "Sina Gassama", "age": 19, "current_club": "Grenoble Foot 38 U19", "position": "Centre-Back", "nationality": "France", "transfermarkt_player_id": "1235516"}
+  ]
+}

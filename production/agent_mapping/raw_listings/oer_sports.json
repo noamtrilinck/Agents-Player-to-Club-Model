@@ -1,0 +1,13 @@
+{
+  "agency_name": "OER-Sports",
+  "source_url": "https://www.transfermarkt.com/oer-sports/beraterfirma/berater/9936",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "5 clients total, matching the page's own stated count exactly.",
+  "clients": [
+    {"name": "Deniz Türüç", "age": 33, "current_club": "Konyaspor", "position": "Right Winger", "nationality": "Turkey/Netherlands", "transfermarkt_player_id": "216662"},
+    {"name": "Tjaronn Chery", "age": 38, "current_club": "NEC Nijmegen", "position": "Attacking Midfield", "nationality": "Suriname/Netherlands", "transfermarkt_player_id": "76326"},
+    {"name": "Ben Rienstra", "age": 36, "current_club": "MVV '29 Harbrinkhoek", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "64506"},
+    {"name": "Daan Rienstra", "age": 33, "current_club": "ADO '20 Heemskerk", "position": "Central Midfield", "nationality": "Netherlands", "transfermarkt_player_id": "277772"},
+    {"name": "Obbi Oulare", "age": 30, "current_club": "KSK Heist", "position": "Centre-Forward", "nationality": "Belgium/Guinea", "transfermarkt_player_id": "314959"}
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "agency_name": "ESHA Sportmarketing GmbH",
+  "source_url": "https://www.transfermarkt.com/esha-sportmarketing-gmbh/beraterfirma/berater/3051",
+  "extracted_from": "https://www.transfermarkt.us/esha-sportmarketing-gmbh/beraterfirma/berater/3051 (single page, no pagination; page header confirms 11 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (11). Swiss-focused, entirely outside our warehouse's league scope.",
+  "clients": [
+    {"name": "Remo Freuler", "age": 34, "current_club": "Without Club", "position": "Central Midfield", "nationality": "Switzerland", "transfermarkt_player_id": "148252"},
+    {"name": "Xherdan Shaqiri", "age": 34, "current_club": "FC Basel 1893", "position": "Attacking Midfield", "nationality": "Switzerland/Kosovo", "transfermarkt_player_id": "86792"},
+    {"name": "Gregory Wüthrich", "age": 31, "current_club": "BSC Young Boys", "position": "Centre-Back", "nationality": "Switzerland/Ghana", "transfermarkt_player_id": "203125"},
+    {"name": "Yannis Ryter", "age": 20, "current_club": "FC Rapperswil-Jona", "position": "Central Midfield", "nationality": "Switzerland", "transfermarkt_player_id": "688617"},
+    {"name": "Uchenna Nwannah", "age": 22, "current_club": "FC Wil 1900", "position": "Centre-Back", "nationality": "Switzerland/Nigeria", "transfermarkt_player_id": "1168059"},
+    {"name": "Amir Abrashi", "age": 36, "current_club": "Grasshopper Club Zurich", "position": "Defensive Midfield", "nationality": "Albania/Switzerland", "transfermarkt_player_id": "66005"},
+    {"name": "Aldin Turkes", "age": 30, "current_club": "FC Winterthur", "position": "Centre-Forward", "nationality": "Bosnia-Herzegovina/Switzerland", "transfermarkt_player_id": "192655"},
+    {"name": "Denis Simani", "age": 34, "current_club": "FC Vaduz", "position": "Centre-Back", "nationality": "Switzerland", "transfermarkt_player_id": "135344"},
+    {"name": "Valon Mazreku", "age": 20, "current_club": "FC Stade-Lausanne-Ouchy II", "position": "Right Winger", "nationality": "Switzerland/Albania", "transfermarkt_player_id": "1060489"},
+    {"name": "Muhammed Mustafi", "age": 18, "current_club": "FCO St. Gallen U19", "position": "Centre-Back", "nationality": "North Macedonia", "transfermarkt_player_id": "1258593"},
+    {"name": "Niklas Häusler", "age": 19, "current_club": "FC Zürich U21", "position": "Left-Back", "nationality": "Switzerland", "transfermarkt_player_id": "1308506"}
+  ]
+}

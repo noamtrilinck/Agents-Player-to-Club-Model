@@ -1,0 +1,22 @@
+{
+  "agency_name": "37 Sport Management Ltd",
+  "source_url": "https://www.transfermarkt.com/37-sport-management-ltd/beraterfirma/berater/9642",
+  "extracted_from": "Transfermarkt agency client-listing page (.us mirror), single page (1 of 1)",
+  "extraction_note": "14 clients total, matching the page's own stated count exactly.",
+  "clients": [
+    {"name": "Dominic Hyam", "age": 30, "current_club": "Wrexham AFC", "position": "Centre-Back", "nationality": "Scotland/England", "transfermarkt_player_id": "263268"},
+    {"name": "Ra'ees Bangura-Williams", "age": 22, "current_club": "Millwall FC", "position": "Right Winger", "nationality": "England/Sierra Leone", "transfermarkt_player_id": "1328422"},
+    {"name": "Roberto Nditi", "age": 25, "current_club": "Hanwell Town FC", "position": "Right-Back", "nationality": "Tanzania/England", "transfermarkt_player_id": "530949"},
+    {"name": "David Boateng", "age": 25, "current_club": "Without Club", "position": "Right-Back", "nationality": "England/Ghana", "transfermarkt_player_id": "634706"},
+    {"name": "Sam Folarin", "age": 25, "current_club": "Sutton United", "position": "Right Winger", "nationality": "England/Nigeria", "transfermarkt_player_id": "670658"},
+    {"name": "Zion Nditi", "age": 21, "current_club": "Hanwell Town FC", "position": "Right-Back", "nationality": "Tanzania/England", "transfermarkt_player_id": "890900"},
+    {"name": "Mark Boruk", "age": 18, "current_club": "Maidstone United", "position": "Centre-Forward", "nationality": "England/Ukraine", "transfermarkt_player_id": "1525373"},
+    {"name": "Sonny Parkes", "age": 19, "current_club": "Woking FC U21", "position": "Left-Back", "nationality": "England", "transfermarkt_player_id": "1239921"},
+    {"name": "Kemall Wilson", "age": 19, "current_club": "Woking FC U21", "position": "Centre-Back", "nationality": "England", "transfermarkt_player_id": "1214610"},
+    {"name": "Noah Nzuzi", "age": 19, "current_club": "Sutton United", "position": "Centre-Back", "nationality": "England/DR Congo", "transfermarkt_player_id": "1112493"},
+    {"name": "Rashaad Drysdale", "age": 19, "current_club": "Without Club", "position": "Right Winger", "nationality": "England", "transfermarkt_player_id": "1091065"},
+    {"name": "Marvin Herschel", "age": 23, "current_club": "Without Club", "position": "Midfield", "nationality": "Germany", "transfermarkt_player_id": "1045546"},
+    {"name": "Kyle Smith", "age": 22, "current_club": "Wealdstone FC", "position": "Right-Back", "nationality": "England", "transfermarkt_player_id": "854775"},
+    {"name": "Joseph Joseph", "age": 24, "current_club": "Without Club", "position": "Centre-Back", "nationality": "England", "transfermarkt_player_id": "610899"}
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "agency_name": "The Family",
+  "source_url": "https://www.transfermarkt.com/the-family/beraterfirma/berater/9488",
+  "extracted_from": "https://www.transfermarkt.us/the-family/beraterfirma/berater/9488 (single page, no pagination; page header confirms 23 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (23). Belgium-focused agency, heavily lower-league/youth.",
+  "clients": [
+    {"name": "Jordi Liongola", "age": 26, "current_club": "Sheffield Wednesday", "position": "Right Midfield", "nationality": "Burundi/Belgium", "transfermarkt_player_id": "627329"},
+    {"name": "Terry Van De Ven", "age": 18, "current_club": "RSCA Futures", "position": "Centre-Forward", "nationality": "Belgium/Nigeria", "transfermarkt_player_id": "1112906"},
+    {"name": "Noah Solheid", "age": 23, "current_club": "Royal Charleroi SC", "position": "Centre-Back", "nationality": "Belgium", "transfermarkt_player_id": "1037260"},
+    {"name": "Stephane Omeonga", "age": 30, "current_club": "Niki Volos", "position": "Central Midfield", "nationality": "Belgium/DR Congo", "transfermarkt_player_id": "342472"},
+    {"name": "Naïm Amengai", "age": 18, "current_club": "Club NXT", "position": "Central Midfield", "nationality": "Belgium/Morocco", "transfermarkt_player_id": "1105529"},
+    {"name": "Levi Malungu", "age": 24, "current_club": "Francs Borains", "position": "Centre-Back", "nationality": "Belgium/DR Congo", "transfermarkt_player_id": "541021"},
+    {"name": "Thomas Mukendi", "age": 20, "current_club": "RSC Tilffois", "position": "Central Midfield", "nationality": "Belgium/DR Congo", "transfermarkt_player_id": "743378"},
+    {"name": "Ryan Safari", "age": 23, "current_club": "Diegem Sport", "position": "Centre-Forward", "nationality": "Belgium/DR Congo", "transfermarkt_player_id": "912109"},
+    {"name": "Atilgan Babacan", "age": 21, "current_club": "Diegem Sport", "position": "Left Winger", "nationality": "Belgium/Türkiye", "transfermarkt_player_id": "964422"},
+    {"name": "Mederick Francisco", "age": 23, "current_club": "RSD Jette", "position": "Defensive Midfield", "nationality": "Belgium/Angola", "transfermarkt_player_id": "1316796"},
+    {"name": "Sadiq Saleh", "age": 20, "current_club": "FK Metta", "position": "Centre-Forward", "nationality": "Nigeria", "transfermarkt_player_id": "1338750"},
+    {"name": "Yanis Fahe", "age": 16, "current_club": "R Charleroi SC Youth", "position": "Midfield", "nationality": "Belgium", "transfermarkt_player_id": "1537236"},
+    {"name": "Noa Recchia", "age": 19, "current_club": "FC Flénu", "position": "Defensive Midfield", "nationality": "Belgium/Italy", "transfermarkt_player_id": "1460572"},
+    {"name": "Malcolm Epolo", "age": 17, "current_club": "Standard Liège U18", "position": "Goalkeeper", "nationality": "Belgium", "transfermarkt_player_id": "1460436"},
+    {"name": "Denzel Neba", "age": 19, "current_club": "STVV Youth", "position": "Central Midfield", "nationality": "Belgium/Cameroon", "transfermarkt_player_id": "1453002"},
+    {"name": "Yanis Ngoy", "age": 17, "current_club": "STVV Youth", "position": "Goalkeeper", "nationality": "Belgium/DR Congo", "transfermarkt_player_id": "1389531"},
+    {"name": "Yassine M'Hammedi", "age": 18, "current_club": "KV Mechelen U18", "position": "Attacking Midfield", "nationality": "Belgium", "transfermarkt_player_id": "1334514"},
+    {"name": "Sham Wetungany", "age": 18, "current_club": "STVV Youth", "position": "Centre-Back", "nationality": "Belgium/DR Congo", "transfermarkt_player_id": "1325022"},
+    {"name": "Precious Ogbeiwi", "age": 18, "current_club": "Jong Genk", "position": "Defensive Midfield", "nationality": "Belgium", "transfermarkt_player_id": "1318311"},
+    {"name": "Gabriel Biladi", "age": 17, "current_club": "RSCA Futures", "position": "Left Winger", "nationality": "Belgium/DR Congo", "transfermarkt_player_id": "1232110"},
+    {"name": "Yanis Malamba", "age": 17, "current_club": "Standard de Liège 16 FC", "position": "Right-Back", "nationality": "Belgium/DR Congo", "transfermarkt_player_id": "1232021"},
+    {"name": "Ugo Decerf", "age": 18, "current_club": "Zébra Élites", "position": "Goalkeeper", "nationality": "Belgium", "transfermarkt_player_id": "1135424"},
+    {"name": "Chike Van De Ven", "age": 19, "current_club": "Oud-Heverlee Leuven", "position": "Centre-Forward", "nationality": "Belgium/Nigeria", "transfermarkt_player_id": "1068262"}
+  ]
+}

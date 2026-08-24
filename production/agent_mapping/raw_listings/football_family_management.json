@@ -1,0 +1,22 @@
+{
+  "agency_name": "Football Family Management",
+  "source_url": "https://www.transfermarkt.com/football-family-management/beraterfirma/berater/7878",
+  "extracted_from": "https://www.transfermarkt.us/football-family-management/beraterfirma/berater/7878 (single page, no pagination; page header confirms 14 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (14). Serbian/North Macedonian/Nigerian-focused, mostly outside our warehouse's league scope.",
+  "clients": [
+    {"name": "Ognjen Ugresic", "age": 20, "current_club": "FK Partizan Belgrade", "position": "Central Midfield", "nationality": "Serbia/Hungary", "transfermarkt_player_id": "895606"},
+    {"name": "Chinedu Geoffrey", "age": 28, "current_club": "Krylya Sovetov Samara", "position": "Centre-Forward", "nationality": "Nigeria", "transfermarkt_player_id": "538773"},
+    {"name": "Aleksandar Busnić", "age": 28, "current_club": "Without Club", "position": "Defensive Midfield", "nationality": "Serbia", "transfermarkt_player_id": "399844"},
+    {"name": "Luka Stankovski", "age": 23, "current_club": "Kolos Kovalivka", "position": "Attacking Midfield", "nationality": "North Macedonia", "transfermarkt_player_id": "626771"},
+    {"name": "Bojan Dimoski", "age": 24, "current_club": "Shkendija Tetovo", "position": "Left-Back", "nationality": "North Macedonia", "transfermarkt_player_id": "653681"},
+    {"name": "Stojan Lekovic", "age": 25, "current_club": "Al-Jazira Club", "position": "Goalkeeper", "nationality": "Serbia/UAE", "transfermarkt_player_id": "710497"},
+    {"name": "Stefan Petkoski Cimbaljevic", "age": 21, "current_club": "FK Smederevo 1924", "position": "Left-Back", "nationality": "Serbia/North Macedonia", "transfermarkt_player_id": "895138"},
+    {"name": "Abdulmalik Mohammed", "age": 19, "current_club": "FK Teleoptik Zemun", "position": "Left-Back", "nationality": "Nigeria", "transfermarkt_player_id": "1433563"},
+    {"name": "Mihail Talevski", "age": 22, "current_club": "Without Club", "position": "Second Striker", "nationality": "North Macedonia", "transfermarkt_player_id": "670305"},
+    {"name": "Darko Sekovski", "age": 20, "current_club": "FK Skopje", "position": "Attacking Midfield", "nationality": "North Macedonia", "transfermarkt_player_id": "1028344"},
+    {"name": "Branko Riznic", "age": 26, "current_club": "FK Metalac Gornji Milanovac", "position": "Central Midfield", "nationality": "Serbia", "transfermarkt_player_id": "556746"},
+    {"name": "Petar Pavlovic", "age": 23, "current_club": "FK Real Podunavci", "position": "Centre-Back", "nationality": "Serbia", "transfermarkt_player_id": "706310"},
+    {"name": "Ivan Martinovic", "age": 19, "current_club": "FK Teleoptik Zemun", "position": "Left Winger", "nationality": "Serbia", "transfermarkt_player_id": "952782"},
+    {"name": "Samson Nwulu", "age": 19, "current_club": "FK Partizan Belgrade", "position": "Defensive Midfield", "nationality": "Nigeria", "transfermarkt_player_id": "1433564"}
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "agency_name": "Samuel Football Group",
+  "source_url": "https://www.transfermarkt.com/samuel-football-group/beraterfirma/berater/8534",
+  "extracted_from": "https://www.transfermarkt.us/samuel-football-group/beraterfirma/berater/8534 (single page, no pagination; page header confirms 8 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (8).",
+  "clients": [
+    {"name": "Ilay Ben Simon", "age": 17, "current_club": "Maccabi Tel Aviv", "position": "Attacking Midfield", "nationality": "Israel", "transfermarkt_player_id": "1261451"},
+    {"name": "Yarin Swisa", "age": 21, "current_club": "Ironi Tiberias", "position": "Central Midfield", "nationality": "Israel", "transfermarkt_player_id": "1061544"},
+    {"name": "Idan Vered", "age": 37, "current_club": "Without Club", "position": "Right Winger", "nationality": "Israel/Romania", "transfermarkt_player_id": "96398"},
+    {"name": "Ilay Tzairi", "age": 22, "current_club": "SC Kfar Qasem", "position": "Right-Back", "nationality": "Israel", "transfermarkt_player_id": "1138608"},
+    {"name": "Shai Vacsman", "age": 16, "current_club": "Hapoel Tel Aviv U19", "position": "Right-Back", "nationality": "Israel", "transfermarkt_player_id": "1325536"},
+    {"name": "Macay Benbenisti", "age": 19, "current_club": "Hapoel Tel Aviv U19", "position": "Right Winger", "nationality": "Israel", "transfermarkt_player_id": "1341725"},
+    {"name": "Maor Cohen", "age": 19, "current_club": "Hapoel Kfar Shalem U19", "position": "Attack", "nationality": "Israel", "transfermarkt_player_id": "1407901"},
+    {"name": "Mark Golenkov", "age": 18, "current_club": "Maccabi Haifa U19", "position": "Goalkeeper", "nationality": "Ukraine/Israel", "transfermarkt_player_id": "1474310"}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "agency_name": "Total Football Agency",
+  "source_url": "https://www.transfermarkt.com/total-football-agency/beraterfirma/berater/7681",
+  "extracted_from": "https://www.transfermarkt.us/total-football-agency/beraterfirma/berater/7681 (single page, no pagination; page header confirms 10 total players)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (10). Brazilian-focused, entirely outside our warehouse's league scope.",
+  "clients": [
+    {"name": "Mauro Júnior", "age": 27, "current_club": "PSV Eindhoven", "position": "Left-Back", "nationality": "Brazil", "transfermarkt_player_id": "323910"},
+    {"name": "Guilherme Cioletti", "age": 32, "current_club": "Floriana FC", "position": "Goalkeeper", "nationality": "Brazil/Italy", "transfermarkt_player_id": "569352"},
+    {"name": "Vitinho", "age": 23, "current_club": "CD Santa Clara", "position": "Right Winger", "nationality": "Brazil", "transfermarkt_player_id": "796742"},
+    {"name": "Kauã Vinicius", "age": 22, "current_club": "Varzim SC", "position": "Centre-Back", "nationality": "Brazil", "transfermarkt_player_id": "1052970"},
+    {"name": "Romário Pelin", "age": 22, "current_club": "Grêmio Desportivo São-Carlense (SP)", "position": "Attacking Midfield", "nationality": "Brazil", "transfermarkt_player_id": "1023642"},
+    {"name": "João Scapin", "age": 22, "current_club": "Grêmio Novorizontino", "position": "Goalkeeper", "nationality": "Brazil", "transfermarkt_player_id": "1093924"},
+    {"name": "Thiaguinho", "age": 23, "current_club": "EC Água Santa (SP)", "position": "Left-Back", "nationality": "Brazil", "transfermarkt_player_id": "1096835"},
+    {"name": "Favela", "age": 19, "current_club": "SC Corinthians U20", "position": "Centre-Forward", "nationality": "Brazil", "transfermarkt_player_id": "1117982"},
+    {"name": "Guilherme Nogueira", "age": 19, "current_club": "SE Palmeiras São Paulo U20", "position": "Defensive Midfield", "nationality": "Brazil", "transfermarkt_player_id": "1270243"},
+    {"name": "Kaiky Silva", "age": 20, "current_club": "Botafogo FR U20", "position": "Centre-Forward", "nationality": "Brazil", "transfermarkt_player_id": "1360834"}
+  ]
+}

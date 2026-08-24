@@ -1,0 +1,32 @@
+{
+  "agency_name": "Triple S Sports and Entertainment Group Ltd",
+  "source_url": "https://www.transfermarkt.com/triple-s-sports-and-entertainment-group-ltd/beraterfirma/berater/4216",
+  "extracted_from": "https://www.transfermarkt.us/triple-s-sports-and-entertainment-group-ltd/beraterfirma/berater/4216 (single page, no pagination)",
+  "extraction_note": "Extracted from the agency's client-listing page only (no individual player pages opened), per project direction. Count reconciles exactly with the page's own stated total (24). English roster spanning Premier League down to non-league, including Wayne Rooney (retired).",
+  "clients": [
+    {"name": "James Garner", "age": 25, "current_club": "Everton FC", "position": "Defensive Midfield", "nationality": "England", "transfermarkt_player_id": "505219"},
+    {"name": "Joe Gelhardt", "age": 24, "current_club": "Hull City", "position": "Centre-Forward", "nationality": "England", "transfermarkt_player_id": "503980"},
+    {"name": "Josh Tymon", "age": 27, "current_club": "Swansea City", "position": "Left-Back", "nationality": "England", "transfermarkt_player_id": "419929"},
+    {"name": "Harry Maguire", "age": 33, "current_club": "Manchester United", "position": "Centre-Back", "nationality": "England", "transfermarkt_player_id": "177907"},
+    {"name": "Shea Lacey", "age": 19, "current_club": "Manchester United", "position": "Right Winger", "nationality": "England/Ireland", "transfermarkt_player_id": "926309"},
+    {"name": "Jack Butland", "age": 33, "current_club": "Hull City", "position": "Goalkeeper", "nationality": "England", "transfermarkt_player_id": "128899"},
+    {"name": "Beni Baningime", "age": 27, "current_club": "Without Club", "position": "Defensive Midfield", "nationality": "DR Congo/England", "transfermarkt_player_id": "399369"},
+    {"name": "Angus Gunn", "age": 30, "current_club": "San Jose Earthquakes", "position": "Goalkeeper", "nationality": "Scotland/England", "transfermarkt_player_id": "201574"},
+    {"name": "Jayden Danns", "age": 20, "current_club": "Liverpool FC U21", "position": "Centre-Forward", "nationality": "England/Guyana", "transfermarkt_player_id": "939290"},
+    {"name": "Niall Ennis", "age": 27, "current_club": "Blackpool FC", "position": "Centre-Forward", "nationality": "England/Jamaica", "transfermarkt_player_id": "369171"},
+    {"name": "Corey Blackett-Taylor", "age": 28, "current_club": "Derby County", "position": "Left Winger", "nationality": "England", "transfermarkt_player_id": "282821"},
+    {"name": "Daniel Bachmann", "age": 32, "current_club": "Watford FC", "position": "Goalkeeper", "nationality": "Austria", "transfermarkt_player_id": "120186"},
+    {"name": "Dara Costelloe", "age": 23, "current_club": "Wigan Athletic", "position": "Left Winger", "nationality": "Ireland", "transfermarkt_player_id": "614700"},
+    {"name": "JJ McKiernan", "age": 24, "current_club": "Bromley FC", "position": "Central Midfield", "nationality": "Northern Ireland/England", "transfermarkt_player_id": "733496"},
+    {"name": "Michael Mellon", "age": 22, "current_club": "Burnley FC U21", "position": "Centre-Forward", "nationality": "Scotland", "transfermarkt_player_id": "714459"},
+    {"name": "Jake Rooney", "age": 22, "current_club": "Boston United", "position": "Centre-Back", "nationality": "England", "transfermarkt_player_id": "733422"},
+    {"name": "Chris Sze", "age": 22, "current_club": "Wigan Athletic", "position": "Attacking Midfield", "nationality": "England", "transfermarkt_player_id": "874009"},
+    {"name": "Ty Barnett", "age": 21, "current_club": "Without Club", "position": "Attacking Midfield", "nationality": "England/Trinidad and Tobago", "transfermarkt_player_id": "751666"},
+    {"name": "Wayne Rooney", "age": 40, "current_club": "Retired", "position": "Centre-Forward", "nationality": "England", "transfermarkt_player_id": "3332"},
+    {"name": "DJ Esdaille", "age": 18, "current_club": "Liverpool FC U21", "position": "Right-Back", "nationality": "England/St. Kitts & Nevis", "transfermarkt_player_id": "1130023"},
+    {"name": "Danny Ormerod", "age": 20, "current_club": "AFC Fylde", "position": "Centre-Forward", "nationality": "England", "transfermarkt_player_id": "1200263"},
+    {"name": "Junior Wilson", "age": 18, "current_club": "Birmingham City U21", "position": "Centre-Back", "nationality": "England", "transfermarkt_player_id": "1281434"},
+    {"name": "Zebedee Lawson", "age": 17, "current_club": "Queen's Park FC", "position": "Left Winger", "nationality": "England", "transfermarkt_player_id": "1336817"},
+    {"name": "Kai Rooney", "age": 16, "current_club": "Manchester United U18", "position": "Right Winger", "nationality": "England", "transfermarkt_player_id": "1443114"}
+  ]
+}
