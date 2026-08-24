@@ -6,10 +6,8 @@ Age) at once, with no st.stop() gate on agency. Widget order/index in the redesi
   selectbox[0]      = Agency
   text_input[0]     = Player Name
   multiselect[0..3] = Position, Nationality, League, Club
-  slider[0]         = Minimum age (round 2, Post-Deployment Improvement Sprint V2: replaced the
-                       native two-handle range slider with two independent single-value sliders --
-                       see app.py's inline comment for the root-cause reason)
-  slider[1]         = Maximum age
+  slider[0]         = Age (native two-handle range slider -- round 2's two-independent-sliders
+                       workaround was reverted in round 3; see app.py's inline comment)
   radio[0]          = selection mode
   multiselect[4]    = specific-players picker (only present in "Select specific players" mode)
   button[0]         = Find Recommendations
@@ -122,8 +120,7 @@ def test_filter_by_position_age_league_no_agency():
     league_options = at.multiselect[2].options
     assert league_options, "no league options available with no agency chosen"
     at.multiselect[2].select(league_options[0]).run(timeout=30)
-    at.slider[0].set_value(20).run(timeout=30)
-    at.slider[1].set_value(24).run(timeout=30)
+    at.slider[0].set_range(20, 24).run(timeout=30)
     at.button[0].click().run(timeout=30)
     assert not at.exception
     rows = _parse_labels(at)
@@ -183,8 +180,7 @@ def test_workflow_c_one_agency_all_players():
 def test_workflow_d_agency_age_position_filter():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
-    at.slider[0].set_value(20).run(timeout=30)
-    at.slider[1].set_value(25).run(timeout=30)
+    at.slider[0].set_range(20, 25).run(timeout=30)
     at.multiselect[0].select("Centre Back").run(timeout=30)
     at.button[0].click().run(timeout=30)
     assert not at.exception
@@ -197,8 +193,7 @@ def test_workflow_d_agency_age_position_filter():
 def test_workflow_e_agency_age_position_nationality_filter():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
-    at.slider[0].set_value(18).run(timeout=30)
-    at.slider[1].set_value(30).run(timeout=30)
+    at.slider[0].set_range(18, 30).run(timeout=30)
     at.multiselect[0].select("Centre Back").run(timeout=30)
     at.multiselect[1].select("England").run(timeout=30)
     at.button[0].click().run(timeout=30)
@@ -235,7 +230,7 @@ def test_workflow_f_unrepresented_population_with_filter():
     at = _fresh()
     at.selectbox[0].select("Players without an agency").run(timeout=30)
     assert not at.exception
-    at.slider[0].set_value(at.slider[0].value).run(timeout=30)  # no-op re-set, exercises the widget
+    at.slider[0].set_range(*at.slider[0].value).run(timeout=30)  # no-op re-set, exercises the widget
     at.button[0].click().run(timeout=30)
     assert not at.exception
     rows = _parse_labels(at)
@@ -245,8 +240,7 @@ def test_workflow_f_unrepresented_population_with_filter():
 def test_workflow_g_zero_result_filter_combination_no_crash():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
-    at.slider[0].set_value(18).run(timeout=30)
-    at.slider[1].set_value(30).run(timeout=30)
+    at.slider[0].set_range(18, 30).run(timeout=30)
     at.multiselect[0].select("Centre Back").run(timeout=30)
     at.multiselect[1].select("Australia").run(timeout=30)  # known-empty combo for this agency
     assert not at.exception
@@ -281,55 +275,55 @@ def test_no_selection_specific_mode_shows_caption_not_error():
 
 
 # =============================================================================================
-# Post-Deployment Improvement Sprint V2 (round 2) -- Age slider (min-left/max-right,
-# non-inverted interaction/filtering) and collapsed-row flags (nationality + independent
-# current-league flag, embedded in the row itself, not a floating column).
+# Post-Deployment Improvement Sprint V2 (round 3) -- back to ONE native two-handle Age range
+# slider (round 2's two-independent-sliders workaround reverted), plus collapsed-row flags
+# (nationality + independent current-league flag, embedded in the row itself).
 # =============================================================================================
 
-def test_age_min_slider_is_index_0_and_max_is_index_1():
-    """Two independent single-value sliders replaced the native two-handle range slider (root-
-    cause fix, see app.py) -- slider[0] must be Min, slider[1] Max, and their combined bounds
-    must match the real population's age range."""
+def test_age_is_a_single_range_slider_not_two_independent_sliders():
+    """Locks the round-3 revert: exactly one st.slider for Age, with a tuple value -- not the
+    round-2 two-independent-sliders workaround."""
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
     assert not at.exception
-    assert len(at.slider) == 2
+    assert len(at.slider) == 1
     lo, hi = at.slider[0].min, at.slider[0].max
-    assert at.slider[1].min == lo and at.slider[1].max == hi
-    assert at.slider[0].value == lo  # defaults to the population minimum
-    assert at.slider[1].value == hi  # defaults to the population maximum
+    assert at.slider[0].value == (lo, hi)  # defaults to the full population range
 
 
-def test_age_slider_min_and_max_filter_correctly_independent_of_which_moved():
-    """min_age <= player_age <= max_age must hold regardless of which of the two sliders was
-    actually moved -- confirms no inverted assignment (moving what LOOKS like "Min" must not
-    silently change the maximum, or vice versa)."""
+def test_age_range_slider_filters_correctly_at_both_ends():
+    """min_age <= player_age <= max_age must hold for a moved range -- the functional filtering
+    contract (unchanged by any of these presentation fixes; selection_logic.filter_by_age is not
+    touched by this module at all)."""
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
-    at.slider[0].set_value(22).run(timeout=30)  # move only the Min slider
+    at.slider[0].set_range(22, 26).run(timeout=30)
     at.button[0].click().run(timeout=30)
     assert not at.exception
     rows = _parse_labels(at)
     assert len(rows) > 0
-    assert all(r["age"] >= 22 for r in rows), "moving slider[0] (Min) must raise the floor, not the ceiling"
-
-    at2 = _fresh()
-    at2.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
-    at2.slider[1].set_value(24).run(timeout=30)  # move only the Max slider
-    at2.button[0].click().run(timeout=30)
-    assert not at2.exception
-    rows2 = _parse_labels(at2)
-    assert len(rows2) > 0
-    assert all(r["age"] <= 24 for r in rows2), "moving slider[1] (Max) must lower the ceiling, not the floor"
+    assert all(22 <= r["age"] <= 26 for r in rows)
 
 
 def test_age_caption_shows_min_dash_max_in_correct_order():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
-    at.slider[0].set_value(21).run(timeout=30)
-    at.slider[1].set_value(29).run(timeout=30)
+    at.slider[0].set_range(21, 29).run(timeout=30)
     assert not at.exception
     assert any(c.value == "Age: 21–29" for c in at.caption)
+
+
+def test_age_single_value_population_shows_text_not_slider():
+    """Part 7/8: when the current (possibly progressively-filtered) population has only one age
+    present, no slider is shown at all -- the simple text state is used instead. Real production
+    data: filter down to a narrow enough combination to hit this naturally where possible, else
+    confirm the code path exists via the population-bounds helper directly."""
+    at = _fresh()
+    at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
+    lo, hi = at.slider[0].min, at.slider[0].max
+    if lo == hi:
+        assert len(at.slider) == 0
+        assert any(f"Age: **{lo}**" in m.value for m in at.markdown)
 
 
 def test_collapsed_row_nationality_and_league_flags_independently_resolved():

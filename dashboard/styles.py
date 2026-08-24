@@ -119,9 +119,20 @@ def build_css():
     border: 1px solid var(--border) !important; border-radius: 2px !important; padding: 4px; }}
   .pdf-controlbar-label {{ font-family: var(--font-mono); font-size:10px; text-transform:uppercase;
     letter-spacing:.08em; color:var(--ink-faint); margin-bottom:3px; margin-top:2px; }}
-  div[data-testid="stVerticalBlockBorderWrapper"] div[data-baseweb="select"] > div,
-  div[data-testid="stVerticalBlockBorderWrapper"] .stTextInput input {{
-    background: var(--surface) !important; }}
+  /* Part 2 (round 3): white input surfaces -- root-caused against Streamlit's own bundled
+     Selectbox.js/Multiselect.js/TextInput.js, not guessed: every one of these controls paints its
+     own background via the active theme's `secondaryBg` token (a pale grey in the default theme),
+     NOT the ancestor panel's own background -- so the earlier fix (targeting the SELECT's direct
+     child div, and the TEXT INPUT's inner <input> element) never reached the actual color-bearing
+     box. The real elements are: the `[data-baseweb="select"]` control itself (BaseWeb paints ITS
+     OWN background, not only a nested child -- a descendant selector, not a direct-child `>`, so
+     it's caught regardless of exact internal nesting), and `[data-testid="stTextInputRootElement"]`
+     (confirmed via TextInput.js -- the actual `secondaryBg`-painted wrapper, not the bare <input>,
+     which is transparent over it). */
+  div[data-testid="stVerticalBlockBorderWrapper"] div[data-baseweb="select"],
+  div[data-testid="stVerticalBlockBorderWrapper"] div[data-baseweb="select"] div,
+  div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stTextInputRootElement"] {{
+    background-color: var(--surface) !important; }}
 
   /* ---- Leagues Covered -- identical component to NTS's own (same class shape, pdf- prefix) ---- */
   .pdf-leaguecov-label {{ font-family: var(--font-mono); font-size:12.5px; text-transform:uppercase;
@@ -140,12 +151,17 @@ def build_css():
   /* Native widget restyle (selectbox / multiselect / slider / radio / text input), same
      as-close-as-Streamlit-allows compromise NTS's own styles.py documents. */
   div[data-baseweb="select"] > div {{ border-radius: 2px !important; border-color: var(--border) !important; font-family: var(--font-body); }}
-  .stTextInput input {{ border-radius: 2px !important; border-color: var(--border) !important; font-family: var(--font-body); }}
-  /* Belt-and-braces alongside the app-wide `direction: ltr` above: the slider's own BaseWeb
-     internals compute handle position/order from the CSS `direction` of their nearest ancestor,
-     so this is redundant once the app-wide rule is in place -- kept explicit anyway since this is
-     the one component the whole fix (Part A.1) is actually about. */
-  div[data-testid="stSlider"] {{ direction: ltr !important; }}
+  [data-testid="stTextInputRootElement"] {{ border-radius: 2px !important; border-color: var(--border) !important; }}
+  .stTextInput input {{ font-family: var(--font-body); }}
+  /* direction:ltr on the slider (Part A.1, confirmed root cause in the round-3 investigation --
+     see app.py's inline comment): this reaches every ordinary CSS-driven layout aspect of the
+     component. It does NOT and cannot reach react-aria's own internal locale state (a React
+     context seeded once from window.navigator.language, never re-derived from CSS) -- kept
+     applied anyway because it is still the correct, real fix for the parts of this component that
+     genuinely are CSS-driven, and is harmless where it isn't. Applied to both the slider root and
+     the specific per-thumb value-label element (the one sub-part most likely to be positioned via
+     a separate, direction-aware mechanism from the track itself). */
+  div[data-testid="stSlider"], [data-testid="stSliderThumbValue"] {{ direction: ltr !important; }}
   .stRadio > div {{ gap: 6px; }}
   .stRadio label {{ background: var(--surface); border: 1px solid var(--border); padding: 6px 12px; border-radius: 2px; font-size: 13px !important; }}
 
@@ -154,10 +170,22 @@ def build_css():
     font-weight: 700; padding: 10px 20px; font-family: var(--font-body); }}
   .stButton > button:hover {{ background: var(--accent); color: var(--on-accent); }}
 
-  /* ---- Player result row (the expander + flag column) ---- */
+  /* ---- Player result row (the expander, with flags embedded in its own label) ---- */
   div[data-testid="stExpander"] {{ margin-bottom: 0.5rem; border: 1px solid var(--border) !important;
     border-radius: 2px !important; background: var(--surface); }}
   div[data-testid="stExpander"] summary {{ font-family: var(--font-body); }}
+  /* Part 1 (round 3): keep the whole collapsed row on one line whenever the viewport has room.
+     Root-caused directly against Streamlit's own bundled Expander component: its label wrapper
+     chain (summary -> label span -> label div) already cascades width:100% correctly down to the
+     rendered Markdown paragraph -- there is no narrow ancestor artificially constraining it. The
+     wrap is plain CSS `white-space: normal` (the browser default for text), which the label's
+     Markdown paragraph never overrides -- normal text wraps at the nearest word boundary as soon
+     as the row's real content (name + age + position + two flag icons + nationality + club +
+     league) exceeds the available width, which it does for longer combinations even inside this
+     app's genuinely wide desktop container. `nowrap` here commits the row to one line; the
+     ancestor's own `overflow:hidden` (Streamlit's, unchanged) still applies as a safety net for
+     the rare label too long to fit at all, rather than an uneven, inconsistent two-line wrap. */
+  div[data-testid="stExpander"] summary p {{ white-space: nowrap; }}
 
   /* ---- Recommendation card grid -- this app's own component, no NTS analogue (Part 7): a
      balanced 3-column grid of compact rectangular cards, flat/bordered/no-shadow/no-radius same
