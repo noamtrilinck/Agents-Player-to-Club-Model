@@ -90,7 +90,8 @@ def test_debug_table_never_appears_in_client_flow():
 def test_no_players_after_filters_clean_message():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
-    at.slider[0].set_range(18, 30).run(timeout=30)
+    at.slider[0].set_value(18).run(timeout=30)
+    at.slider[1].set_value(30).run(timeout=30)
     at.multiselect[0].select("Centre Back").run(timeout=30)
     at.multiselect[1].select("Australia").run(timeout=30)  # known-empty combo
     assert not at.exception

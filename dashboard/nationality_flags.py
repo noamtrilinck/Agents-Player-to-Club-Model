@@ -8,11 +8,14 @@ Unicode-emoji/local-SVG split -- see the module's Sprint 7.8 history in
 
 No Unicode flag emoji anywhere in this module or in the client-facing application -- every one of
 the 150 values resolves to a local SVG file under `assets/flags/`. No scattered per-country logic
-anywhere else in the app: `results_view.py` calls only `nationality_with_flag_text()` (plain-text
-contexts, e.g. `st.expander`'s label -- cannot render an image at all, see below) and
+anywhere else in the app: callers use `nationality_with_flag_text()` (genuinely plain-text
+contexts, e.g. `st.multiselect` filter options, which cannot render an image at all),
 `nationality_with_flag_html()` (HTML-capable contexts, e.g. a
-`st.markdown(..., unsafe_allow_html=True)` caption). Every country-specific decision lives here,
-in `NATIONALITY_REPRESENTATION`, and nowhere else.
+`st.markdown(..., unsafe_allow_html=True)` caption), or `get_flag_markdown()` (Post-Deployment
+Improvement Sprint V2 round 2 -- `st.expander` labels specifically, which Streamlit documents as
+supporting GitHub-flavored Markdown Images despite not being a general HTML context; see that
+function's own docstring). Every country-specific decision lives here, in
+`NATIONALITY_REPRESENTATION`, and nowhere else.
 
 ## Two asset sources, one consistent rendering system
 
@@ -32,17 +35,24 @@ Both sources render through the exact same container (`get_flag_html`): fixed ma
 ratio, consistent vertical alignment and spacing before the country/nationality name -- one visual
 system, regardless of which of the two sources a given flag came from.
 
-## Two rendering contexts (a structural Streamlit constraint, not a mapping gap)
+## Three rendering contexts (structural Streamlit constraints, not a mapping gap)
 
-`st.expander`'s label, and native Streamlit widgets like `st.multiselect` filter options, render
-plain text only -- there is no way to show an `<img>` there. Rather than fake something in or
-degrade the HTML-capable contexts to match:
+Native Streamlit widgets like `st.multiselect` filter options render plain text only -- there is
+no way to show an `<img>` there:
   - `nationality_with_flag_text()` -- plain country/nationality name, NO flag prefix, for every one
     of the 150 values (Unicode is retired entirely, so there is no plain-text-safe flag left to
     show anywhere -- this is a deliberate, documented consequence of "one consistent system", not
     an oversight).
   - `nationality_with_flag_html()` -- the real local SVG flag + the name, for every one of the 150
-    values, used everywhere the rendering context can actually display an image.
+    values, used everywhere the rendering context can actually display raw HTML
+    (`unsafe_allow_html=True`).
+  - `get_flag_markdown()` -- a `![alt](data-uri)` Markdown image, for `st.expander` labels
+    specifically. Discovered (2026-08-24), not assumed: this Streamlit version's own documented
+    label contract supports Markdown Images (rendered inline, icon-sized) even though the label is
+    not a general HTML context -- confirmed directly via AppTest before relying on it. Previously
+    this project rendered the flag in a separate Streamlit column beside the expander instead,
+    because the label was believed to be strictly plain-text; that produced a flag visually
+    disconnected from the row it described, which this fixes.
 
 ## The six hand-sourced cases (preserved unchanged from Sprint 7.8 -- see that lock doc for the
 ## full research trail; summarized here for locality)
@@ -195,3 +205,24 @@ def nationality_with_flag_html(nationality: str) -> str:
     flag_html = get_flag_html(nationality)
     safe_name = _html.escape(nationality)
     return f"{flag_html} {safe_name}" if flag_html else safe_name
+
+
+def get_flag_markdown(nationality: str) -> str:
+    """Post-Deployment Improvement Sprint V2 (round 2), Part 2/5: a GitHub-flavored-Markdown
+    `![alt](data-uri)` image, for the ONE context that is neither the plain-text-only case
+    (`get_flag_text`) nor a `st.markdown(unsafe_allow_html=True)` HTML context
+    (`get_flag_html`) -- an `st.expander` LABEL, which Streamlit documents as supporting Markdown
+    Images specifically (rendered inline, icon-sized) even though it is not HTML-capable.
+    Reuses the exact same local SVG data URI as `get_flag_html` (`_svg_data_uri` /
+    `NATIONALITY_REPRESENTATION`) -- no second flag mapping, no re-encoding.
+
+    Deliberately does NOT HTML-escape the alt text (`_html.escape`) -- this is Markdown, not HTML,
+    and none of the 151 known nationality/country values contains a `[`, `]`, `(`, `)`, or `|`
+    character that would need Markdown-escaping (verified directly against
+    NATIONALITY_REPRESENTATION's own keys) -- the `|` restriction matters here specifically because
+    callers use `|` as their own field delimiter around this string (see results_view.py)."""
+    filename = NATIONALITY_REPRESENTATION.get(nationality)
+    if not filename:
+        return ""
+    uri = _svg_data_uri(filename)
+    return f"![{nationality}]({uri})"

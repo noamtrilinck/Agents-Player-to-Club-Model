@@ -34,7 +34,7 @@ import json
 
 import pandas as pd
 
-from nationality_flags import get_flag_html, nationality_with_flag_html, nationality_with_flag_text
+from nationality_flags import get_flag_html, get_flag_markdown, nationality_with_flag_html
 
 AO_CLIENT_LABEL = "Additional Match"
 
@@ -189,21 +189,29 @@ def render_player_results(results: list[dict]) -> None:
 
     for player in results:
         pid = player["player_id"]
-        # st.expander's label is plain text -- cannot render the flag image inline (see
-        # nationality_flags.py) -- so the label text itself is unchanged (same format existing
-        # tests parse). The flag is instead rendered in a slim column beside the expander, so it
-        # is actually visible in the default, COLLAPSED multi-player search result row (Part 10:
-        # player-level collapsing preserved for large agency searches).
-        nat_text = nationality_with_flag_text(player["nationality"])
-        summary = f"{player['player_name']} — {player['age']} | {player['position']} | " \
-                   f"{nat_text} | {player['current_club']}"
-        flag_col, expander_col = st.columns([0.035, 0.965])
-        with flag_col:
-            st.markdown(f'<div style="padding-top:0.85rem;">{get_flag_html(player["nationality"])}</div>',
-                        unsafe_allow_html=True)
-        with expander_col:
-            expander_ctx = st.expander(summary, expanded=len(results) == 1)
-        with expander_ctx:
+        # Post-Deployment Improvement Sprint V2 (round 2), Part 2/5: the previous fix rendered the
+        # nationality flag in a slim Streamlit COLUMN beside the expander, because st.expander's
+        # label was assumed to be plain-text-only. It is not: this Streamlit version's own
+        # documented label contract explicitly supports GitHub-flavored Markdown IMAGES (rendered
+        # inline, icon-sized) alongside plain text -- see nationality_flags.get_flag_markdown()'s
+        # docstring. So the flag now lives INSIDE the collapsed row's own text, immediately before
+        # the fact it represents, exactly like everywhere else in this app -- not a separate
+        # column, no floating element to the row's left. st.expander itself is kept unchanged
+        # (still the same widget, same collapsing/performance/state-preservation behavior); only
+        # the label CONTENT changed.
+        nat_md = get_flag_markdown(player["nationality"])
+        nat_field = f'{nat_md} {player["nationality"]}' if nat_md else (player["nationality"] or "")
+        league = player.get("current_league")
+        if league:
+            league_country = player.get("current_league_country")
+            league_md = get_flag_markdown(league_country) if league_country else ""
+            league_field = f'{league_md} {league}' if league_md else str(league)
+            summary = (f"{player['player_name']} — {player['age']} | {player['position']} | "
+                       f"{nat_field} | {player['current_club']} | {league_field}")
+        else:
+            summary = (f"{player['player_name']} — {player['age']} | {player['position']} | "
+                       f"{nat_field} | {player['current_club']}")
+        with st.expander(summary, expanded=len(results) == 1):
             st.markdown(f"### {player['player_name']}")
             nat_html = nationality_with_flag_html(player["nationality"])
             club_line = f'{_html.escape(player["current_club"])}'

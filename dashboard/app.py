@@ -147,8 +147,33 @@ def main():
         st.markdown('<div class="pdf-controlbar-label" style="margin-top:10px;">Age</div>', unsafe_allow_html=True)
         lo, hi = sel.age_bounds(base_pool)
         if lo < hi:
-            age_range = st.slider("Age", min_value=lo, max_value=hi, value=(lo, hi),
-                                   label_visibility="collapsed")
+            # Post-Deployment Improvement Sprint V2 (round 2), Part 1: the previous fix
+            # (direction:ltr) corrected the visual track/thumb POSITIONS of the native two-handle
+            # range slider, but not the per-thumb VALUE LABEL floating above each handle -- traced
+            # directly in Streamlit's own bundled frontend (Slider.*.js): the component's RTL/LTR
+            # state comes from react-aria's useLocale() hook, which Streamlit's top-level app seeds
+            # ONCE from `window.navigator.language` (the browser/OS locale) -- a JS-level context,
+            # never re-derived from CSS `direction`, so no CSS rule (however precisely scoped) can
+            # reach it. The SAME direction flag also governs the drag handler's cursor-position-to-
+            # value math for a MULTI-thumb slider, which is a real, not just cosmetic, risk: the
+            # visually-left handle could genuinely be bound to the MAX value internally, not just
+            # mislabeled. Rather than patch a single symptom again (or add a JS workaround this
+            # sprint explicitly asked to avoid), the two-thumb slider is replaced with two
+            # INDEPENDENT single-value sliders -- a single-value slider has no thumb-index to
+            # mismap in the first place, so this whole bug class cannot occur, in any locale.
+            # `age_range` is always taken as (min, max) of whatever the two sliders hold, so
+            # filtering is correct even if a client somehow drags Min above Max.
+            col_min_age, col_max_age = st.columns(2)
+            with col_min_age:
+                st.markdown('<div class="pdf-controlbar-label" style="margin-top:0;">Min</div>', unsafe_allow_html=True)
+                min_age_val = st.slider("Minimum age", min_value=lo, max_value=hi, value=lo,
+                                         key="min_age_widget", label_visibility="collapsed")
+            with col_max_age:
+                st.markdown('<div class="pdf-controlbar-label" style="margin-top:0;">Max</div>', unsafe_allow_html=True)
+                max_age_val = st.slider("Maximum age", min_value=lo, max_value=hi, value=hi,
+                                         key="max_age_widget", label_visibility="collapsed")
+            age_range = (min(min_age_val, max_age_val), max(min_age_val, max_age_val))
+            st.caption(f"Age: {age_range[0]}–{age_range[1]}")
         else:
             st.write(f"Age: **{lo}** (only one age present)")
             age_range = (lo, hi)

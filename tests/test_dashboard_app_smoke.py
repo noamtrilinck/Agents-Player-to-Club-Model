@@ -6,7 +6,10 @@ Age) at once, with no st.stop() gate on agency. Widget order/index in the redesi
   selectbox[0]      = Agency
   text_input[0]     = Player Name
   multiselect[0..3] = Position, Nationality, League, Club
-  slider[0]         = Age
+  slider[0]         = Minimum age (round 2, Post-Deployment Improvement Sprint V2: replaced the
+                       native two-handle range slider with two independent single-value sliders --
+                       see app.py's inline comment for the root-cause reason)
+  slider[1]         = Maximum age
   radio[0]          = selection mode
   multiselect[4]    = specific-players picker (only present in "Select specific players" mode)
   button[0]         = Find Recommendations
@@ -28,7 +31,6 @@ AppTest = streamlit_testing.AppTest
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "dashboard"))
-from nationality_flags import nationality_with_flag_text  # noqa: E402
 
 APP_PATH = ROOT / "dashboard" / "app.py"
 PLAYERS_CSV = ROOT / "production" / "recommendation_engine" / "results" / "players.csv"
@@ -40,8 +42,15 @@ pytestmark = [
 
 LARGEST_AGENCY = "THE·TEAM"  # 248 players as of the Sprint 7.1 audit -- largest agency
 
-_LABEL_RE = re.compile(r"^(?P<name>.+) — (?P<age>\d+) \| (?P<position>[^|]+) \| "
-                        r"(?P<nationality>[^|]+) \| (?P<club>.+)$")
+# Post-Deployment Improvement Sprint V2 (round 2): the expander label is now
+# "{name} — {age} | {position} | {nat_flag_md} {nationality} | {club} | {league_flag_md} {league}"
+# (the trailing league field only present when the player has one) -- a flag field is a Markdown
+# image "![alt](data:image/svg+xml;base64,...)" immediately followed by the plain name (see
+# results_view.render_player_results() and nationality_flags.get_flag_markdown()). Base64 never
+# contains a literal " | ", so splitting the whole label on that literal substring is exact and
+# safe -- no regex needed.
+_NAME_AGE_RE = re.compile(r"^(?P<name>.+) — (?P<age>\d+)$")
+_FLAG_FIELD_RE = re.compile(r"^!\[[^\]]*\]\([^)]*\) (?P<text>.+)$")
 
 
 def _fresh():
@@ -54,15 +63,27 @@ def _player_expanders(at):
     return [e for e in at.expander if "debug" not in e.label.lower()]
 
 
+def _strip_flag_markdown(field: str) -> str:
+    """"![England](data:...) England" -> "England". Returns the field unchanged if it never had
+    a flag prefix in the first place (defensive, not expected against real production data)."""
+    m = _FLAG_FIELD_RE.match(field)
+    return m.group("text") if m else field
+
+
 def _parse_labels(at):
     rows = []
     for e in _player_expanders(at):
-        m = _LABEL_RE.match(e.label)
-        assert m, f"unexpected expander label shape: {e.label!r}"
-        rows.append({"name": m.group("name"), "age": int(m.group("age")),
-                     "position": m.group("position").strip(),
-                     "nationality": m.group("nationality").strip(),
-                     "club": m.group("club").strip()})
+        parts = e.label.split(" | ")
+        assert len(parts) in (4, 5), f"unexpected expander label shape: {e.label!r}"
+        name_age = _NAME_AGE_RE.match(parts[0])
+        assert name_age, f"unexpected name/age shape: {parts[0]!r}"
+        row = {"name": name_age.group("name"), "age": int(name_age.group("age")),
+               "position": parts[1].strip(),
+               "nationality": _strip_flag_markdown(parts[2]).strip(),
+               "club": parts[3].strip()}
+        if len(parts) == 5:
+            row["league"] = _strip_flag_markdown(parts[4]).strip()
+        rows.append(row)
     return rows
 
 
@@ -101,7 +122,8 @@ def test_filter_by_position_age_league_no_agency():
     league_options = at.multiselect[2].options
     assert league_options, "no league options available with no agency chosen"
     at.multiselect[2].select(league_options[0]).run(timeout=30)
-    at.slider[0].set_range(20, 24).run(timeout=30)
+    at.slider[0].set_value(20).run(timeout=30)
+    at.slider[1].set_value(24).run(timeout=30)
     at.button[0].click().run(timeout=30)
     assert not at.exception
     rows = _parse_labels(at)
@@ -161,7 +183,8 @@ def test_workflow_c_one_agency_all_players():
 def test_workflow_d_agency_age_position_filter():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
-    at.slider[0].set_range(20, 25).run(timeout=30)
+    at.slider[0].set_value(20).run(timeout=30)
+    at.slider[1].set_value(25).run(timeout=30)
     at.multiselect[0].select("Centre Back").run(timeout=30)
     at.button[0].click().run(timeout=30)
     assert not at.exception
@@ -174,37 +197,45 @@ def test_workflow_d_agency_age_position_filter():
 def test_workflow_e_agency_age_position_nationality_filter():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
-    at.slider[0].set_range(18, 30).run(timeout=30)
+    at.slider[0].set_value(18).run(timeout=30)
+    at.slider[1].set_value(30).run(timeout=30)
     at.multiselect[0].select("Centre Back").run(timeout=30)
     at.multiselect[1].select("England").run(timeout=30)
     at.button[0].click().run(timeout=30)
     assert not at.exception
     rows = _parse_labels(at)
     assert len(rows) > 0
-    assert all(r["nationality"] == nationality_with_flag_text("England") for r in rows)
+    assert all(r["nationality"] == "England" for r in rows)
     assert all(r["position"] == "Centre Back" for r in rows)
     assert all(18 <= r["age"] <= 30 for r in rows)
 
 
-def test_workflow_nationality_edge_case_no_flag_renders_plain_text():
-    """Regression: a player whose nationality is one of the two deliberate text-only cases
-    (Northern Ireland or Kosovo) must render with the plain country name and no stray flag glyph/
-    tofu box -- real production players, not synthetic data."""
+def test_workflow_nationality_edge_case_hand_sourced_flag_renders_correctly():
+    """Regression: a player whose nationality is one of the 6 hand-sourced cases (here, Northern
+    Ireland) must still render with its own real flag in the collapsed row -- Post-Deployment
+    Improvement Sprint V2 round 2's Markdown-image label removed the old "expander labels are
+    plain-text-only" constraint entirely, so ALL 151 known nationalities (not just the ones with a
+    plain-text-safe Unicode glyph, which no longer exist anywhere in this app) now get a flag in
+    the collapsed row -- real production players, not synthetic data."""
     at = _fresh()
     at.selectbox[0].select("14 Sports Management").run(timeout=30)  # has a Northern Ireland player
     at.button[0].click().run(timeout=30)
     assert not at.exception
+    player_expanders = _player_expanders(at)
+    ni_expanders = [e for e in player_expanders if "Northern Ireland" in e.label]
+    assert len(ni_expanders) > 0
+    for e in ni_expanders:
+        assert "![Northern Ireland](data:image/svg+xml;base64," in e.label
     rows = _parse_labels(at)
     ni_rows = [r for r in rows if r["nationality"] == "Northern Ireland"]
-    assert len(ni_rows) > 0
-    assert all(r["nationality"] == nationality_with_flag_text("Northern Ireland") for r in ni_rows)
+    assert len(ni_rows) == len(ni_expanders)
 
 
 def test_workflow_f_unrepresented_population_with_filter():
     at = _fresh()
     at.selectbox[0].select("Players without an agency").run(timeout=30)
     assert not at.exception
-    at.slider[0].set_range(*at.slider[0].value).run(timeout=30)
+    at.slider[0].set_value(at.slider[0].value).run(timeout=30)  # no-op re-set, exercises the widget
     at.button[0].click().run(timeout=30)
     assert not at.exception
     rows = _parse_labels(at)
@@ -214,7 +245,8 @@ def test_workflow_f_unrepresented_population_with_filter():
 def test_workflow_g_zero_result_filter_combination_no_crash():
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
-    at.slider[0].set_range(18, 30).run(timeout=30)
+    at.slider[0].set_value(18).run(timeout=30)
+    at.slider[1].set_value(30).run(timeout=30)
     at.multiselect[0].select("Centre Back").run(timeout=30)
     at.multiselect[1].select("Australia").run(timeout=30)  # known-empty combo for this agency
     assert not at.exception
@@ -246,3 +278,90 @@ def test_no_selection_specific_mode_shows_caption_not_error():
     at.radio[0].set_value("Select specific players").run(timeout=30)
     assert not at.exception
     assert any("Select at least one player" in c.value for c in at.caption)
+
+
+# =============================================================================================
+# Post-Deployment Improvement Sprint V2 (round 2) -- Age slider (min-left/max-right,
+# non-inverted interaction/filtering) and collapsed-row flags (nationality + independent
+# current-league flag, embedded in the row itself, not a floating column).
+# =============================================================================================
+
+def test_age_min_slider_is_index_0_and_max_is_index_1():
+    """Two independent single-value sliders replaced the native two-handle range slider (root-
+    cause fix, see app.py) -- slider[0] must be Min, slider[1] Max, and their combined bounds
+    must match the real population's age range."""
+    at = _fresh()
+    at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
+    assert not at.exception
+    assert len(at.slider) == 2
+    lo, hi = at.slider[0].min, at.slider[0].max
+    assert at.slider[1].min == lo and at.slider[1].max == hi
+    assert at.slider[0].value == lo  # defaults to the population minimum
+    assert at.slider[1].value == hi  # defaults to the population maximum
+
+
+def test_age_slider_min_and_max_filter_correctly_independent_of_which_moved():
+    """min_age <= player_age <= max_age must hold regardless of which of the two sliders was
+    actually moved -- confirms no inverted assignment (moving what LOOKS like "Min" must not
+    silently change the maximum, or vice versa)."""
+    at = _fresh()
+    at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
+    at.slider[0].set_value(22).run(timeout=30)  # move only the Min slider
+    at.button[0].click().run(timeout=30)
+    assert not at.exception
+    rows = _parse_labels(at)
+    assert len(rows) > 0
+    assert all(r["age"] >= 22 for r in rows), "moving slider[0] (Min) must raise the floor, not the ceiling"
+
+    at2 = _fresh()
+    at2.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
+    at2.slider[1].set_value(24).run(timeout=30)  # move only the Max slider
+    at2.button[0].click().run(timeout=30)
+    assert not at2.exception
+    rows2 = _parse_labels(at2)
+    assert len(rows2) > 0
+    assert all(r["age"] <= 24 for r in rows2), "moving slider[1] (Max) must lower the ceiling, not the floor"
+
+
+def test_age_caption_shows_min_dash_max_in_correct_order():
+    at = _fresh()
+    at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
+    at.slider[0].set_value(21).run(timeout=30)
+    at.slider[1].set_value(29).run(timeout=30)
+    assert not at.exception
+    assert any(c.value == "Age: 21–29" for c in at.caption)
+
+
+def test_collapsed_row_nationality_and_league_flags_independently_resolved():
+    """Part 9's specific concern: a player whose nationality country != current-league country
+    must show TWO DIFFERENT flags, each correctly representing its own concept -- the league flag
+    must never be derived from nationality. Mohamed Toure (Guinea, playing in Finland's
+    Veikkausliiga) is real production data, not synthetic."""
+    at = _fresh()
+    at.text_input[0].set_value("Mohamed").run(timeout=30)
+    at.button[0].click().run(timeout=30)
+    assert not at.exception
+    # two different real players happen to share this exact name -- disambiguate by nationality
+    # (Guinea), the fact under test, rather than assuming the name alone is unique
+    toure = [e for e in _player_expanders(at)
+             if e.label.startswith("Mohamed Tour") and "Guinea" in e.label]
+    assert len(toure) == 1
+    label = toure[0].label
+    parts = label.split(" | ")
+    assert len(parts) == 5
+    assert parts[2].startswith("![Guinea](")  # nationality flag
+    assert parts[4].startswith("![Finland](")  # league-country flag, independently resolved
+    assert "Veikkausliiga" in parts[4]
+    # the two flag images must be genuinely different SVGs, not the same one reused
+    guinea_uri = parts[2].split("](")[1].split(")")[0]
+    finland_uri = parts[4].split("](")[1].split(")")[0]
+    assert guinea_uri != finland_uri
+
+
+def test_collapsed_row_no_unicode_flag_emoji():
+    at = _fresh()
+    at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
+    at.button[0].click().run(timeout=30)
+    assert not at.exception
+    for e in _player_expanders(at)[:20]:
+        assert not any(0x1F1E6 <= ord(c) <= 0x1F1FF for c in e.label)

@@ -98,36 +98,44 @@ def test_large_agency_result_view_no_exception():
 
 
 def test_nationality_flag_visible_in_collapsed_multi_player_result_row():
-    """Regression guard: previously the player's nationality flag lived only inside the expander
-    BODY, invisible until a row was individually clicked open -- for any search returning more
-    than one player (expanded=False for all), the default/collapsed result row showed plain text
-    only. The flag now renders in a slim column beside the (still text-only) expander, so it is
-    visible in the actual default search result row, not just the detail view."""
+    """Regression guard: the player's nationality flag must be visible in the actual default,
+    COLLAPSED search result row -- not just after a row is individually clicked open. Post-
+    Deployment Improvement Sprint V2 (round 2): the flag no longer lives in a separate Streamlit
+    column beside the expander (that produced a floating flag disconnected from the row's own
+    text) -- it is now a Markdown image embedded directly in the expander's own LABEL, which
+    Streamlit's expander explicitly documents as supporting (see nationality_flags.
+    get_flag_markdown()). Every player's label must therefore contain a real flag image reference,
+    regardless of collapse state."""
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
     at.button[0].click().run(timeout=30)
     assert not at.exception
-    # one flag-column markdown block per player, regardless of collapse state
-    flag_blocks = [m.value for m in at.markdown if "padding-top:0.85rem" in m.value]
-    assert len(flag_blocks) == 248
-    assert all("<img" in b and "data:image/svg+xml;base64," in b for b in flag_blocks)
+    player_expanders = [e for e in at.expander if "debug" not in e.label.lower()]
+    assert len(player_expanders) == 248
+    assert all("![" in e.label and "](data:image/svg+xml;base64," in e.label for e in player_expanders)
 
 
-def test_expander_label_text_unchanged_by_the_flag_column_addition():
-    """The expander's own plain-text label must still match the exact format
-    test_dashboard_app_smoke.py's _parse_labels() regex depends on -- the flag was added beside
-    the expander, not by altering its label."""
+def test_expander_label_has_flags_in_line_not_a_separate_column():
+    """The label now carries BOTH flags (nationality, current league) as Markdown images inline
+    with the rest of the text -- not a separate floating column element to the row's left (Part
+    2 of the round-2 fix). Confirmed here by parsing the label into its 5 pipe-delimited fields
+    and checking each flag-bearing field's shape directly."""
     at = _fresh()
     at.selectbox[0].select(LARGEST_AGENCY).run(timeout=30)
     at.button[0].click().run(timeout=30)
     assert not at.exception
-    import re
-    label_re = re.compile(r"^(?P<name>.+) — (?P<age>\d+) \| (?P<position>[^|]+) \| "
-                           r"(?P<nationality>[^|]+) \| (?P<club>.+)$")
     player_expanders = [e for e in at.expander if "debug" not in e.label.lower()]
     assert len(player_expanders) == 248
     for e in player_expanders[:5]:
-        assert label_re.match(e.label), f"unexpected label shape: {e.label!r}"
+        parts = e.label.split(" | ")
+        assert len(parts) in (4, 5), f"unexpected label shape: {e.label!r}"
+        nationality_field = parts[2]
+        assert nationality_field.startswith("!["), f"nationality field has no leading flag: {nationality_field!r}"
+        if len(parts) == 5:
+            league_field = parts[4]
+            assert league_field.startswith("!["), f"league field has no leading flag: {league_field!r}"
+    # no leftover separate flag-column markdown block (the old, now-removed architecture)
+    assert not any("padding-top:0.85rem" in m.value for m in at.markdown)
 
 
 def test_debug_table_hidden_from_normal_client_facing_session():

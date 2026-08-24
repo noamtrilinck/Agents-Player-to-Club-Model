@@ -290,3 +290,55 @@ def test_real_data_all_six_edge_cases_present_in_population(real_players):
     present = set(real_players["nationality_display"].dropna().unique())
     for nat in nf.HAND_SOURCED_NATIONALITIES:
         assert nat in present, f"{nat} unexpectedly absent from the real production population"
+
+
+# =============================================================================================
+# get_flag_markdown (Post-Deployment Improvement Sprint V2 round 2) -- st.expander label context
+# =============================================================================================
+
+def test_get_flag_markdown_shape():
+    md = nf.get_flag_markdown("England")
+    assert md.startswith("![England](data:image/svg+xml;base64,")
+    assert md.endswith(")")
+
+
+def test_get_flag_markdown_reuses_the_same_data_uri_as_get_flag_html():
+    """Not a second flag mapping/encoding -- the exact same bytes as the HTML `<img src>`."""
+    md = nf.get_flag_markdown("Brazil")
+    html_result = nf.get_flag_html("Brazil")
+    uri_from_md = md.split("](", 1)[1].rstrip(")")
+    assert uri_from_md in html_result
+
+
+def test_get_flag_markdown_unknown_value_returns_empty_string():
+    assert nf.get_flag_markdown("Not A Real Country") == ""
+    assert nf.get_flag_markdown("") == ""
+    assert nf.get_flag_markdown(None) == ""
+
+
+def test_get_flag_markdown_works_for_all_six_hand_sourced_cases():
+    for nat in nf.HAND_SOURCED_NATIONALITIES:
+        md = nf.get_flag_markdown(nat)
+        assert md.startswith(f"![{nat}](data:image/svg+xml;base64,"), \
+            f"{nat} did not produce a valid flag markdown image"
+
+
+def test_real_data_every_nationality_produces_valid_flag_markdown(real_players):
+    unique_vals = real_players["nationality_display"].dropna().unique()
+    for v in unique_vals:
+        md = nf.get_flag_markdown(v)
+        assert md, f"{v} produced no flag markdown"
+        assert md.startswith("![") and "](data:image/svg+xml;base64," in md
+
+
+def test_real_data_every_league_country_produces_valid_flag_markdown(real_players):
+    """Part 6/9: the current-league flag (current_league_country) must independently resolve --
+    checked directly against the real column added for this feature."""
+    if "current_league_country" not in real_players.columns:
+        import pytest
+        pytest.skip("current_league_country not built yet")
+    unique_vals = real_players["current_league_country"].dropna().unique()
+    assert len(unique_vals) > 0
+    for v in unique_vals:
+        md = nf.get_flag_markdown(v)
+        assert md, f"{v} produced no flag markdown"
