@@ -1,0 +1,29 @@
+# Post-Deployment Improvement Sprint V2 (round 4) -- root-caused fix for the "search/filter
+# inputs aren't white" issue. Confirmed empirically (Playwright, real computed styles, not
+# assumed): st.selectbox / st.multiselect / st.text_input paint their own visible background
+# directly from the active theme's `secondaryBackgroundColor` token -- this project never shipped
+# a .streamlit/config.toml, so Streamlit fell back to its built-in default theme, whose
+# secondaryBackgroundColor is a pale grey (#F0F2F6), which is exactly the grey the client kept
+# reporting. No CSS override can substitute for this: the two prior rounds' descendant-selector
+# CSS additionally never matched anything in the currently pinned Streamlit version (1.60 renamed
+# away the `stVerticalBlockBorderWrapper` testid those rules were scoped under -- confirmed via
+# both projects' own requirements.txt pinning the identical `streamlit>=1.60` / "Tested against
+# 1.60.0"), so it was doubly ineffective.
+#
+# This file is copied verbatim from National Team Selection/dashboard/.streamlit/config.toml --
+# NTS's own proven white-input mechanism turns out to be exactly this theme file, not any CSS
+# rule of its own (NTS's equivalent CSS never matched either, for the same testid-rename reason;
+# it visually got away with it because the search inputs were white ANYWAY, straight from this
+# theme token). Reusing it here, rather than approximating it in CSS, is what actually makes
+# every native selectbox/multiselect/text-input surface resolve to a real rgb(255,255,255)
+# background -- verified directly against the rendered DOM, not assumed from the stylesheet.
+[theme]
+base = "light"
+primaryColor = "#7A2A36"
+backgroundColor = "#F1F4EE"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#171F1A"
+font = "sans serif"
+
+[browser]
+gatherUsageStats = false

@@ -89,7 +89,7 @@ def main():
     # blending into the page background. The filter ARCHITECTURE inside is unchanged: same fields,
     # same keys, same order, same behavior -- only the visual container and field-label styling
     # (native widget labels -> pdf-controlbar-label divs, same convention NTS uses) changed.
-    with st.container(border=True):
+    with st.container(border=True, key="find_players_panel"):
         st.markdown('<div class="pdf-controlbar-label">Agency</div>', unsafe_allow_html=True)
         agency_options = [AGENCY_PLACEHOLDER, UNREPRESENTED_LABEL] + sel.list_agencies(players)
         choice = st.selectbox("Agency", agency_options, index=0, label_visibility="collapsed",

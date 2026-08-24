@@ -1,12 +1,21 @@
 """
-Post-Deployment Improvement Sprint V2 (round 3) -- CSS-presence regression guards for the three
-targeted fixes in this pass (collapsed-row line wrap, white input surfaces, Age slider direction).
+Post-Deployment Improvement Sprint V2 (round 3, updated round 4) -- CSS-presence regression guards
+for the targeted UI fixes across these passes (collapsed-row line wrap, the search panel's off-
+white background, Age slider direction).
 
 These can only confirm the RULE is present in the generated stylesheet, not the actual rendered
 browser behavior (AppTest does not execute CSS layout) -- real visual verification of the rendered
-app is separate, see the sprint's own final report. Still a genuine regression guard: if any of
-these rules is accidentally removed or the selector drifts, this fails immediately rather than
-silently shipping the bug again.
+app is separate, see each round's own final report (round 4's used Playwright against a live local
+instance to read actual computed styles, since round 3's string-presence-only tests here passed
+while the real DOM was still wrong -- the round-3 selectors were scoped under a Streamlit testid,
+`stVerticalBlockBorderWrapper`, that no longer exists in the pinned Streamlit version, so they
+matched nothing in the browser despite being textually present and asserted-present here). Round 4
+retargeted the container rule to the container's own `key=` (verified via Playwright to actually
+receive the resulting class) and dropped the white-input CSS rule entirely in favor of
+dashboard/.streamlit/config.toml's `secondaryBackgroundColor` (Streamlit's own theme mechanism,
+copied verbatim from NTS's proven config) -- see styles.py's inline comments and the round-4 final
+report for the full empirical chain. Still a genuine regression guard for what CSS text-presence
+CAN catch: if a rule is accidentally removed or a selector string drifts, this fails immediately.
 """
 import sys
 from pathlib import Path
@@ -35,16 +44,36 @@ def test_expander_label_paragraph_forced_nowrap(css):
 
 
 # =============================================================================================
-# Part 2 -- white input surfaces inside the search/filter panel
+# Part 2 (round 4) -- search panel container: retargeted from the dead stVerticalBlockBorderWrapper
+# testid to the container's own key=, and white input surfaces now come from the theme config
+# (dashboard/.streamlit/config.toml), not a CSS override -- see styles.py's inline comment and the
+# round-4 report for the empirical chain (Playwright-verified against the real rendered DOM).
 # =============================================================================================
 
-def test_select_controls_forced_white_background(css):
-    assert 'div[data-testid="stVerticalBlockBorderWrapper"] div[data-baseweb="select"]' in css
-    assert "background-color: var(--surface) !important" in css
+def test_search_panel_container_targets_stable_key_selector(css):
+    assert 'div[class*="st-key-find_players_panel"]' in css
+    assert "background: var(--surface-2)" in css
+    # the dead round-2/3 testid must not still be the only selector in play
+    assert 'div[data-testid="stVerticalBlockBorderWrapper"]' not in css
 
 
-def test_text_input_root_forced_white_background(css):
+def test_text_input_root_still_styled_for_border_and_radius(css):
+    # background-color is intentionally NOT set here any more (round 4) -- it comes from the
+    # secondaryBackgroundColor theme token in dashboard/.streamlit/config.toml instead.
     assert '[data-testid="stTextInputRootElement"]' in css
+    assert "border-radius: 2px !important" in css
+
+
+def test_streamlit_theme_config_sets_white_secondary_background():
+    import tomllib
+    config_path = ROOT / "dashboard" / ".streamlit" / "config.toml"
+    assert config_path.exists(), "dashboard/.streamlit/config.toml is required for white input surfaces"
+    config = tomllib.loads(config_path.read_text(encoding="utf-8"))
+    theme = config.get("theme", {})
+    assert theme.get("secondaryBackgroundColor", "").upper() == "#FFFFFF"
+    # must match NTS's own proven palette, not merely be "some" white
+    assert theme.get("backgroundColor") == "#F1F4EE"
+    assert theme.get("primaryColor") == "#7A2A36"
 
 
 # =============================================================================================

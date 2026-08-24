@@ -110,29 +110,31 @@ def build_css():
     letter-spacing:.08em; color:var(--ink-faint); margin-bottom:4px; }}
 
   /* ---- Search/filter control bar (Part A.2): one visible bordered surface, same treatment as
-     NTS's own control bar (div[data-testid="stVerticalBlockBorderWrapper"] is what Streamlit
-     wraps an st.container(border=True) in) -- so the whole discovery area reads as one grouped
-     component instead of blending into --bg. Individual controls get an explicit white surface
-     (Part A.2's "white/light control surfaces") layered on top of that panel, for clear contrast
-     against BOTH the page background and the panel's own tint. ---- */
-  div[data-testid="stVerticalBlockBorderWrapper"] {{ background: var(--surface-2);
+     NTS's own control bar. Round 4 root-caused this against the REAL rendered DOM (Playwright +
+     computed styles, not just the stylesheet text): the old wrapper testid this rule and the
+     round-3 white-input rule were both scoped under does not exist anywhere in the currently
+     pinned Streamlit version (1.60; confirmed absent from the bundled frontend JS entirely). It
+     was renamed away in a Streamlit release: a bordered container's own border/background now
+     lands directly on the block's own vertical-block div, with no separate wrapper div at all --
+     so this whole rule, and the round-3 fix layered under it, had silently matched nothing since
+     before round 2 even started. Retargeted to the container's own `key=` (Streamlit's documented,
+     version-stable styling hook -- already used successfully elsewhere in this file for the agency
+     selectbox), confirmed via Playwright to actually receive this class. */
+  div[class*="st-key-find_players_panel"] {{ background: var(--surface-2);
     border: 1px solid var(--border) !important; border-radius: 2px !important; padding: 4px; }}
   .pdf-controlbar-label {{ font-family: var(--font-mono); font-size:10px; text-transform:uppercase;
     letter-spacing:.08em; color:var(--ink-faint); margin-bottom:3px; margin-top:2px; }}
-  /* Part 2 (round 3): white input surfaces -- root-caused against Streamlit's own bundled
-     Selectbox.js/Multiselect.js/TextInput.js, not guessed: every one of these controls paints its
-     own background via the active theme's `secondaryBg` token (a pale grey in the default theme),
-     NOT the ancestor panel's own background -- so the earlier fix (targeting the SELECT's direct
-     child div, and the TEXT INPUT's inner <input> element) never reached the actual color-bearing
-     box. The real elements are: the `[data-baseweb="select"]` control itself (BaseWeb paints ITS
-     OWN background, not only a nested child -- a descendant selector, not a direct-child `>`, so
-     it's caught regardless of exact internal nesting), and `[data-testid="stTextInputRootElement"]`
-     (confirmed via TextInput.js -- the actual `secondaryBg`-painted wrapper, not the bare <input>,
-     which is transparent over it). */
-  div[data-testid="stVerticalBlockBorderWrapper"] div[data-baseweb="select"],
-  div[data-testid="stVerticalBlockBorderWrapper"] div[data-baseweb="select"] div,
-  div[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stTextInputRootElement"] {{
-    background-color: var(--surface) !important; }}
+  /* White input surfaces: round 3 tried to paint these via CSS on the (dead, see above) wrapper
+     selector -- round 4 root-caused that CSS was never the right tool here at all. Every one of
+     these controls (`[data-baseweb="select"]`, `[data-testid="stTextInputRootElement"]`) paints its
+     own background directly from the active theme's `secondaryBackgroundColor` token, confirmed via
+     Playwright's real computed styles: with no `.streamlit/config.toml` in this project, that token
+     fell back to Streamlit's own default (a pale grey), exactly the grey being reported,
+     independent of any CSS `!important` rule (which was also never matching, per above). Fixed at
+     the source instead: dashboard/.streamlit/config.toml now sets secondaryBackgroundColor to
+     #FFFFFF, copied verbatim from NTS's own proven config -- confirmed via Playwright that this
+     alone makes every one of these controls resolve to a real white background, no CSS override
+     needed or present here any more. */
 
   /* ---- Leagues Covered -- identical component to NTS's own (same class shape, pdf- prefix) ---- */
   .pdf-leaguecov-label {{ font-family: var(--font-mono); font-size:12.5px; text-transform:uppercase;
