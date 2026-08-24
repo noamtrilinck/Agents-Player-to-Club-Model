@@ -43,16 +43,17 @@ credentials.json
 Archive/
 
 # --- Research, experiments, intermediate/build outputs (regenerable from production/*/*.py) ---
-production/*/research/
-production/style_compatibility/results/
-production/level_and_opportunity/results/
-production/club_pattern_model/results/
-production/player_evaluation_integration/results/
-production/agent_mapping/results/
-production/scope_and_eligibility/results/
+# `**/results/` (not just `production/*/results/`) because at least one stage
+# (club_pattern_model/system_compatibility_candidate/results/) has a results/ directory nested
+# deeper than one level -- caught the hard way: first push included it, see commit history.
+production/**/research/
+production/**/results/
+!production/recommendation_engine/results/
+!production/recommendation_engine/results/**
 
-# NOTE: production/recommendation_engine/results/ is intentionally NOT ignored above -- it holds
+# NOTE: the two negations above re-include production/recommendation_engine/results/ -- it holds
 # the 4 CSVs the deployed dashboard reads at runtime (players.csv, recommendations.csv,
-# explanations.csv, league_coverage.csv) plus a small (~1KB) build-time stats file. Do not add a
-# blanket production/*/results/ rule without this exception, or the deployed app's own data goes
-# missing from the repo.
+# explanations.csv, league_coverage.csv) plus a small (~1KB) build-time stats file. Both negation
+# lines are required (the directory itself, then its contents) or git won't descend into it. Do
+# not narrow the blanket `production/**/results/` rule without keeping this exception, or the
+# deployed app's own data goes missing from the repo.
