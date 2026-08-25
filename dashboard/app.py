@@ -50,6 +50,21 @@ def _sanitize_multiselect_state(key: str, valid_options: list):
         st.session_state[key] = [v for v in st.session_state[key] if v in valid_set]
 
 
+def _sanitize_number_input_state(key: str, lo: int, hi: int):
+    """Same population-change contract as _sanitize_multiselect_state, for a single numeric filter
+    value (Min Age / Max Age): if a previously-set value has fallen outside the current
+    population's bounds (e.g. the Agency filter narrowed the available age range), clamp it back
+    into range BEFORE the widget is instantiated this run, rather than leaving an impossible
+    filter value active. Leaves an already-in-range value untouched -- this only corrects values
+    the population change itself invalidated, it never resets a still-valid user choice."""
+    if key in st.session_state:
+        val = st.session_state[key]
+        if val < lo:
+            st.session_state[key] = lo
+        elif val > hi:
+            st.session_state[key] = hi
+
+
 def main():
     st.markdown(build_css(), unsafe_allow_html=True)
     st.markdown(f'<div class="pdf-kicker">Player Destination Finder</div>', unsafe_allow_html=True)
@@ -147,29 +162,34 @@ def main():
         st.markdown('<div class="pdf-controlbar-label" style="margin-top:10px;">Age</div>', unsafe_allow_html=True)
         lo, hi = sel.age_bounds(base_pool)
         if lo < hi:
-            # Post-Deployment Improvement Sprint V2 (round 3): back to ONE native two-handle range
-            # slider, per explicit instruction -- the round-2 two-independent-sliders workaround is
-            # reverted. Root cause (confirmed directly against Streamlit's own bundled frontend JS,
-            # not guessed): the slider's RTL/LTR state comes from react-aria's useLocale() hook,
-            # which Streamlit's own top-level app seeds ONCE from `window.navigator.language` (the
-            # browser's locale) via a React context -- never re-derived from CSS `direction`. A
-            # right-to-left browser locale makes that hook report "rtl", which the slider component
-            # then uses to decide both where each thumb is drawn AND which array index's value goes
-            # in which floating label -- entirely in JS, before any of this app's own CSS/markdown
-            # is even sent to the browser. `direction: ltr` on the app (styles.py) corrects every
-            # ordinary CSS-driven layout on the page; it cannot reach a value computed by a React
-            # hook that never reads CSS at all -- there is no CSS-only path to that JS state, this
-            # was verified by reading the actual compiled component source, not assumed twice over.
-            # The `min-value=<->left, max-value=<->right` semantics is therefore restored the ONLY
-            # way actually available without JavaScript or a different widget: `direction: ltr` stays
-            # applied (styles.py) as the correct, real fix for everything it CAN reach, and the
-            # Age caption below states the true (min, max) tuple app.py itself received from
-            # Streamlit -- a plain confirmation line under the slider, not an overlay replacing any
-            # part of it -- so the actual filtered values are always independently visible even if a
-            # given browser's own locale still affects the native widget's own on-slider label.
-            age_range = st.slider("Age", min_value=lo, max_value=hi, value=(lo, hi),
-                                   label_visibility="collapsed")
-            st.caption(f"Age: {age_range[0]}–{age_range[1]}")
+            # Post-Deployment Improvement Sprint V2 (round 5): the Age range slider is retired
+            # entirely, per explicit instruction, after round 4's root-cause investigation proved
+            # (empirically, across browser locales, with and without every byte of this app's CSS)
+            # that Streamlit's native two-handle slider reverses which handle renders on which side
+            # under an RTL-associated browser locale, driven by react-aria's own JS-level locale
+            # state -- something no CSS rule can reach. Two plain st.number_input controls have no
+            # such failure mode: each is an independent, unambiguous value, so there is nothing for
+            # a browser locale (or anything else) to reverse.
+            age_min_col, age_max_col = st.columns(2)
+            with age_min_col:
+                st.markdown('<div class="pdf-controlbar-label">Min Age</div>', unsafe_allow_html=True)
+                _sanitize_number_input_state("min_age_widget", lo, hi)
+                min_age = st.number_input("Min Age", min_value=lo, max_value=hi, value=lo, step=1,
+                                           key="min_age_widget", label_visibility="collapsed")
+            with age_max_col:
+                st.markdown('<div class="pdf-controlbar-label">Max Age</div>', unsafe_allow_html=True)
+                _sanitize_number_input_state("max_age_widget", lo, hi)
+                max_age = st.number_input("Max Age", min_value=lo, max_value=hi, value=hi, step=1,
+                                           key="max_age_widget", label_visibility="collapsed")
+            age_range = (min_age, max_age)
+            if min_age > max_age:
+                # Part 3: never silently swap the values -- a Min Age above the current Max Age is
+                # left exactly as entered (it naturally yields zero matches downstream, since no age
+                # can satisfy both bounds at once) and is called out here so the reason is obvious
+                # right next to the controls, rather than only surfacing as an unexplained empty
+                # result list further down the page.
+                st.warning(f"Min Age ({min_age}) is greater than Max Age ({max_age}) -- no players "
+                           f"can match. Adjust one of the values above.")
         else:
             st.write(f"Age: **{lo}** (only one age present)")
             age_range = (lo, hi)

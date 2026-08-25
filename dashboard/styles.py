@@ -81,16 +81,6 @@ def build_css():
 
   /* ---- Streamlit chrome: hide default menu/footer, adopt the ground colour + body font ---- */
   #MainMenu, footer, header {{ visibility: hidden; }}
-  /* Root-cause fix for the reversed Age slider (client-reported, 2026-08-24).
-     Streamlit never sets an explicit text direction anywhere in its own markup -- on a browser/OS
-     configured for a right-to-left locale, the UA's automatic direction detection can flip a
-     native two-handle <input type="range"> visually and interactionally (low value's handle drawn
-     on the right, dragging reversed) even though every other left-to-right element on the page
-     looks fine, because direction is decided per-element, not inherited from any single "the page
-     is English" signal. This is an English-language desktop application -- force LTR explicitly,
-     app-wide, rather than special-casing the slider or swapping min/max in Python (which would
-     leave the VISUAL bug in place and only fix the number). */
-  html, body, .stApp {{ direction: ltr !important; }}
   .stApp {{ background: var(--bg); font-family: var(--font-body); color: var(--ink); }}
   .block-container {{ padding-top: 1.5rem; padding-bottom: 3rem; max-width: 1180px; }}
   h1, h2, h3, h4 {{ font-family: var(--font-display) !important; color: var(--ink); }}
@@ -155,15 +145,11 @@ def build_css():
   div[data-baseweb="select"] > div {{ border-radius: 2px !important; border-color: var(--border) !important; font-family: var(--font-body); }}
   [data-testid="stTextInputRootElement"] {{ border-radius: 2px !important; border-color: var(--border) !important; }}
   .stTextInput input {{ font-family: var(--font-body); }}
-  /* direction:ltr on the slider (Part A.1, confirmed root cause in the round-3 investigation --
-     see app.py's inline comment): this reaches every ordinary CSS-driven layout aspect of the
-     component. It does NOT and cannot reach react-aria's own internal locale state (a React
-     context seeded once from window.navigator.language, never re-derived from CSS) -- kept
-     applied anyway because it is still the correct, real fix for the parts of this component that
-     genuinely are CSS-driven, and is harmless where it isn't. Applied to both the slider root and
-     the specific per-thumb value-label element (the one sub-part most likely to be positioned via
-     a separate, direction-aware mechanism from the track itself). */
-  div[data-testid="stSlider"], [data-testid="stSliderThumbValue"] {{ direction: ltr !important; }}
+  /* Age filter (round 5): two compact st.number_input controls, side by side, replacing the old
+     range slider entirely -- see app.py's inline comment. Capped to a compact width (not the full
+     column width a number_input stretches to by default) so "Min Age"/"Max Age" reads like the
+     other compact controls in this panel instead of dominating the row. */
+  div[data-testid="stNumberInput"] {{ max-width: 140px; }}
   .stRadio > div {{ gap: 6px; }}
   .stRadio label {{ background: var(--surface); border: 1px solid var(--border); padding: 6px 12px; border-radius: 2px; font-size: 13px !important; }}
 

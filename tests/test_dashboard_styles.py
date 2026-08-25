@@ -1,7 +1,7 @@
 """
-Post-Deployment Improvement Sprint V2 (round 3, updated round 4) -- CSS-presence regression guards
-for the targeted UI fixes across these passes (collapsed-row line wrap, the search panel's off-
-white background, Age slider direction).
+Post-Deployment Improvement Sprint V2 (round 3, updated rounds 4-5) -- CSS-presence regression
+guards for the targeted UI fixes across these passes (collapsed-row line wrap, the search panel's
+off-white background, the Age number_input controls' compact width).
 
 These can only confirm the RULE is present in the generated stylesheet, not the actual rendered
 browser behavior (AppTest does not execute CSS layout) -- real visual verification of the rendered
@@ -14,8 +14,11 @@ retargeted the container rule to the container's own `key=` (verified via Playwr
 receive the resulting class) and dropped the white-input CSS rule entirely in favor of
 dashboard/.streamlit/config.toml's `secondaryBackgroundColor` (Streamlit's own theme mechanism,
 copied verbatim from NTS's proven config) -- see styles.py's inline comments and the round-4 final
-report for the full empirical chain. Still a genuine regression guard for what CSS text-presence
-CAN catch: if a rule is accidentally removed or a selector string drifts, this fails immediately.
+report for the full empirical chain. Round 5 removed the Age slider entirely (native two-handle
+range slider replaced with two st.number_input controls -- see app.py's inline comment), along
+with every slider-specific CSS rule and the app-wide `direction: ltr` rule that existed solely for
+that slider's benefit. Still a genuine regression guard for what CSS text-presence CAN catch: if a
+rule is accidentally removed or a selector string drifts, this fails immediately.
 """
 import sys
 from pathlib import Path
@@ -77,21 +80,24 @@ def test_streamlit_theme_config_sets_white_secondary_background():
 
 
 # =============================================================================================
-# Part 3/4 -- Age slider: back to native two-handle range slider, direction:ltr applied
+# Part 5 (round 5) -- Age slider retired: two compact st.number_input controls instead. Every
+# slider-specific rule, and the app-wide direction:ltr rule that existed solely for the slider's
+# benefit, must be gone -- this is the "no dead slider CSS left behind" regression guard.
 # =============================================================================================
 
-def test_slider_direction_ltr_applied_to_root_and_thumb_value(css):
-    assert 'div[data-testid="stSlider"]' in css
-    assert '[data-testid="stSliderThumbValue"]' in css
-    # both selectors share one declaration block ending in the same direction:ltr rule
-    idx = css.find('div[data-testid="stSlider"], [data-testid="stSliderThumbValue"]')
-    assert idx != -1
-    assert "direction: ltr !important" in css[idx:idx + 120]
+def test_age_number_input_capped_to_compact_width(css):
+    assert 'div[data-testid="stNumberInput"]' in css
+    assert "max-width: 140px" in css
 
 
-def test_app_wide_direction_ltr_still_present(css):
-    """The app-wide rule (correct for every ordinary CSS-driven layout aspect) stays in place --
-    this fix was never wrong, just insufficient on its own for the slider's JS-level locale
-    state (see app.py's inline comment for the full root-cause explanation)."""
-    assert "html, body, .stApp" in css
-    assert "direction: ltr !important" in css
+def test_no_slider_specific_css_left_behind(css):
+    assert 'stSlider' not in css
+    assert 'stSliderThumbValue' not in css
+
+
+def test_no_app_wide_direction_override_left_behind(css):
+    """The app-wide `direction: ltr` rule existed solely as an (ultimately ineffective, per the
+    round-4 empirical investigation) attempt to fix the Age slider -- with the slider gone, there
+    is nothing left in this app that needs it, and it must not linger as dead/misleading CSS."""
+    assert "direction: ltr" not in css
+    assert "html, body, .stApp" not in css
